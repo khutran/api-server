@@ -1,0 +1,82 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: styletribute/circle-ci-nodejs:v0.4
+        environment:
+        - DB_CONNECTION=postgres
+        - DB_HOST=localhost
+        - DB_NAME=tester
+        - DB_USER=ubuntu
+        - DB_PASS=
+        - DB_PORT=5432
+        - SQS_REGION=testing-1
+        - SQS_DESTINATION=stylemailer-testing
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+      - image: postgres:9.5
+        environment:
+        - POSTGRES_USER=ubuntu
+        - POSTGRES_DB=tester
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-st-api-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-st-api
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-st-api-{{ checksum "package.json" }}
+      - run: yarn test
+      - run: yarn build
+      - run:
+          name: Deploying
+          command: eb deploy api-$CIRCLE_BRANCH
+      # run tests!
+
+  deploy:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:7.10
+    steps:
+      - checkout
+
+      - run:
+          name: Installing deployment dependencies
+          working_directory: /
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install python-pip python-dev build-essential
+            sudo pip install awsebcli --upgrade
+
+      - run:
+          name: Deploying
+          working_directory: ~/repo
+          command: eb deploy api-dev
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - dev
+                - production
