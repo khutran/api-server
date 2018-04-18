@@ -9,17 +9,6 @@ import RouterStatus from "./status/router";
 import RouterRole from "./role/router";
 import RouterSshKey from "./host_sshkey/router";
 
-import ViewAuth from "./auth/views";
-import ViewUser from "./user/views";
-import ViewHost from "./host/views";
-import ViewAdmin from "./admin/views";
-import ViewProject from "./project/views";
-
-router.use("/", ViewAuth);
-router.use("/", ViewUser);
-router.use("/", ViewHost);
-router.use("/", ViewAdmin);
-router.use("/", ViewProject);
 
 router.use("/api", RouterAuth);
 router.use("/api", RouterUser);

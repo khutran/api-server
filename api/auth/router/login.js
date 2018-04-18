@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import express from "express";
 import bcrypt from 'bcrypt-nodejs';
+import jwt from 'jsonwebtoken';
 import { Exception } from '../../../app/Exceptions/Exception';
 import Error from "../../../app/Exceptions/CustomsError";
 import UserRepository from '../../../app/Repositories/UserRepository';
@@ -35,12 +36,20 @@ async function Login(req, res) {
         }
 
         user = await user.update({ last_login: new Date() });
-        req.session.user = _.pick(user, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated', 'roles']);
+        req.session.user = _.pick(user, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated']);
 
-        res.json(ApiResponse.success());
-    } catch (e) {
-        throw new Exception(e.message, 1000);
-    }
+        let access_token = jwt.sign(
+          {
+            data: req.session.user,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: 20160000 }
+        );
+
+        res.json({ access_token: access_token });
+          } catch (e) {
+              throw new Exception(e.message, 1000);
+          }
 
 }
 

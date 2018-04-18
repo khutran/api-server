@@ -1,26 +1,32 @@
-import * as _ from "lodash";
-import express from "express";
+import * as _ from 'lodash';
+import express from 'express';
 import bcrypt from 'bcrypt-nodejs';
 import { Exception } from '../../../app/Exceptions/Exception';
 import UserRepository from '../../../app/Repositories/UserRepository';
-import { asyncMiddleware } from "../../../midlewares/AsyncMiddleware";
-import CheckSessionMiddleware from "../../../midlewares/CheckSessionMiddleware";
-import SingletonService from "../../../app/Services/SingletonService";
-import { Request } from "../../../app/Request";
-import ApiResponse from "../../../app/Responses/ApiResponse";
-import UserTransformer from "../../../app/Transformers/UserTransformer";
-
+import { asyncMiddleware } from '../../../midlewares/AsyncMiddleware';
+import CheckSessionMiddleware from '../../../midlewares/CheckSessionMiddleware';
+import { Request } from '../../../app/Request';
+import ApiResponse from '../../../app/Responses/ApiResponse';
+import UserTransformer from '../../../app/Transformers/UserTransformer';
+import AuthMiddleware from '../../../midlewares/AuthMiddleware';
 let router = express.Router();
 
+router.all('*', AuthMiddleware);
+
 router.get('/', asyncMiddleware(getAllUser));
+router.get('/me', asyncMiddleware(profile));
 router.get('/:id', asyncMiddleware(getUserById));
 router.post('/', asyncMiddleware(createUser));
 router.put('/:id', asyncMiddleware(updateUser));
 router.delete('/:id', asyncMiddleware(deleteUser));
 
+async function profile(req, res) {
+  res.json({data: req.session.user});
+}
+
 async function getAllUser(req, res) {
     try {
-        let query = new Request("query").customs(req.query);
+        let query = new Request('query').customs(req.query);
 
         let page = _.isUndefined(req.query.page) ? 1 : parseInt(req.query.page);
         let per_page = _.isUndefined(req.query.per_page) ? 10 : parseInt(req.query.per_page);
