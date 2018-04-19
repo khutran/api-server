@@ -9,6 +9,7 @@ import { asyncMiddleware } from "../../../midlewares/AsyncMiddleware";
 import SingletonService from "../../../app/Services/SingletonService";
 import CheckSessionMiddleware from "../../../midlewares/CheckSessionMiddleware";
 import ApiResponse from "../../../app/Responses/ApiResponse";
+import moment from "moment";
 
 let router = express.Router();
 
@@ -35,12 +36,17 @@ async function Login(req, res) {
             throw new Error('Password false', 1);
         }
 
-        user = await user.update({ last_login: new Date() });
-        req.session.user = _.pick(user, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated']);
+        user = await user.update({ last_login: moment().toISOString()});
+        let me = _.pick(user, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated', 'last_login']);
+
+        const singleton = new SingletonService();
+        let profile = {};
+        profile[me.id] = me;
+        singleton.UserLogin(profile);
 
         let access_token = jwt.sign(
           {
-            data: req.session.user,
+            data: me,
           },
           process.env.JWT_SECRET,
           { expiresIn: 20160000 }

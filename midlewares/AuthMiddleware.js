@@ -2,6 +2,8 @@ import { asyncMiddleware } from './AsyncMiddleware';
 import jwt from 'jsonwebtoken';
 import { Exception } from '../app/Exceptions/Exception';
 import _ from 'lodash';
+import SingletonService from "../app/Services/SingletonService";
+import { decode } from 'punycode';
 
 const auth = asyncMiddleware(async (req, res, next) => {
   try {
@@ -23,11 +25,22 @@ const auth = asyncMiddleware(async (req, res, next) => {
       throw new Exception('Token invalid', 4002);
     }
 
-    console.log(decoded.data)
-    if (decoded.data.last_password_updated !== req.session.user.last_password_updated) {
-      throw new Exception('Token is expired', 4006);
+    let single = new SingletonService();
+    let user = single.getUserLogin(decoded.data.id);
+
+    if(_.isNil(user)){
+      throw new Error('User not login', 1000);
     }
 
+    if(!_.isEqual(user.last_password_updated, decoded.data.last_password_updated)){
+      throw new Error('user has changed password', 1000);
+    }
+
+    if(!_.isEqual(user.last_login, decoded.data.last_login)){
+      throw new Error('The user has already logged in', 1000);
+    }
+
+    req.me = user.id;
     next();
   } catch (e) {
     throw new Exception(e.message, e.code);

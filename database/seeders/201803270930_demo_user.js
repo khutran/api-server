@@ -7,6 +7,7 @@ module.exports = {
                 //password = secret
                 first_name: 'tran',
                 last_name: 'khu',
+                last_login: new Date(),
                 last_password_updated: new Date(),
                 status: 0,
                 created_at: new Date(),

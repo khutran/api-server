@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             status: DataTypes.INTEGER,
             first_name: DataTypes.STRING,
             last_name: DataTypes.STRING,
-            last_login: DataTypes.DATE,
+            last_login: DataTypes.STRING,
             last_password_updated: DataTypes.STRING
         }, {
             underscored: true,

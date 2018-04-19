@@ -9,6 +9,8 @@ import { Request } from '../../../app/Request';
 import ApiResponse from '../../../app/Responses/ApiResponse';
 import UserTransformer from '../../../app/Transformers/UserTransformer';
 import AuthMiddleware from '../../../midlewares/AuthMiddleware';
+import SingletonService from "../../../app/Services/SingletonService";
+
 let router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -21,7 +23,9 @@ router.put('/:id', asyncMiddleware(updateUser));
 router.delete('/:id', asyncMiddleware(deleteUser));
 
 async function profile(req, res) {
-  res.json({data: req.session.user});
+  let single = new SingletonService();
+  let me = single.getUserLogin(req.me);
+  res.json({data: me});
 }
 
 async function getAllUser(req, res) {

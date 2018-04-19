@@ -46,22 +46,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'assets')));
-app.use(session({
-    key: 'user_sid',
-    secret: 'somerandonstuffs',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: 60000000
-    }
-}));
+// app.use(session({
+//     key: 'user_sid',
+//     secret: 'somerandonstuffs',
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//         expires: 60000000
+//     }
+// }));
 
-app.use((req, res, next) => {
-    if (req.cookies.user_sid && !req.session.user) {
-        res.clearCookie('user_sid');
-    }
-    next();
-});
+// app.use((req, res, next) => {
+//     if (req.cookies.user_sid && !req.session.user) {
+//         res.clearCookie('user_sid');
+//     }
+//     next();
+// });
 
 app.use(AppRouter);
 app.use(ExceptionHandler);

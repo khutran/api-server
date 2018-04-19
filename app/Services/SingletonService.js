@@ -6,11 +6,16 @@ export default class SingletonService extends DefaultService {
         if (!instance) {
             instance = this;
             instance.data = {};
-
+            instance.User = {};
             instance.add = (obj) => {
                 instance.data = Object.assign(instance.data, obj);
                 return instance;
             };
+
+            instance.UserLogin = (obj) => {
+              instance.User = Object.assign(instance.User, obj);
+              return instance;
+          };
 
             instance.delete = (key) => {
                 instance.data = Object.keys(instance.data).reduce((obj, curVal) => {
@@ -35,6 +40,9 @@ export default class SingletonService extends DefaultService {
                 return instance.data[key];
             };
 
+            instance.getUserLogin = (key) => {
+              return instance.User[key];
+          };
             instance.getAll = () => {
                 return {
                     ...instance.data

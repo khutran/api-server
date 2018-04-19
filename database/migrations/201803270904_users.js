@@ -26,9 +26,10 @@ module.exports = {
                 }
             },
             last_login: {
-                type: Sequelize.DATE,
-                allowNull: true,
-                defaultValue: null
+              type: Sequelize.STRING,
+              validate: {
+                  notEmpty: true
+              }
             },
             first_name: {
                 type: Sequelize.STRING,
