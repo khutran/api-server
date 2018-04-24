@@ -10,6 +10,7 @@ export default class ServerTransformer extends Transformer {
             host: model.host,
             categories: model.categories,
             git: model.git,
+            branch: model.branch,
             status: model.status,
             framework: model.framework,
             created_at: model.created_at,
