@@ -35,12 +35,12 @@
     "express-session": "^1.15.6",
     "jsonwebtoken": "^8.2.0",
     "lodash": "^4.17.5",
-    "moment": "^2.22.1",
     "morgan": "^1.9.0",
     "mysql2": "^1.5.3",
     "nodemon": "^1.17.2",
     "sequelize": "^4.37.4",
     "sequelize-cli": "^4.0.0",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "webpack": "^4.5.0"
   }
 }

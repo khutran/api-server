@@ -12,10 +12,12 @@ import ApiResponse from "../../../app/Responses/ApiResponse";
 import ProjectTransformer from "../../../app/Transformers/ProjectTransformer";
 import hasPermission from "../../../midlewares/PermissionMiddleware";
 import AvailablePermissions from "../../../app/Configs/AvailablePermissions"
+import AuthMiddleware from '../../../midlewares/AuthMiddleware';
 
 let router = express.Router();
+router.all('*', AuthMiddleware);
 
-router.get('/', CheckSessionMiddleware, hasPermission.bind(AvailablePermissions.ADMIN_VIEW), asyncMiddleware(getAllProject));
+router.get('/', hasPermission.bind(AvailablePermissions.ADMIN_VIEW), asyncMiddleware(getAllProject));
 router.get('/:id', asyncMiddleware(getProjectById));
 router.post('/', asyncMiddleware(createProject));
 router.put('/:id', asyncMiddleware(updateProject));
@@ -79,6 +81,7 @@ async function createProject(req, res) {
             host_id: req.body.host_id,
             categories: req.body.categories,
             git: req.body.git,
+            branch: req.body.branch,
             framework: req.body.framework,
             status_id: req.body.status_id
         }
@@ -113,6 +116,7 @@ async function updateProject(req, res) {
             host_id: req.body.host_id,
             categories: req.body.categories,
             git: req.body.git,
+            branch: req.body.branch,
             framework: req.body.framework,
             status_id: req.body.status_id
         }

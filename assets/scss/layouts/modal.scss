@@ -1,0 +1,65 @@
+.modal {
+	.modal-dialog {
+		margin: 100px auto;
+	}
+	.modal-content {
+		max-width: 370px;
+		padding: 0px 15px;
+		.modal-header {
+			border-bottom:  none;
+			text-align: center;
+			padding: 30px 0px 0px 0px;
+			.modal-title {
+				font-size: 30px;
+				color: $green-bg;
+				width: 100%;
+			}
+		}
+		.modal-body {
+			padding-bottom: 10px;
+			form {
+				.wrap-group {
+					margin-bottom: 15px;
+					label {
+						width: 100px;
+					}
+					input, select {
+						border: 1px solid $boder-color;
+						@include border-radius(3px);
+						padding: 5px;
+						width: calc( 100% - 104px );
+					}
+					select {
+						background: #fff url('../../assets/images/icon-drop-down.png') no-repeat scroll right center;
+					}
+				}
+			}
+		}
+		.modal-footer {
+			border-top: none;
+			display: block;
+			text-align: center;
+			padding: 0px 0px 30px 0px;
+			.btn {
+				border: 1px solid #cccccc;
+				background: #eeeeee;
+				padding: 4px 25px;
+				color: #999999;
+				@include border-radius(8px);
+				&:hover {
+					background: $green-bg;
+					color: #fff;
+					border: none;
+				}
+				&:focus {
+					@include box-shadow (none);
+				}
+			}
+		}
+	}
+}
+#addProject {
+	.modal-content {
+		max-width: 430px;
+	}
+}

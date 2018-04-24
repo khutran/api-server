@@ -5,6 +5,7 @@ module.exports = {
             name: 'lean.vicoders.com',
             categories: 'introduce',
             git: 'https://khutx@bitbucket.org/vicoderscom/lean_vicoders.git',
+            branch: 'dev',
             framework: 'wordpress',
             host_id: 1,
             status_id: 1,

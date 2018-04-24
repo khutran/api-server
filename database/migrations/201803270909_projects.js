@@ -28,6 +28,10 @@ module.exports = {
             host_id: {
                 type: Sequelize.INTEGER,
             },
+            branch: {
+                type: Sequelize.TEXT,
+                allowNull: false
+            },
             categories: {
                 type: Sequelize.TEXT,
                 allowNull: false

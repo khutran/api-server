@@ -7,9 +7,7 @@ import { decode } from 'punycode';
 
 const auth = asyncMiddleware(async (req, res, next) => {
   try {
-
     let authorization = req.headers.authorization;
-
     if (!authorization) {
       throw new Exception('Token not found', 1000);
     }

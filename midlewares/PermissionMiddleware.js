@@ -4,7 +4,8 @@ import { Exception } from "../app/Exceptions/Exception";
 import SingletonService from "../app/Services/SingletonService";
 
 async function hasPermission(req, res, next) {
-    let user = req.session.user;
+    const singleton = new SingletonService();
+    let user = singleton.getUserLogin(req.me);
     let bool = false;
     _.forEach(user.roles, (item) => {
         if (item.permissions.indexOf(this) > -1) {

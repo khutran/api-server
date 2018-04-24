@@ -1,0 +1,22 @@
+.project-list-content {
+    width: 100%;
+    .projects-list {
+        table {
+            width: 100%;
+            border: 1px solid $boder-color;
+            th {
+                font-weight: 400;
+                text-align: center;
+                border-bottom: 1px solid $boder-color;
+                border-right: 1px solid $boder-color;
+                padding: 10px;
+                &:last-child {
+                    border-right: 0px;
+                }
+            }
+            td {
+                border-right: 1px solid $boder-color;
+            }
+        }
+    }
+}

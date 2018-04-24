@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             host_id: DataTypes.INTEGER,
             categories: DataTypes.TEXT,
             git: DataTypes.TEXT,
+            branch: DataTypes.TEXT,
             framework: DataTypes.TEXT,
             status_id: DataTypes.INTEGER
         }, {

@@ -25,6 +25,7 @@ router.delete('/:id', asyncMiddleware(deleteUser));
 async function profile(req, res) {
   let single = new SingletonService();
   let me = single.getUserLogin(req.me);
+  me = _.pick(me, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated', 'last_login']);
   res.json({data: me});
 }
 

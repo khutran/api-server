@@ -17,6 +17,7 @@ router.post('/', asyncMiddleware(Login));
 
 async function Login(req, res) {
     try {
+        // console.log(req.headers.authorization);
         let email = req.body.email;
         let password = req.body.password;
 
@@ -37,7 +38,7 @@ async function Login(req, res) {
         }
 
         user = await user.update({ last_login: moment().toISOString()});
-        let me = _.pick(user, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated', 'last_login']);
+        let me = _.pick(user, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated', 'last_login', 'roles']);
 
         const singleton = new SingletonService();
         let profile = {};
