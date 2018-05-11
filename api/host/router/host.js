@@ -17,10 +17,10 @@ let router = express.Router();
 router.get('/', asyncMiddleware(getAllServer));
 router.get('/:id', asyncMiddleware(getServerById));
 router.post('/', asyncMiddleware(createServer));
-router.post('/:id/sshkey', asyncMiddleware(addSshKey));
+// router.post('/:id/sshkey', asyncMiddleware(addSshKey));
 router.put('/:id', asyncMiddleware(updateServer));
 router.delete('/:id', asyncMiddleware(deleteServer));
-router.delete('/:id/sshkey', asyncMiddleware(deleteSshKey));
+// router.delete('/:id/sshkey', asyncMiddleware(deleteSshKey));
 
 async function getAllServer(req, res) {
     try {
@@ -47,10 +47,9 @@ async function getAllServer(req, res) {
         }
 
         let result = await repository
-            .with('host_sshkey')
             .paginate(per_page, page);
 
-        res.json(ApiResponse.paginate(result, new HostTransformer(['host_sshkeys'])));
+        res.json(ApiResponse.paginate(result, new HostTransformer()));
     } catch (e) {
         throw new Exception(e.message, 1000);
     }
@@ -61,7 +60,6 @@ async function getServerById(req, res) {
         let id = req.params.id;
         let repository = new HostRepository();
         let result = await repository
-            .with('host_sshkey')
             .where('id', id)
             .first();
 
@@ -69,7 +67,7 @@ async function getServerById(req, res) {
             throw new Error('Host Not Found', 1000);
         }
 
-        res.json(ApiResponse.item(result, new HostTransformer(['host_sshkeys'])));
+        res.json(ApiResponse.item(result, new HostTransformer()));
     } catch (e) {
         throw new Exception(e.message, 1000);
     }
@@ -79,14 +77,14 @@ async function createServer(req, res) {
 
     try {
         let data = {
-            host_name: req.body.host_name,
+            name: req.body.name,
             ip: req.body.ip
         }
 
         let repository = new HostRepository();
 
         let result = await repository
-            .where('host_name', data.host_name)
+            .where('name', data.name)
             .first();
 
         if (result) {
@@ -105,68 +103,68 @@ async function createServer(req, res) {
     }
 }
 
-async function addSshKey(req, res) {
-    try {
-        let id = req.params.id;
-        let ssh_key = req.body.ssh_key;
+// async function addSshKey(req, res) {
+//     try {
+//         let id = req.params.id;
+//         let ssh_key = req.body.ssh_key;
 
-        let data = {
-            host_id: id,
-            ssh_key: ssh_key
-        };
+//         let data = {
+//             host_id: id,
+//             ssh_key: ssh_key
+//         };
 
-        let repository = new HostRepository();
-        let host = await repository
-            .with('host_sshkey')
-            .where('id', id)
-            .first();
+//         let repository = new HostRepository();
+//         let host = await repository
+//             .with('host_sshkey')
+//             .where('id', id)
+//             .first();
 
-        if (!host) {
-            throw new Error('Host not found', 1000);
-        }
-        let sshkey = await host.createHost_sshkey(data);
+//         if (!host) {
+//             throw new Error('Host not found', 1000);
+//         }
+//         let sshkey = await host.createHost_sshkey(data);
 
-        res.json(ApiResponse.item(sshkey, new HostSshKeyTransformer()));
-    } catch (e) {
-        throw new Exception(e.message, 1000);
-    }
-}
+//         res.json(ApiResponse.item(sshkey, new HostSshKeyTransformer()));
+//     } catch (e) {
+//         throw new Exception(e.message, 1000);
+//     }
+// }
 
-async function deleteSshKey(req, res) {
-    try {
-        let id = req.params.id;
-        let ssh_key_id = req.body.ssh_key_id;
+// async function deleteSshKey(req, res) {
+//     try {
+//         let id = req.params.id;
+//         let ssh_key_id = req.body.ssh_key_id;
 
-        let repository = new HostRepository();
-        let host = await repository
-            .with('host_sshkey')
-            .where('id', id)
-            .first();
+//         let repository = new HostRepository();
+//         let host = await repository
+//             .with('host_sshkey')
+//             .where('id', id)
+//             .first();
 
-        if (!host) {
-            throw new Error('Host not found', 1000);
-        }
-        let sshkey = await host.getHost_sshkeys({
-            where: { id: ssh_key_id }
-        });
+//         if (!host) {
+//             throw new Error('Host not found', 1000);
+//         }
+//         let sshkey = await host.getHost_sshkeys({
+//             where: { id: ssh_key_id }
+//         });
 
-        if (!sshkey[0]) {
-            throw new Error('Host not exists sshkey', 1000);
-        }
+//         if (!sshkey[0]) {
+//             throw new Error('Host not exists sshkey', 1000);
+//         }
 
-        let result = await sshkey[0].destroy();
+//         let result = await sshkey[0].destroy();
 
-        res.json(ApiResponse.success());
-    } catch (e) {
-        throw new Exception(e.message, 1000);
-    }
-}
+//         res.json(ApiResponse.success());
+//     } catch (e) {
+//         throw new Exception(e.message, 1000);
+//     }
+// }
 
 async function updateServer(req, res) {
     try {
         let id = req.params.id;
         let data = {
-            host_name: req.body.host_name,
+            name: req.body.name,
             ip: req.body.ip
         }
 

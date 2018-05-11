@@ -5,7 +5,7 @@ export default class HostTransformer extends Transformer {
     transform(model) {
         return {
             id: model.id,
-            host_name: model.host_name,
+            name: model.name,
             ip: model.ip,
             created_at: model.created_at,
             updated_at: model.updated_at

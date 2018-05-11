@@ -17,7 +17,6 @@ router.post('/', asyncMiddleware(Login));
 
 async function Login(req, res) {
     try {
-        // console.log(req.headers.authorization);
         let email = req.body.email;
         let password = req.body.password;
 
@@ -52,7 +51,6 @@ async function Login(req, res) {
           process.env.JWT_SECRET,
           { expiresIn: 20160000 }
         );
-
         res.json({ access_token: access_token });
           } catch (e) {
               throw new Exception(e.message, 1000);

@@ -8,7 +8,7 @@ import { Exception } from "../app/Exceptions/Exception";
 module.exports = (sequelize, DataTypes) => {
     var Hosts = sequelize.define(
         "host", {
-            host_name: DataTypes.STRING,
+            name: DataTypes.STRING,
             ip: DataTypes.TEXT
         }, {
             underscored: true,
@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     Hosts.associate = models => {
-        Hosts.hasMany(models.project);
         Hosts.hasMany(models.host_sshkey);
     };
 

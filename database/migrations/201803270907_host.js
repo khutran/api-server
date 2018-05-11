@@ -15,7 +15,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            host_name: {
+            name: {
                 type: Sequelize.STRING,
                 unique: 'compositeIndex',
                 allowNull: false,

@@ -205,6 +205,7 @@ export class Repository {
         }
 
         let result = await model.findAndCountAll(params);
+
         let paginator = new LengthAwarePaginator(result.rows, result.count, per_page, page);
         return paginator;
     }

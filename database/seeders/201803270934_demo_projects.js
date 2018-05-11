@@ -4,10 +4,7 @@ module.exports = {
         return queryInterface.bulkInsert("projects", [{
             name: 'lean.vicoders.com',
             categories: 'introduce',
-            git: 'https://khutx@bitbucket.org/vicoderscom/lean_vicoders.git',
-            branch: 'dev',
             framework: 'wordpress',
-            host_id: 1,
             status_id: 1,
             created_at: new Date(),
             updated_at: new Date()

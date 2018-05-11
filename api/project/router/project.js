@@ -13,20 +13,142 @@ import ProjectTransformer from "../../../app/Transformers/ProjectTransformer";
 import hasPermission from "../../../midlewares/PermissionMiddleware";
 import AvailablePermissions from "../../../app/Configs/AvailablePermissions"
 import AuthMiddleware from '../../../midlewares/AuthMiddleware';
+import BuildTransformer from '../../../app/Transformers/BuildTransformer';
+
 
 let router = express.Router();
 router.all('*', AuthMiddleware);
 
-router.get('/', hasPermission.bind(AvailablePermissions.ADMIN_VIEW), asyncMiddleware(getAllProject));
+router.get('/', asyncMiddleware(getAllProject));
 router.get('/:id', asyncMiddleware(getProjectById));
 router.post('/', asyncMiddleware(createProject));
 router.put('/:id', asyncMiddleware(updateProject));
 router.delete('/:id', asyncMiddleware(deleteProject));
+router.get('/:id/build', asyncMiddleware(getProjectBuild));
+router.post('/:id/build', asyncMiddleware(addProjectBuild));
+router.put('/:id/build', asyncMiddleware(updateProjectBuild));
+router.delete('/:id/build', asyncMiddleware(deleteProjectBuild));
+
+async function getProjectBuild(req, res) {
+  try {
+    const id = req.params.id;
+    const repository = new ProjectRepository();
+    const result = await repository.findById(id);
+
+    const build = await result.getBuild();
+    if (!build) {
+      throw new Error('Project not craete Build' ,1000);
+    }
+    res.json(ApiResponse.item(build, new BuildTransformer()));
+  } catch (e) {
+    throw new Exception(e.message, 1000);
+  }
+}
+
+async function addProjectBuild(req, res) {
+  try {
+    const id = req.params.id;
+    const b = {
+      project_id: id,
+      host_id: req.body.host_id,
+      git: req.body.git,
+      git_branch: req.body.git_branch,
+      git_key: req.body.git_key,
+      git_secret: req.body.git_secret,
+      build_auto: req.body.build_auto,
+      backup: req.body.backup,
+      last_build: new Date()
+    }
+    const repository = new ProjectRepository();
+
+    const result = await repository.findById(id);
+
+    if (!result) {
+      throw new Error('Project not found', 1000);
+    }
+
+    let build = await result.getBuild();
+
+    if (!_.isNil(build)) {
+      throw new Error('Project build already', 1000);
+    }
+
+    build = await result.createBuild(b);
+
+    res.json(ApiResponse.item(build, new BuildTransformer()));
+
+  } catch (e) {
+    throw new Exception( e.message, 1000);
+  }
+}
+
+async function updateProjectBuild(req, res) {
+  try {
+    const id = req.params.id;
+    const b = {
+      project_id: id,
+      host_id: req.body.host_id,
+      git: req.body.git,
+      git_branch: req.body.git_branch,
+      git_key: req.body.git_key,
+      git_secret: req.body.git_secret,
+      build_auto: req.body.build_auto,
+      backup: req.body.backup
+    }
+
+    _.mapKeys(b, (value, key) => {
+      if (_.isNil(b[key])) {
+        delete b[key];
+      }
+    })
+
+    const repository = new ProjectRepository();
+
+    let result = await repository.findById(id);
+
+    if (!result) {
+      throw new Error('Project not found', 1000);
+    }
+
+    let build = await result.getBuild();
+
+    if (_.isNil(build)) {
+      throw new Error('Project not create build', 1000);
+    }
+
+    build = await build.update(b);
+
+    res.json(ApiResponse.item(build, new BuildTransformer()));
+  } catch (e) {
+    throw new Exception(e.message, 1000);
+  }
+}
+
+async function deleteProjectBuild(req, res) {
+  try {
+    const id = req.params.id;
+
+    const repository = new ProjectRepository();
+
+    let result = await repository.findById(id);
+
+    let build = await result.getBuild();
+
+    if (!build) {
+      throw new Error('Project not found', 1000);
+    }
+
+    await build.destroy();
+    res.json(ApiResponse.success());
+  } catch (e) {
+    throw new Exception(e.message, 1000);
+  }
+}
 
 async function getAllProject(req, res) {
     try {
         let query = new Request("query").customs(req.query);
-
+        
         let page = _.isUndefined(req.query.page) ? 1 : parseInt(req.query.page);
         let per_page = _.isUndefined(req.query.per_page) ? 10 : parseInt(req.query.per_page);
         let repository = new ProjectRepository();
@@ -49,9 +171,12 @@ async function getAllProject(req, res) {
 
         let result = await repository
             .paginate(per_page, page);
+        
+        if(_.isEmpty(result.items)){
+          throw new Error('not project found', 1000);
+        }
 
-        res.json(ApiResponse.paginate(result, new ProjectTransformer(['host', 'status'])));
-
+        res.json(ApiResponse.paginate(result, new ProjectTransformer(['status'])));
     } catch (e) {
         throw new Exception(e.message, 1000);
     }
@@ -67,7 +192,8 @@ async function getProjectById(req, res) {
             throw new Error('Project Not Found', 1000);
         }
 
-        res.json(ApiResponse.item(result, new ProjectTransformer(['host', 'status'])));
+        console.log(result.build.host);
+        res.json(ApiResponse.item(result, new ProjectTransformer(['build','status'])));
     } catch (e) {
         throw new Exception(e.message, 1000);
     }
@@ -78,10 +204,7 @@ async function createProject(req, res) {
     try {
         let data = {
             name: req.body.name,
-            host_id: req.body.host_id,
             categories: req.body.categories,
-            git: req.body.git,
-            branch: req.body.branch,
             framework: req.body.framework,
             status_id: req.body.status_id
         }
@@ -100,8 +223,8 @@ async function createProject(req, res) {
         if (!result) {
             throw new Error('Create Project false', 1000);
         }
-
-        res.json(ApiResponse.item(result, new ProjectTransformer(['host', 'status'])));
+        await result.reload();
+        res.json(ApiResponse.item(result, new ProjectTransformer(['status'])));
 
     } catch (e) {
         throw new Exception(e.message, 1000);
@@ -113,10 +236,7 @@ async function updateProject(req, res) {
         let id = req.params.id;
         let data = {
             name: req.body.name,
-            host_id: req.body.host_id,
             categories: req.body.categories,
-            git: req.body.git,
-            branch: req.body.branch,
             framework: req.body.framework,
             status_id: req.body.status_id
         }
@@ -141,8 +261,8 @@ async function updateProject(req, res) {
                 throw new Error('Updata false', 1000);
             }
         }
-
-        res.json(ApiResponse.item(result, new ProjectTransformer(['host', 'status'])));
+        await result.reload();
+        res.json(ApiResponse.item(result, new ProjectTransformer(['status'])));
 
     } catch (e) {
         throw new Exception(e.message, 1000);
@@ -172,6 +292,5 @@ async function deleteProject(req, res) {
         throw new Exception(e.message, 1000);
     }
 }
-
 
 module.exports = router;

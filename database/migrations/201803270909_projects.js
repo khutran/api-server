@@ -25,18 +25,7 @@ module.exports = {
                     len: [1, 255]
                 }
             },
-            host_id: {
-                type: Sequelize.INTEGER,
-            },
-            branch: {
-                type: Sequelize.TEXT,
-                allowNull: false
-            },
             categories: {
-                type: Sequelize.TEXT,
-                allowNull: false
-            },
-            git: {
                 type: Sequelize.TEXT,
                 allowNull: false
             },
