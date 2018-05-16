@@ -192,7 +192,6 @@ async function getProjectById(req, res) {
             throw new Error('Project Not Found', 1000);
         }
 
-        console.log(result.build.host);
         res.json(ApiResponse.item(result, new ProjectTransformer(['build','status'])));
     } catch (e) {
         throw new Exception(e.message, 1000);
