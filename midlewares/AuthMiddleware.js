@@ -2,8 +2,7 @@ import { asyncMiddleware } from './AsyncMiddleware';
 import jwt from 'jsonwebtoken';
 import { Exception } from '../app/Exceptions/Exception';
 import _ from 'lodash';
-import SingletonService from "../app/Services/SingletonService";
-import { decode } from 'punycode';
+import SingletonService from '../app/Services/SingletonService';
 
 const auth = asyncMiddleware(async (req, res, next) => {
   try {
@@ -26,15 +25,15 @@ const auth = asyncMiddleware(async (req, res, next) => {
     let single = new SingletonService();
     let user = single.getUserLogin(decoded.data.id);
 
-    if(_.isNil(user)){
+    if (_.isNil(user)) {
       throw new Error('User not login', 304);
     }
 
-    if(!_.isEqual(user.last_password_updated, decoded.data.last_password_updated)){
+    if (!_.isEqual(user.last_password_updated, decoded.data.last_password_updated)) {
       throw new Error('user has changed password', 304);
     }
 
-    if(!_.isEqual(user.last_login, decoded.data.last_login)){
+    if (!_.isEqual(user.last_login, decoded.data.last_login)) {
       throw new Error('The user has already logged in', 304);
     }
 

@@ -1,11 +1,9 @@
 'use strict';
-import * as _ from 'lodash';
-import models from '../models';
-import { Exception } from '../app/Exceptions/Exception';
 
 module.exports = (sequelize, DataTypes) => {
   var Build = sequelize.define(
-    'build', {
+    'build',
+    {
       project_id: DataTypes.INTEGER,
       host_id: DataTypes.INTEGER,
       git: DataTypes.TEXT,
@@ -15,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       build_auto: DataTypes.BOOLEAN,
       backup: DataTypes.BOOLEAN,
       last_build: DataTypes.DATE
-    }, {
+    },
+    {
       underscored: true,
       freezeTableName: true
     }
@@ -24,12 +23,14 @@ module.exports = (sequelize, DataTypes) => {
   Build.associate = models => {
     Build.belongsTo(models.host);
 
-    Build.addScope('defaultScope', {
-      'include': [
-        { model: models.host }
-      ]
-  }, { 'override': true });
+    Build.addScope(
+      'defaultScope',
+      {
+        include: [{ model: models.host }]
+      },
+      { override: true }
+    );
   };
 
   return Build;
-}
+};

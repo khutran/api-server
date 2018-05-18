@@ -1,9 +1,8 @@
-import models from "../../models";
-import { Repository } from "./Repository";
+import models from '../../models';
+import { Repository } from './Repository';
 
 export default class ServerRepository extends Repository {
-
-    Models() {
-        return models.build;
-    }
+  Models() {
+    return models.build;
+  }
 }
