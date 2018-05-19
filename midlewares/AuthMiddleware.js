@@ -8,18 +8,21 @@ const auth = asyncMiddleware(async (req, res, next) => {
   try {
     let authorization = req.headers.authorization;
     if (!authorization) {
-      throw new Exception('Token not found', 304);
+      throw new Error('Token not found', 304);
     }
     let access_token = authorization.split(' ')[1];
-
     if (_.isNil(access_token)) {
-      throw new Exception('Token not found', 304);
+      throw new Error('Token not found', 304);
+    }
+
+    if (access_token === 'undefined') {
+      throw new Error('Token not found', 304);
     }
 
     let decoded = await jwt.verify(access_token, process.env.JWT_SECRET);
 
     if (!decoded) {
-      throw new Exception('Token invalid', 304);
+      throw new Error('Token invalid', 304);
     }
 
     let single = new SingletonService();

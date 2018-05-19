@@ -1,89 +1,35 @@
 import * as _ from 'lodash';
 import express from 'express';
+import bcrypt from 'bcrypt-nodejs';
 import { Exception } from '../../../app/Exceptions/Exception';
 import UserRepository from '../../../app/Repositories/UserRepository';
 import { asyncMiddleware } from '../../../midlewares/AsyncMiddleware';
+// import CheckSessionMiddleware from '../../../midlewares/CheckSessionMiddleware';
 import { Request } from '../../../app/Request';
 import ApiResponse from '../../../app/Responses/ApiResponse';
 import UserTransformer from '../../../app/Transformers/UserTransformer';
-import RoleRepository from '../../../app/Repositories/RoleRepository';
 import AuthMiddleware from '../../../midlewares/AuthMiddleware';
+import SingletonService from '../../../app/Services/SingletonService';
 import ProjectRepository from '../../../app/Repositories/ProjectRepository';
-import hasPermission from '../../../midlewares/PermissionMiddleware';
-import Permission from '../../../app/Configs/AvailablePermissions';
 
 let router = express.Router();
 
 router.all('*', AuthMiddleware);
 
-router.get('/', hasPermission.bind(Permission.ADMIN_VIEW), asyncMiddleware(getAllUser));
-router.get('/me', hasPermission.bind(Permission.USER_VIEW), asyncMiddleware(profile));
-router.get('/:id', hasPermission.bind(Permission.ADMIN_CREATE), asyncMiddleware(getUserById));
-router.post('/', hasPermission.bind(Permission.ADMIN_CREATE), asyncMiddleware(createUser));
-router.post('/:id', hasPermission.bind(Permission.ADMIN_CREATE), asyncMiddleware(addProject));
-router.post('/:id/role', hasPermission.bind(Permission.ADMIN_CREATE), asyncMiddleware(addRole));
-router.put('/:id/role', hasPermission.bind(Permission.ADMIN_UPDATE), asyncMiddleware(updateRole));
-router.put('/:id', hasPermission.bind(Permission.ADMIN_UPDATE), asyncMiddleware(updateUser));
-router.delete('/:id', hasPermission.bind(Permission.ADMIN_DELETE), asyncMiddleware(deleteUser));
-router.delete('/:id/project', hasPermission.bind(Permission.ADMIN_DELETE), asyncMiddleware(deleteProject));
-
-async function addRole(req, res) {
-  try {
-    const user_id = req.params.id;
-    const role_id = req.body.role_id;
-
-    let repository = new UserRepository();
-    let roleRepository = new RoleRepository();
-    let user = await repository
-      .where('id', user_id)
-      .withScope('scopeRole-Project')
-      .first();
-
-    let role = await roleRepository.findById(role_id);
-    await user.addRole(role);
-    await user.reload();
-    res.json(ApiResponse.item(user, new UserTransformer(['roles'])));
-  } catch (e) {
-    throw new Exception(e.message, 1000);
-  }
-}
-
-async function updateRole(req, res) {
-  try {
-    const user_id = req.params.id;
-    const role_id = req.body.role_id;
-
-    let repository = new UserRepository();
-    let roleRepository = new RoleRepository();
-    let user = await repository
-      .where('id', user_id)
-      .withScope('scopeRole-Project')
-      .first();
-
-    let role = await roleRepository.findById(role_id);
-    let oldR = await user.getRoles();
-    await user.removeRole(oldR);
-    await user.addRole(role);
-    await user.reload();
-    res.json(ApiResponse.item(user, new UserTransformer(['roles'])));
-  } catch (e) {
-    throw new Exception(e.message, 1000);
-  }
-}
+router.get('/', asyncMiddleware(getAllUser));
+router.get('/me', asyncMiddleware(profile));
+router.get('/:id', asyncMiddleware(getUserById));
+router.post('/', asyncMiddleware(createUser));
+router.post('/:id', asyncMiddleware(addProject));
+router.put('/:id', asyncMiddleware(updateUser));
+router.delete('/:id', asyncMiddleware(deleteUser));
+router.post('/:id/project', asyncMiddleware(deleteProject));
 
 async function profile(req, res) {
-  try {
-    let repository = new UserRepository();
-    let me = await repository
-      .with('project')
-      .withScope('scopeRole-Project')
-      .where('id', req.me)
-      .first();
-
-    res.json(ApiResponse.item(me, new UserTransformer(['projects', 'roles'])));
-  } catch (e) {
-    throw new Exception(e.message, 1000);
-  }
+  let single = new SingletonService();
+  let me = single.getUserLogin(req.me);
+  me = _.pick(me, ['id', 'email', 'status', 'first_name', 'last_name', 'last_password_updated', 'last_login']);
+  res.json({ data: me });
 }
 
 async function getAllUser(req, res) {
@@ -124,14 +70,13 @@ async function getUserById(req, res) {
     let repository = new UserRepository();
     let result = await repository
       .with('project')
-      .withScope('scopeRole-Project')
       .where('id', id)
       .first();
 
     if (!result) {
       throw new Error('User Not Found', 1000);
     }
-    res.json(ApiResponse.item(result, new UserTransformer(['projects', 'roles'])));
+    res.json(ApiResponse.item(result, new UserTransformer(['projects'])));
   } catch (e) {
     throw new Exception(e.message, 1000);
   }
@@ -206,6 +151,7 @@ async function updateUser(req, res) {
 async function deleteUser(req, res) {
   try {
     let id = req.params.id;
+    let email = req.body.email;
 
     let repository = new UserRepository();
     let user = await repository.findById(id);
@@ -250,6 +196,7 @@ async function addProject(req, res) {
 
 async function deleteProject(req, res) {
   try {
+
     let user_id = req.params.id;
     let project_id = req.body.project_id;
 
@@ -265,6 +212,7 @@ async function deleteProject(req, res) {
 
     await user.reload();
     res.json(ApiResponse.item(user, new UserTransformer(['projects'])));
+
   } catch (e) {
     throw new Exception(e.message, 1000);
   }

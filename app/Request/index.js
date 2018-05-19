@@ -1,16 +1,22 @@
-import { library } from './library';
+import * as _ from "lodash";
+import { library } from "./library";
 
 export class Request extends library {
-  constructor(collection) {
-    super(collection);
-    this.validateOfcollection();
-  }
-
-  customs(query) {
-    for (let key in this.validate[this.collection]) {
-      query[key] = this.validate[this.collection][key](query[key]);
+    constructor(collection, value) {
+        super(collection);
+        this.validateOfcollection();
     }
 
-    return query;
-  }
+    check(check) {
+        Object.keys(this.validate(this.collection))
+    }
+
+    customs(query) {
+
+        for (let key in this.validate[this.collection]) {
+            query[key] = this.validate[this.collection][key](query[key]);
+        }
+
+        return query;
+    }
 }
