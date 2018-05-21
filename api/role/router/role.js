@@ -9,6 +9,7 @@ import RoleTransformer from '../../../app/Transformers/RoleTransformer';
 import hasPermission from '../../../midlewares/PermissionMiddleware';
 import Permission from '../../../app/Configs/AvailablePermissions';
 import AuthMiddleware from '../../../midlewares/AuthMiddleware';
+import Error from '../../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 
@@ -48,7 +49,11 @@ async function getAllRole(req, res) {
 
     res.json(ApiResponse.paginate(result, new RoleTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 async function getRoleById(req, res) {
@@ -58,12 +63,16 @@ async function getRoleById(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Role Not Found', 1000);
+      throw new Error('Role Not Found', 204);
     }
 
     res.json(ApiResponse.item(result, new RoleTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -82,17 +91,21 @@ async function createRole(req, res) {
     let result = await repository.where('name', data.name).first();
 
     if (result) {
-      throw new Error('Role exists', 1000);
+      throw new Error('Role exists', 208);
     }
 
     result = await repository.create(data);
     if (!result) {
-      throw new Error('Create Status false', 1000);
+      throw new Error('Create Status false', 500);
     }
 
     res.json(ApiResponse.item(result, new RoleTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -110,7 +123,7 @@ async function updateRole(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Status not found', 1000);
+      throw new Error('Status not found', 204);
     }
 
     _.mapKeys(data, (value, key) => {
@@ -123,13 +136,17 @@ async function updateRole(req, res) {
 
     for (let i in data) {
       if (!_.isEqual(data[i], result[i])) {
-        throw new Error('Updata false', 1000);
+        throw new Error('Updata false', 500);
       }
     }
 
     res.json(ApiResponse.item(result, new RoleTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -140,18 +157,22 @@ async function deleteRole(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Status Not found', 1000);
+      throw new Error('Status Not found', 204);
     }
 
     result = await result.destroy();
 
     if (result === 0) {
-      throw new Error('Delete Status false', 1000);
+      throw new Error('Delete Status false', 500);
     }
 
     res.json(ApiResponse.success());
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 

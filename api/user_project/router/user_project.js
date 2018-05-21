@@ -7,6 +7,7 @@ import UserProjectTransformer from '../../../app/Transformers/UserProjectTransfo
 import AuthMiddleware from '../../../midlewares/AuthMiddleware';
 import hasPermission from '../../../midlewares/PermissionMiddleware';
 import Permission from '../../../app/Configs/AvailablePermissions';
+import Error from '../../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 
@@ -29,18 +30,22 @@ async function add(req, res) {
       .first();
 
     if (item) {
-      throw new Error('project exits', 1000);
+      throw new Error('project exits', 208);
     }
 
     let result = await repository.create(data);
 
     if (!result) {
-      throw new Error('add fasle', 1000);
+      throw new Error('add fasle', 500);
     }
 
     res.json(ApiResponse.item(result, new UserProjectTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 

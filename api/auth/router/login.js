@@ -25,13 +25,13 @@ async function Login(req, res) {
       .first();
 
     if (!user) {
-      throw new Error('User not Found', 1);
+      throw new Error('User not Found', 204);
     }
 
     let is_valid = await bcrypt.compareSync(password, user.password);
 
     if (is_valid === false) {
-      throw new Error('Password false', 1);
+      throw new Error('Password false', 204);
     }
 
     user = await user.update({ last_login: moment().toISOString() });
@@ -51,7 +51,11 @@ async function Login(req, res) {
     );
     res.json({ access_token: access_token });
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 

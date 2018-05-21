@@ -5,7 +5,6 @@ import RouterHost from './host/router';
 import RouterProject from './project/router';
 import RouterStatus from './status/router';
 import RouterRole from './role/router';
-import RouterSshKey from './host_sshkey/router';
 import RouterUserProject from './user_project/router';
 let router = express.Router();
 
@@ -15,7 +14,6 @@ router.use('/api', RouterHost);
 router.use('/api', RouterProject);
 router.use('/api', RouterStatus);
 router.use('/api', RouterRole);
-router.use('/api', RouterSshKey);
 router.use('/api', RouterUserProject);
 
 export default router;

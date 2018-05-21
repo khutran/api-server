@@ -10,6 +10,7 @@ import hasPermission from '../../../midlewares/PermissionMiddleware';
 import Permission from '../../../app/Configs/AvailablePermissions';
 import AuthMiddleware from '../../../midlewares/AuthMiddleware';
 import BuildTransformer from '../../../app/Transformers/BuildTransformer';
+import Error from '../../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 router.all('*', AuthMiddleware);
@@ -32,11 +33,15 @@ async function getProjectBuild(req, res) {
 
     const build = await result.getBuild();
     if (!build) {
-      throw new Error('Project not craete Build', 1000);
+      throw new Error('Project not craete Build', 204);
     }
     res.json(ApiResponse.item(build, new BuildTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -59,20 +64,24 @@ async function addProjectBuild(req, res) {
     const result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Project not found', 1000);
+      throw new Error('Project not found', 204);
     }
 
     let build = await result.getBuild();
 
     if (!_.isNil(build)) {
-      throw new Error('Project build already', 1000);
+      throw new Error('Project build already', 208);
     }
 
     build = await result.createBuild(b);
 
     res.json(ApiResponse.item(build, new BuildTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -101,20 +110,24 @@ async function updateProjectBuild(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Project not found', 1000);
+      throw new Error('Project not found', 204);
     }
 
     let build = await result.getBuild();
 
     if (_.isNil(build)) {
-      throw new Error('Project not create build', 1000);
+      throw new Error('Project not create build', 500);
     }
 
     build = await build.update(b);
 
     res.json(ApiResponse.item(build, new BuildTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -129,13 +142,17 @@ async function deleteProjectBuild(req, res) {
     let build = await result.getBuild();
 
     if (!build) {
-      throw new Error('Project not found', 1000);
+      throw new Error('Project not found', 204);
     }
 
     await build.destroy();
     res.json(ApiResponse.success());
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -165,13 +182,13 @@ async function getAllProject(req, res) {
 
     let result = await repository.paginate(per_page, page);
 
-    if (_.isEmpty(result.items)) {
-      throw new Error('not project found', 1000);
-    }
-
     res.json(ApiResponse.paginate(result, new ProjectTransformer(['status'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 async function getProjectById(req, res) {
@@ -181,12 +198,16 @@ async function getProjectById(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Project Not Found', 1000);
+      throw new Error('Project Not Found', 204);
     }
 
     res.json(ApiResponse.item(result, new ProjectTransformer(['build', 'status'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -204,17 +225,21 @@ async function createProject(req, res) {
     let result = await repository.where('name', data.name).first();
 
     if (result) {
-      throw new Error('Project exists', 1000);
+      throw new Error('Project exists', 208);
     }
 
     result = await repository.create(data);
     if (!result) {
-      throw new Error('Create Project false', 1000);
+      throw new Error('Create Project false', 500);
     }
     await result.reload();
     res.json(ApiResponse.item(result, new ProjectTransformer(['status'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -232,7 +257,7 @@ async function updateProject(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Project not found', 1000);
+      throw new Error('Project not found', 204);
     }
 
     _.mapKeys(data, (value, key) => {
@@ -245,13 +270,17 @@ async function updateProject(req, res) {
 
     for (let i in data) {
       if (!_.isEqual(data[i], result[i])) {
-        throw new Error('Updata false', 1000);
+        throw new Error('Updata false', 500);
       }
     }
     await result.reload();
     res.json(ApiResponse.item(result, new ProjectTransformer(['status'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -262,18 +291,22 @@ async function deleteProject(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Project Not found', 1000);
+      throw new Error('Project Not found', 204);
     }
 
     result = await result.destroy();
 
     if (result === 0) {
-      throw new Error('Delete Project false', 1000);
+      throw new Error('Delete Project false', 500);
     }
 
     res.json(ApiResponse.success());
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 

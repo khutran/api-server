@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Exception } from '../Exceptions/Exception';
+import customsError from '../Exceptions/customsError';
 import { LengthAwarePaginator } from '../Utils/LengthAwarePaginator';
 import { QueryBuilder } from '../Utils/QueryBuilder';
 
@@ -18,7 +18,7 @@ export class Repository {
    */
   async updateOrCreate(attributes, values) {
     if (_.isNil(attributes)) {
-      throw new Error('attributes should not empty', 1000);
+      throw new customsError('attributes should not empty', 500);
     }
 
     let item = await this.Models().findOne({
@@ -44,7 +44,7 @@ export class Repository {
    */
   async create(attributes) {
     if (_.isNil(attributes)) {
-      throw new Error('attributes should not empty', 1000);
+      throw new customsError('attributes should not empty', 500);
     }
 
     let result = await this.Models().sequelize.transaction(
@@ -107,7 +107,7 @@ export class Repository {
   async findById(id) {
     let item = await this.Models().findById(id);
     if (_.isNil(item)) {
-      throw new Exception(`can not find the id ${id}`, 1001);
+      throw new customsError(`can not find the id ${id}`, 204);
     }
     return item;
   }
@@ -124,7 +124,7 @@ export class Repository {
     let item = await this.findById(id);
     let result = await item.destroy();
     if (result === false) {
-      throw new Exception('can not delete resource', 1002);
+      throw new customsError('can not delete resource', 500);
     }
     return result;
   }
@@ -137,7 +137,7 @@ export class Repository {
    */
   async delete() {
     if (!_.isArray(this.getWheres()) || this.getWheres().length === 0) {
-      throw new Exception('can not delete resources without condition', 1000);
+      throw new customsError('can not delete resources without condition', 500);
     }
 
     let result = await this.Models().destroy({

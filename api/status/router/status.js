@@ -8,8 +8,11 @@ import ApiResponse from '../../../app/Responses/ApiResponse';
 import StatusTransformer from '../../../app/Transformers/StatusTransformer';
 import hasPermission from '../../../midlewares/PermissionMiddleware';
 import Permission from '../../../app/Configs/AvailablePermissions';
+import AuthMiddleware from '../../../midlewares/AuthMiddleware';
+import Error from '../../../app/Exceptions/CustomsError';
 
 let router = express.Router();
+router.all('*', AuthMiddleware);
 
 router.get('/', hasPermission.bind(Permission.ADMIN_VIEW), asyncMiddleware(getAllStatus));
 router.get('/:id', hasPermission.bind(Permission.ADMIN_VIEW), asyncMiddleware(getStatusById));
@@ -45,6 +48,7 @@ async function getAllStatus(req, res) {
 
     res.json(ApiResponse.paginate(result, new StatusTransformer()));
   } catch (e) {
+    console.log(e);
     throw new Exception(e.message, 1000);
   }
 }

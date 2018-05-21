@@ -11,6 +11,7 @@ import AuthMiddleware from '../../../midlewares/AuthMiddleware';
 import ProjectRepository from '../../../app/Repositories/ProjectRepository';
 import hasPermission from '../../../midlewares/PermissionMiddleware';
 import Permission from '../../../app/Configs/AvailablePermissions';
+import Error from '../../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 
@@ -44,7 +45,11 @@ async function addRole(req, res) {
     await user.reload();
     res.json(ApiResponse.item(user, new UserTransformer(['roles'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -67,7 +72,11 @@ async function updateRole(req, res) {
     await user.reload();
     res.json(ApiResponse.item(user, new UserTransformer(['roles'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -82,7 +91,11 @@ async function profile(req, res) {
 
     res.json(ApiResponse.item(me, new UserTransformer(['projects', 'roles'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -115,7 +128,11 @@ async function getAllUser(req, res) {
 
     res.json(ApiResponse.paginate(result, new UserTransformer(['projects'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 async function getUserById(req, res) {
@@ -129,11 +146,15 @@ async function getUserById(req, res) {
       .first();
 
     if (!result) {
-      throw new Error('User Not Found', 1000);
+      throw new Error('User Not Found', 204);
     }
     res.json(ApiResponse.item(result, new UserTransformer(['projects', 'roles'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -152,17 +173,21 @@ async function createUser(req, res) {
     let result = await repository.where('email', data.email).first();
 
     if (result) {
-      throw new Error('User exists', 1000);
+      throw new Error('User exists', 208);
     }
 
     result = await repository.create(data);
     if (!result) {
-      throw new Error('Create User false', 1000);
+      throw new Error('Create User false', 500);
     }
 
     res.json(ApiResponse.item(result, new UserTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -180,7 +205,7 @@ async function updateUser(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('User not found', 1000);
+      throw new Error('User not found', 204);
     }
 
     _.mapKeys(data, (value, key) => {
@@ -193,13 +218,17 @@ async function updateUser(req, res) {
 
     for (let i in data) {
       if (!_.isEqual(data[i], result[i])) {
-        throw new Error('Updata false', 1000);
+        throw new Error('Updata false', 500);
       }
     }
 
     res.json(ApiResponse.item(result, new UserTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -211,18 +240,22 @@ async function deleteUser(req, res) {
     let user = await repository.findById(id);
 
     if (!user) {
-      throw new Error('User Not found', 1000);
+      throw new Error('User Not found', 204);
     }
 
     user = await user.destroy();
 
     if (user === 0) {
-      throw new Error('Delete User false', 1000);
+      throw new Error('Delete User false', 500);
     }
 
     res.json(ApiResponse.success());
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -244,7 +277,11 @@ async function addProject(req, res) {
     await user.reload();
     res.json(ApiResponse.item(user, new UserTransformer(['projects'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -266,7 +303,11 @@ async function deleteProject(req, res) {
     await user.reload();
     res.json(ApiResponse.item(user, new UserTransformer(['projects'])));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 

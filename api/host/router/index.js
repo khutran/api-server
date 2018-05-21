@@ -1,7 +1,6 @@
-import express from "express";
+import express from 'express';
+import ApiServer from './host';
 let router = express.Router();
-import ApiServer from "./host";
-
 router.use('/host', ApiServer);
 
 export default router;

@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Hosts.associate = models => {
-    Hosts.hasMany(models.host_sshkey);
-  };
+  // Hosts.associate = models => {
+
+  // };
 
   return Hosts;
 };

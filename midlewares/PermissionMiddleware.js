@@ -6,6 +6,10 @@ async function hasPermission(req, res, next) {
   let user = singleton.getUserLogin(req.me);
   let bool = false;
 
+  if (!user.roles) {
+    res.status(500);
+    res.json({ message: 'Permission denied', error_code: 203 });
+  }
   _.forEach(user.roles, item => {
     if (item.permissions.indexOf(this) > -1 || item.id === 1) {
       bool = true;

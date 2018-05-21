@@ -9,6 +9,7 @@ import HostTransformer from '../../../app/Transformers/HostTransformer';
 import hasPermission from '../../../midlewares/PermissionMiddleware';
 import Permission from '../../../app/Configs/AvailablePermissions';
 import AuthMiddleware from '../../../midlewares/AuthMiddleware';
+import Error from '../../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 
@@ -47,7 +48,11 @@ async function getAllServer(req, res) {
     let result = await repository.paginate(per_page, page);
     res.json(ApiResponse.paginate(result, new HostTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -58,12 +63,16 @@ async function getServerById(req, res) {
     let result = await repository.where('id', id).first();
 
     if (!result) {
-      throw new Error('Host Not Found', 1000);
+      throw new Error('Host Not Found', 204);
     }
 
     res.json(ApiResponse.item(result, new HostTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -79,76 +88,23 @@ async function createServer(req, res) {
     let result = await repository.where('name', data.name).first();
 
     if (result) {
-      throw new Error('Hosts exists', 1000);
+      throw new Error('Hosts exists', 208);
     }
 
     result = await repository.create(data);
     if (!result) {
-      throw new Error('Create Hosts false', 1000);
+      throw new Error('Create Hosts false', 500);
     }
 
     res.json(ApiResponse.item(result, new HostTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
-
-// async function addSshKey(req, res) {
-//     try {
-//         let id = req.params.id;
-//         let ssh_key = req.body.ssh_key;
-
-//         let data = {
-//             host_id: id,
-//             ssh_key: ssh_key
-//         };
-
-//         let repository = new HostRepository();
-//         let host = await repository
-//             .with('host_sshkey')
-//             .where('id', id)
-//             .first();
-
-//         if (!host) {
-//             throw new Error('Host not found', 1000);
-//         }
-//         let sshkey = await host.createHost_sshkey(data);
-
-//         res.json(ApiResponse.item(sshkey, new HostSshKeyTransformer()));
-//     } catch (e) {
-//         throw new Exception(e.message, 1000);
-//     }
-// }
-
-// async function deleteSshKey(req, res) {
-//     try {
-//         let id = req.params.id;
-//         let ssh_key_id = req.body.ssh_key_id;
-
-//         let repository = new HostRepository();
-//         let host = await repository
-//             .with('host_sshkey')
-//             .where('id', id)
-//             .first();
-
-//         if (!host) {
-//             throw new Error('Host not found', 1000);
-//         }
-//         let sshkey = await host.getHost_sshkeys({
-//             where: { id: ssh_key_id }
-//         });
-
-//         if (!sshkey[0]) {
-//             throw new Error('Host not exists sshkey', 1000);
-//         }
-
-//         let result = await sshkey[0].destroy();
-
-//         res.json(ApiResponse.success());
-//     } catch (e) {
-//         throw new Exception(e.message, 1000);
-//     }
-// }
 
 async function updateServer(req, res) {
   try {
@@ -162,7 +118,7 @@ async function updateServer(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Hosts not found', 1000);
+      throw new Error('Hosts not found', 204);
     }
 
     _.mapKeys(data, (value, key) => {
@@ -175,13 +131,17 @@ async function updateServer(req, res) {
 
     for (let i in data) {
       if (!_.isEqual(data[i], result[i])) {
-        throw new Error('Updata false', 1000);
+        throw new Error('Updata false', 500);
       }
     }
 
     res.json(ApiResponse.item(result, new HostTransformer()));
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
@@ -192,18 +152,22 @@ async function deleteServer(req, res) {
     let result = await repository.findById(id);
 
     if (!result) {
-      throw new Error('Hosts Not found', 1000);
+      throw new Error('Hosts Not found', 204);
     }
 
     result = await result.destroy();
 
     if (result === 0) {
-      throw new Error('Delete Hosts false', 1000);
+      throw new Error('Delete Hosts false', 500);
     }
 
     res.json(ApiResponse.success());
   } catch (e) {
-    throw new Exception(e.message, 1000);
+    if (!e.error_code) {
+      throw new Exception(e.message, 500);
+    } else {
+      throw new Exception(e.message, e.error_code);
+    }
   }
 }
 
