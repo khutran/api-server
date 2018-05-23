@@ -4,6 +4,7 @@ module.exports = {
         return queryInterface.bulkInsert("hosts", [{
                 name: 'aaaaautopushsqlaa.vicoders.com',
                 ip: '192.168.10.30',
+                address_mysql: 'localhost',
                 created_at: new Date(),
                 updated_at: new Date()
             }

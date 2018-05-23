@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       project_id: DataTypes.INTEGER,
       host_id: DataTypes.INTEGER,
+      database: DataTypes.TEXT,
       git: DataTypes.TEXT,
       git_branch: DataTypes.TEXT,
       git_key: DataTypes.TEXT,

@@ -27,6 +27,12 @@ module.exports = {
                     notEmpty: true,
                 }
             },
+            database : {
+              type: Sequelize.TEXT,
+              validate: {
+                  notEmpty: true,
+              }
+            },
             git: {
               type: Sequelize.TEXT,
               validate: {

@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     'host',
     {
       name: DataTypes.STRING,
+      address_mysql: DataTypes.STRING,
       ip: DataTypes.TEXT
     },
     {
