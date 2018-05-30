@@ -120,7 +120,7 @@ async function updateProjectBuild(req, res) {
     }
 
     build = await build.update(b);
-
+    build.reload();
     res.json(ApiResponse.item(build, new BuildTransformer()));
   } catch (e) {
     if (!e.error_code) {

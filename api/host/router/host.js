@@ -80,7 +80,8 @@ async function createServer(req, res) {
   try {
     let data = {
       name: req.body.name,
-      ip: req.body.ip
+      ip: req.body.ip,
+      address_mysql: req.body.address_mysql
     };
 
     let repository = new HostRepository();
@@ -111,7 +112,8 @@ async function updateServer(req, res) {
     let id = req.params.id;
     let data = {
       name: req.body.name,
-      ip: req.body.ip
+      ip: req.body.ip,
+      address_mysql: req.body.address_mysql
     };
 
     let repository = new HostRepository();
