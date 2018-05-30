@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "MULTI_THREAD=true PORT=3000 ENV=production node ./bin/www",
+    "start": "MULTI_THREAD=true PORT=3050 ENV=production node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1",
     "devstart": "nodemon ./node_modules/.bin/babel-node ./bin/www",
     "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log,error_code.md,README.md,app.test.js --copy-files"
