@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import customsError from '../Exceptions/customsError';
+import customsError from '../Exceptions/CustomsError';
 import { LengthAwarePaginator } from '../Utils/LengthAwarePaginator';
 import { QueryBuilder } from '../Utils/QueryBuilder';
 
