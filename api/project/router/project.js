@@ -196,7 +196,6 @@ async function getProjectById(req, res) {
     let id = req.params.id;
     let repository = new ProjectRepository();
     let result = await repository.findById(id);
-
     if (!result) {
       throw new Error('Project Not Found', 204);
     }
