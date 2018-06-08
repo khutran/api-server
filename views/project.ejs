@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Command</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/angular/angular.js"></script>
+    <script src="/lodash/lodash.js"></script>
+    <script src="/assets/angularjs/app-project.js"></script>
+    <script src="/assets/js/web/jquery.min.js"></script>
+    <script src="/assets/js/web/bootstrap.min.js"></script>
+    <script src="/assets/js/web/fontawesome-all.min.js"></script>
+    <script src="/assets/js/web/main.js"></script>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <script type="text/javascript">
+    var project_id = `<%= project_id %>`;
+    var user_id = `<%= user_id %>`;
+    </script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="home">
+                    <a href=""><img src="/assets/images/home.png" alt=""> Home</a>
+                    <form action="" class="search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="search">
+                    </form>
+                </div>
+                <div class="account">
+                    <span>Hi, <%= name%></span>
+                    <a href="/logout"><img src="/assets/images/icon-logout.png" alt="">Log out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="content" ng-app="moduleProject" ng-controller="controllerProject">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 col-lg-9 col-md-6 col-sm-12 col-12 page-content single-project-content">
+                    <div class="page-title">
+                        <h1>Project : {{infoProject.name}}</h1>
+                    </div>
+                    <div class="show-log">
+                        <div class="header-log">
+                            <div class="project-framework">
+                                Framework : {{infoProject.framework}}
+                            </div>
+                            <div class="project-auto-action">
+                                <form action="">
+                                    <select name="" id="">
+                                        <option value="autobuild1"><img src="/assets/images/status2.png" alt=""> Auto-build</option>
+                                        <option value="autobuild2"><img src="/assets/images/status2.png" alt="">Auto-build 2</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="content-log">
+                            
+                            <!-- Content log here -->
+                        </div>
+                    </div>
+                    <div class="project-action">
+                        <button>Show log</button>
+                        <button>Build project</button>
+                        <button>Download Database</button>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 list-projects">
+                    <div class="sidebar-title">
+                        <h2>List project</h2>
+                    </div>
+                    <ul ng-repeat="item in projects">
+                        <li><a href="/project/{{item.id}}">{{item.name}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
