@@ -217,7 +217,7 @@ async function updateUser(req, res) {
     result = await result.update(data);
 
     for (let i in data) {
-      if (!_.isEqual(data[i], result[i])) {
+      if (!_.isEqual(data[i], result[i]) && i !== 'password') {
         throw new Error('Updata false', 500);
       }
     }
