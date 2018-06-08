@@ -288,7 +288,7 @@ async function addProject(req, res) {
 async function deleteProject(req, res) {
   try {
     let user_id = req.params.id;
-    let project_id = req.body.project_id;
+    let project_id = req.query.project_id;
 
     let repositoryUser = new UserRepository();
     let repositoryProject = new ProjectRepository();
