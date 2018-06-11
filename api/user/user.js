@@ -1,17 +1,17 @@
 import * as _ from 'lodash';
 import express from 'express';
-import { Exception } from '../../../app/Exceptions/Exception';
-import UserRepository from '../../../app/Repositories/UserRepository';
-import { asyncMiddleware } from '../../../midlewares/AsyncMiddleware';
-import { Request } from '../../../app/Request';
-import ApiResponse from '../../../app/Responses/ApiResponse';
-import UserTransformer from '../../../app/Transformers/UserTransformer';
-import RoleRepository from '../../../app/Repositories/RoleRepository';
-import AuthMiddleware from '../../../midlewares/AuthMiddleware';
-import ProjectRepository from '../../../app/Repositories/ProjectRepository';
-import hasPermission from '../../../midlewares/PermissionMiddleware';
-import Permission from '../../../app/Configs/AvailablePermissions';
-import Error from '../../../app/Exceptions/CustomsError';
+import { Exception } from '../../app/Exceptions/Exception';
+import UserRepository from '../../app/Repositories/UserRepository';
+import { asyncMiddleware } from '../../midlewares/AsyncMiddleware';
+import { Request } from '../../app/Request';
+import ApiResponse from '../../app/Responses/ApiResponse';
+import UserTransformer from '../../app/Transformers/UserTransformer';
+import RoleRepository from '../../app/Repositories/RoleRepository';
+import AuthMiddleware from '../../midlewares/AuthMiddleware';
+import ProjectRepository from '../../app/Repositories/ProjectRepository';
+import hasPermission from '../../midlewares/PermissionMiddleware';
+import Permission from '../../app/Configs/AvailablePermissions';
+import Error from '../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 
@@ -148,6 +148,7 @@ async function getUserById(req, res) {
     if (!result) {
       throw new Error('User Not Found', 204);
     }
+    console.log(result.projects);
     res.json(ApiResponse.item(result, new UserTransformer(['projects', 'roles'])));
   } catch (e) {
     if (!e.error_code) {

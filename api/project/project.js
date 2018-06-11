@@ -1,16 +1,16 @@
 import * as _ from 'lodash';
 import express from 'express';
-import { Exception } from '../../../app/Exceptions/Exception';
-import ProjectRepository from '../../../app/Repositories/ProjectRepository';
-import { asyncMiddleware } from '../../../midlewares/AsyncMiddleware';
-import { Request } from '../../../app/Request';
-import ApiResponse from '../../../app/Responses/ApiResponse';
-import ProjectTransformer from '../../../app/Transformers/ProjectTransformer';
-import hasPermission from '../../../midlewares/PermissionMiddleware';
-import Permission from '../../../app/Configs/AvailablePermissions';
-import AuthMiddleware from '../../../midlewares/AuthMiddleware';
-import BuildTransformer from '../../../app/Transformers/BuildTransformer';
-import Error from '../../../app/Exceptions/CustomsError';
+import { Exception } from '../../app/Exceptions/Exception';
+import ProjectRepository from '../../app/Repositories/ProjectRepository';
+import { asyncMiddleware } from '../../midlewares/AsyncMiddleware';
+import { Request } from '../../app/Request';
+import ApiResponse from '../../app/Responses/ApiResponse';
+import ProjectTransformer from '../../app/Transformers/ProjectTransformer';
+import hasPermission from '../../midlewares/PermissionMiddleware';
+import Permission from '../../app/Configs/AvailablePermissions';
+import AuthMiddleware from '../../midlewares/AuthMiddleware';
+import BuildTransformer from '../../app/Transformers/BuildTransformer';
+import Error from '../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 router.all('*', AuthMiddleware);
@@ -175,14 +175,13 @@ async function getAllProject(req, res) {
     }
 
     if (!_.isNil(query['search'])) {
-      _.forEach(['name', 'categories', 'framework'], field => {
+      _.forEach(['name'], field => {
         repository.orWhere(field, 'like', query['search']);
       });
     }
 
     let result = await repository.paginate(per_page, page);
-
-    res.json(ApiResponse.paginate(result, new ProjectTransformer(['status'])));
+    res.json(ApiResponse.paginate(result, new ProjectTransformer(['status', 'build', 'framework', 'csdl', 'categories'])));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);
@@ -199,8 +198,7 @@ async function getProjectById(req, res) {
     if (!result) {
       throw new Error('Project Not Found', 204);
     }
-
-    res.json(ApiResponse.item(result, new ProjectTransformer(['build', 'status'])));
+    res.json(ApiResponse.item(result, new ProjectTransformer(['status', 'build', 'framework', 'csdl', 'categories'])));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);
@@ -214,8 +212,9 @@ async function createProject(req, res) {
   try {
     let data = {
       name: req.body.name,
-      categories: req.body.categories,
-      framework: req.body.framework,
+      category_id: req.body.category_id,
+      framework_id: req.body.framework_id,
+      csdl_id: req.body.csdl_id,
       status_id: req.body.status_id
     };
 
@@ -227,12 +226,12 @@ async function createProject(req, res) {
       throw new Error('Project exists', 208);
     }
 
-    result = await repository.create(data);
-    if (!result) {
+    let item = await repository.create(data);
+    if (!item) {
       throw new Error('Create Project false', 500);
     }
-    await result.reload();
-    res.json(ApiResponse.item(result, new ProjectTransformer(['status'])));
+    await item.reload();
+    res.json(ApiResponse.item(item, new ProjectTransformer(['status', 'build', 'framework', 'csdl'])));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);
@@ -247,8 +246,9 @@ async function updateProject(req, res) {
     let id = req.params.id;
     let data = {
       name: req.body.name,
-      categories: req.body.categories,
-      framework: req.body.framework,
+      category_id: req.body.category_id,
+      framework_id: req.body.framework_id,
+      csdl_id: req.body.csdl_id,
       status_id: req.body.status_id
     };
 
@@ -273,7 +273,7 @@ async function updateProject(req, res) {
       }
     }
     await result.reload();
-    res.json(ApiResponse.item(result, new ProjectTransformer(['status'])));
+    res.json(ApiResponse.item(result, new ProjectTransformer(['status', 'build', 'framework', 'csdl'])));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);

@@ -1,15 +1,15 @@
 import * as _ from 'lodash';
 import express from 'express';
-import { Exception } from '../../../app/Exceptions/Exception';
-import StatusRepository from '../../../app/Repositories/StatusRepository';
-import { asyncMiddleware } from '../../../midlewares/AsyncMiddleware';
-import { Request } from '../../../app/Request';
-import ApiResponse from '../../../app/Responses/ApiResponse';
-import StatusTransformer from '../../../app/Transformers/StatusTransformer';
-import hasPermission from '../../../midlewares/PermissionMiddleware';
-import Permission from '../../../app/Configs/AvailablePermissions';
-import AuthMiddleware from '../../../midlewares/AuthMiddleware';
-import Error from '../../../app/Exceptions/CustomsError';
+import { Exception } from '../../app/Exceptions/Exception';
+import StatusRepository from '../../app/Repositories/StatusRepository';
+import { asyncMiddleware } from '../../midlewares/AsyncMiddleware';
+import { Request } from '../../app/Request';
+import ApiResponse from '../../app/Responses/ApiResponse';
+import StatusTransformer from '../../app/Transformers/StatusTransformer';
+import hasPermission from '../../midlewares/PermissionMiddleware';
+import Permission from '../../app/Configs/AvailablePermissions';
+import AuthMiddleware from '../../midlewares/AuthMiddleware';
+import Error from '../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 router.all('*', AuthMiddleware);

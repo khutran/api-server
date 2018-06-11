@@ -1,13 +1,13 @@
 import express from 'express';
-import { Exception } from '../../../app/Exceptions/Exception';
-import UserProjectRepository from '../../../app/Repositories/UserProjectRepository';
-import { asyncMiddleware } from '../../../midlewares/AsyncMiddleware';
-import ApiResponse from '../../../app/Responses/ApiResponse';
-import UserProjectTransformer from '../../../app/Transformers/UserProjectTransformer';
-import AuthMiddleware from '../../../midlewares/AuthMiddleware';
-import hasPermission from '../../../midlewares/PermissionMiddleware';
-import Permission from '../../../app/Configs/AvailablePermissions';
-import Error from '../../../app/Exceptions/CustomsError';
+import { Exception } from '../../app/Exceptions/Exception';
+import UserProjectRepository from '../../app/Repositories/UserProjectRepository';
+import { asyncMiddleware } from '../../midlewares/AsyncMiddleware';
+import ApiResponse from '../../app/Responses/ApiResponse';
+import UserProjectTransformer from '../../app/Transformers/UserProjectTransformer';
+import AuthMiddleware from '../../midlewares/AuthMiddleware';
+import hasPermission from '../../midlewares/PermissionMiddleware';
+import Permission from '../../app/Configs/AvailablePermissions';
+import Error from '../../app/Exceptions/CustomsError';
 
 let router = express.Router();
 

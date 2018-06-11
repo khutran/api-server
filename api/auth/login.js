@@ -2,11 +2,11 @@ import * as _ from 'lodash';
 import express from 'express';
 import bcrypt from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
-import { Exception } from '../../../app/Exceptions/Exception';
-import Error from '../../../app/Exceptions/CustomsError';
-import UserRepository from '../../../app/Repositories/UserRepository';
-import { asyncMiddleware } from '../../../midlewares/AsyncMiddleware';
-import SingletonService from '../../../app/Services/SingletonService';
+import { Exception } from '../../app/Exceptions/Exception';
+import Error from '../../app/Exceptions/CustomsError';
+import UserRepository from '../../app/Repositories/UserRepository';
+import { asyncMiddleware } from '../../midlewares/AsyncMiddleware';
+import SingletonService from '../../app/Services/SingletonService';
 import moment from 'moment';
 
 let router = express.Router();

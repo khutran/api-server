@@ -1,7 +1,7 @@
 import express from 'express';
-let router = express.Router();
 import ApiUserProject from './user_project';
 
+let router = express.Router();
 router.use('/user', ApiUserProject);
 
 export default router;
