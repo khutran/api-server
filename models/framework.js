@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       csdl: DataTypes.BOOLEAN,
-      package_manager : DataTypes.STRING
+      package_manager : DataTypes.STRING,
+      content_config: DataTypes.JSON
     },
     {
       underscored: true,
