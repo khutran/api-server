@@ -9,6 +9,7 @@ import RouterUserProject from './user_project';
 import RouterFramework from './framework';
 import RouterCsdl from './csdl';
 import RouterCategories from './categories';
+import RouterCloudflare from './cloudflare';
 
 let router = express.Router();
 
@@ -22,5 +23,6 @@ router.use('/api', RouterUserProject);
 router.use('/api', RouterFramework);
 router.use('/api', RouterCsdl);
 router.use('/api', RouterCategories);
+router.use('/api', RouterCloudflare);
 
 export default router;
