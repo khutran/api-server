@@ -33,9 +33,9 @@ async function getDetailsOfDns(req, res) {
 
     let data = await axios.get(`https://api.cloudflare.com/client/v4/zones/${zones_id}/dns_records?name=${name}`, config);
 
-    if (_.isEmpty(data.data.result)) {
-      throw new Error('detail not found', 204);
-    }
+    // if (_.isEmpty(data.data.result)) {
+    //   throw new Error('detail not found', 204);
+    // }
 
     res.json({ data: data.data.result });
   } catch (e) {
