@@ -25,13 +25,13 @@ module.exports = {
           len: [1, 255]
         }
       },
-      csdl : {
-        type : Sequelize.BOOLEAN,
+      csdl: {
+        type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue : true
+        defaultValue: true
       },
-      package_manager : {
-        type : Sequelize.STRING,
+      package_manager: {
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
           isEmail: true,

@@ -1,0 +1,36 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./
+    volumes:
+      - ./:/var/www/app/
+  database:
+    image: mysql/mysql-server:5.7.22
+    # command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: viwebsite_server_api
+      MYSQL_DATABASE: viwebsite_server_api_db
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - ./.docker/viwebsite_server_api_db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: secret
+    ports:
+      - "4402:80"
+  nginx:
+    image: nginx:1.15
+    ports:
+      - "4400:4400"
+    volumes:
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    restart: always
+volumes:
+  viwebsite_server_api_db:
