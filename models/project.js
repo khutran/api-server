@@ -5,7 +5,10 @@ module.exports = (sequelize, DataTypes) => {
     'project',
     {
       name: DataTypes.STRING,
-      category_id: DataTypes.INTEGER,
+      category_id: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      },
       framework_id: DataTypes.INTEGER,
       csdl_id: DataTypes.INTEGER,
       status_id: DataTypes.INTEGER

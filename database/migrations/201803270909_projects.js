@@ -19,14 +19,6 @@ module.exports = {
           len: [1, 255]
         }
       },
-      categories: {
-        type: Sequelize.TEXT,
-        allowNull: false
-      },
-      framework: {
-        type: Sequelize.TEXT,
-        allowNull: false
-      },
       status_id: {
         type: Sequelize.INTEGER
       },
