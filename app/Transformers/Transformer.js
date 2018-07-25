@@ -15,21 +15,16 @@ export default class Transformer {
 
   collection(collection, transformer) {
     if (!_.isArray(collection)) {
-      return null;
+      return [];
     }
-    let data = _.map(collection, i => {
+    const data = _.map(collection, i => {
       return transformer.get(i);
     });
     return { data: data };
   }
 
-  obj(obj, transformer) {
-    let data = transformer.get(obj);
-    return { data: data };
-  }
-
   get(model) {
-    let data = this.transform(model);
+    const data = this.transform(model);
     if (this.includes.length > 0) {
       _.forEach(this.includes, include => {
         let f = _.camelCase(`include_${include}`);
@@ -40,5 +35,10 @@ export default class Transformer {
       });
     }
     return data;
+  }
+
+  with(include) {
+    this.includes.push(include);
+    return this;
   }
 }

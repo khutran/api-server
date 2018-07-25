@@ -1,27 +1,17 @@
-import * as _ from 'lodash';
-import SingletonService from '../app/Services/SingletonService';
+import { Auth } from '../app/Services/Facades/Auth';
 
-async function hasPermission(req, res, next) {
-  const singleton = new SingletonService();
-  let user = singleton.getUserLogin(req.me);
-  let bool = false;
-
-  if (!user.roles) {
-    res.status(500);
-    res.json({ message: 'Permission denied', error_code: 203 });
-  }
-  _.forEach(user.roles, item => {
-    if (item.permissions.indexOf(this) > -1 || item.id === 1) {
-      bool = true;
-    }
-  });
-
-  if (bool === true) {
-    next();
-  } else {
-    res.status(500);
-    res.json({ message: 'Permission denied', error_code: 203 });
-  }
-}
+const hasPermission = function(req, res, next) {
+  Auth.user()
+    .can(this)
+    .then(result => {
+      if (result) {
+        next();
+      }
+    })
+    .catch(e => {
+      res.status(500);
+      res.json(e);
+    });
+};
 
 export default hasPermission;
