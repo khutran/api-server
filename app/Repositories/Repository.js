@@ -260,7 +260,7 @@ export class Repository {
       if (Request.has('per_page')) {
         per_page = parseInt(Request.get('per_page'));
       } else {
-        per_page = 10;
+        per_page = 20;
       }
     }
     if (!_.isNil(page)) {

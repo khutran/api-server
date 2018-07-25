@@ -20,7 +20,7 @@ router.delete('/:id', AsyncMiddleware(destroy));
 async function index(req, res) {
   const repository = new ProjectRepository();
   repository.applyConstraintsFromRequest();
-  repository.applySearchFromRequest(['seller_email']);
+  repository.applySearchFromRequest(['name', 'database', 'git_remote', 'git_branch', 'git_application_key', 'git_application_secret']);
   repository.applyOrderFromRequest();
   const result = await repository.paginate();
   res.json(ApiResponse.paginate(result, new ProjectTransformer(['status', 'host', 'framework', 'csdl', 'categories'])));
