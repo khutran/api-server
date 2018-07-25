@@ -1,9 +1,9 @@
 import Transformer from './Transformer';
+import HostTransformer from './HostTransformer';
 
-export default class HostTransformer extends Transformer {
+export default class BuildTransformer extends Transformer {
   transform(model) {
     return {
-      host: model.host,
       git: model.git,
       git_branch: model.git_branch,
       git_key: model.git_key,
@@ -12,5 +12,9 @@ export default class HostTransformer extends Transformer {
       backup: model.backup,
       last_build: model.last_build
     };
+  }
+
+  includeHost(model) {
+    return this.item(model.host, new HostTransformer());
   }
 }

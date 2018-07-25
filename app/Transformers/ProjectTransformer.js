@@ -25,7 +25,7 @@ export default class ProjectTransformer extends Transformer {
   }
 
   includeBuild(model) {
-    return this.item(model.build, new BuildTransformer());
+    return this.item(model.build, new BuildTransformer(['host']));
   }
 
   includeCsdl(model) {
