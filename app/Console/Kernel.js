@@ -6,6 +6,7 @@ import MakeModelCommand from './Commands/MakeModelCommand';
 import MakeRepositoryCommand from './Commands/MakeRepositoryCommand';
 import MakeTransformerCommand from './Commands/MakeTransformerCommand';
 import CreateRouterCommand from './Commands/CreateRouterCommand';
+import UpdateProjectTableDataCommand from './Commands/UpdateProjectTableDataCommand';
 
 export class Kernel {
   commands() {
@@ -17,7 +18,8 @@ export class Kernel {
       MakeModelCommand,
       MakeRepositoryCommand,
       MakeTransformerCommand,
-      CreateRouterCommand
+      CreateRouterCommand,
+      UpdateProjectTableDataCommand
     ];
   }
 }

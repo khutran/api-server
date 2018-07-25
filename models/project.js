@@ -9,9 +9,63 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0
       },
-      framework_id: DataTypes.INTEGER,
-      csdl_id: DataTypes.INTEGER,
-      status_id: DataTypes.INTEGER
+      framework_id: {
+        type: DataTypes.INTEGER
+      },
+      csdl_id: {
+        type: DataTypes.INTEGER
+      },
+      status_id: {
+        type: DataTypes.INTEGER
+      },
+      host_id: {
+        type: DataTypes.INTEGER,
+        validate: {
+          notEmpty: true
+        }
+      },
+      database: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true
+        }
+      },
+      git_remote: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true
+        }
+      },
+      git_branch: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true
+        }
+      },
+      git_application_key: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true
+        }
+      },
+      git_application_secret: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true
+        }
+      },
+      build_automatically: {
+        type: DataTypes.BOOLEAN,
+        validate: {
+          notEmpty: true
+        }
+      },
+      backup: {
+        type: DataTypes.BOOLEAN,
+        validate: {
+          notEmpty: true
+        }
+      }
     },
     {
       underscored: true
@@ -22,6 +76,7 @@ module.exports = (sequelize, DataTypes) => {
   Project.associate = models => {
     Project.belongsTo(models.status);
     Project.hasOne(models.build);
+    Project.belongsTo(models.host);
     Project.belongsTo(models.framework);
     Project.belongsTo(models.csdl);
     Project.belongsTo(models.categories, { foreignKey: 'category_id' });
@@ -29,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
     Project.addScope(
       'defaultScope',
       {
-        include: [{ model: models.status }, { model: models.build }, { model: models.framework }, { model: models.csdl }, { model: models.categories }]
+        include: [{ model: models.status }, { model: models.host }, { model: models.framework }, { model: models.csdl }, { model: models.categories }]
       },
       { override: true }
     );

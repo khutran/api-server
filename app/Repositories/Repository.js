@@ -78,7 +78,7 @@ export class Repository {
         where: this.getWheres()
       });
     } else {
-      const item = this.findById(id);
+      const item = await this.findById(id);
       result = await item.update(attributes);
     }
     return result;

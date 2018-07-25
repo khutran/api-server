@@ -23,14 +23,14 @@ async function index(req, res) {
   repository.applySearchFromRequest(['seller_email']);
   repository.applyOrderFromRequest();
   const result = await repository.paginate();
-  res.json(ApiResponse.paginate(result, new ProjectTransformer(['status', 'build', 'framework', 'csdl', 'categories'])));
+  res.json(ApiResponse.paginate(result, new ProjectTransformer(['status', 'host', 'framework', 'csdl', 'categories'])));
 }
 
 async function show(req, res) {
   const id = req.params.id;
   const repository = new ProjectRepository();
   const result = await repository.findById(id);
-  res.json(ApiResponse.item(result, new ProjectTransformer(['status', 'build', 'framework', 'csdl', 'categories'])));
+  res.json(ApiResponse.item(result, new ProjectTransformer(['status', 'host', 'framework', 'csdl', 'categories'])));
 }
 
 async function create(req, res) {
