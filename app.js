@@ -4,37 +4,47 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import AppRouter from './api';
-import { ExceptionHandler } from './app/Exceptions/ExceptionHandler';
+import { ExceptionHandler } from './app/Exceptions/exceptionHandler';
+import { App } from './app/Services/App';
 import { Exception } from './app/Exceptions/Exception';
-// var cors = require('cors');
+import { Request } from './app/Services/Facades/Request';
+// import cors from 'cors';
 
 require('dotenv').config();
 
 var app = express();
 
+// console.log(process.env.IS_USE_LOCAL_CORS);
+
+// if (process.env.IS_USE_LOCAL_CORS === 'true') {
+//   var corsOptions = {
+//     origin: 'http://localhost:5002',
+//     optionsSuccessStatus: 200
+//   };
+//   app.use(cors(corsOptions));
+// }
+
 // app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "ejs");
-
-// app.use(cors());
-
-// app.use(function(req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
-
-// app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io-client/dist/'));
-// app.use('/angular', express.static(__dirname + '/node_modules/angular/'));
-// app.use('/lodash', express.static(__dirname + '/node_modules/lodash/'));
-// app.use('/assets', express.static(__dirname + '/assets'));
+// app.set("view engine", "hbs");
 
 app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'assets')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+App.resolveAppProviders();
+
+app.use(function(req, res, next) {
+  const reqd = Request.createFromRequest(req, res, next);
+  reqd.add(req);
+  reqd.add(res);
+  reqd._req = req;
+  reqd.run(next);
+});
+
 app.use(AppRouter);
+
 app.use(ExceptionHandler);
 
 // catch 404 and forward to error handler

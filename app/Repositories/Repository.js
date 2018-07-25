@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
-import customsError from '../Exceptions/CustomsError';
+import { Exception } from '../Exceptions/Exception';
 import { LengthAwarePaginator } from '../Utils/LengthAwarePaginator';
 import { QueryBuilder } from '../Utils/QueryBuilder';
-
+import { Request } from '../Services/Facades/Request';
+import { NotFoundException } from '../Exceptions/NotFoundException';
+import moment from 'moment/moment';
 export class Repository {
   constructor() {
     this.builder = new QueryBuilder();
@@ -18,10 +20,10 @@ export class Repository {
    */
   async updateOrCreate(attributes, values) {
     if (_.isNil(attributes)) {
-      throw new customsError('attributes should not empty', 500);
+      throw new Exception('attributes should not empty', 1000);
     }
 
-    let item = await this.Models().findOne({
+    const item = await this.Models().findOne({
       where: attributes
     });
 
@@ -44,29 +46,42 @@ export class Repository {
    */
   async create(attributes) {
     if (_.isNil(attributes)) {
-      throw new customsError('attributes should not empty', 500);
+      throw new Exception('attributes should not empty', 1000);
     }
 
-    let result = await this.Models().sequelize.transaction(
+    const result = await this.Models().sequelize.transaction(
       function(t) {
         return this.Models().create(attributes, { transaction: t });
       }.bind(this)
     );
+    if (_.isNil(result)) {
+      throw new Exception('Can not create resource', 1004);
+    }
 
     return result;
   }
-
-  async bulkCreate(attributesArr, individual = false) {
-    let results = await this.Models().sequelize.transaction(
-      function(t) {
-        return this.Models().bulkCreate(attributesArr, {
-          transaction: t,
-          individualHooks: individual
-        });
-      }.bind(this)
-    );
-
-    return results;
+  /**
+   * Update multiple instances that match the where options
+   *
+   * @param Object attributes
+   * @param ID optinal
+   *
+   * @return Object
+   */
+  async update(attributes, id = undefined) {
+    let result;
+    if (_.isNil(attributes)) {
+      throw new Exception('attributes should not empty', 1000);
+    }
+    if (_.isUndefined(id)) {
+      result = await this.Models().update(attributes, {
+        where: this.getWheres()
+      });
+    } else {
+      const item = this.findById(id);
+      result = await item.update(attributes);
+    }
+    return result;
   }
 
   /**
@@ -84,15 +99,26 @@ export class Repository {
     if (!_.isArray(this.getAttributes()) && this.getAttributes().length > 0) {
       params = _.assign(params, { attributes: this.getAttributes() });
     }
-
     let model = this.Models();
     if (this.getScopes().length > 0) {
       _.forEach(this.getScopes(), scope => {
         model = model.scope(scope);
       });
     }
+    const result = await model.findOne(params);
+    return result;
+  }
 
-    let result = await model.findOne(params);
+  /**
+   * Execute the query and get the first result or throw an exception
+   *
+   * @return Object
+   */
+  async firstOrFail() {
+    const result = this.first();
+    if (!result) {
+      throw new NotFoundException('Resource');
+    }
     return result;
   }
 
@@ -105,11 +131,26 @@ export class Repository {
    * @throws Exception
    */
   async findById(id) {
-    let item = await this.Models().findById(id);
-    if (_.isNil(item)) {
-      throw new customsError(`can not find the id ${id}`, 204);
+    let params = {
+      where: {
+        id: id
+      },
+      include: this.getIncludes()
+    };
+    if (!_.isArray(this.getAttributes()) && this.getAttributes().length > 0) {
+      params = _.assign(params, { attributes: this.getAttributes() });
     }
-    return item;
+    let model = this.Models();
+    if (this.getScopes().length > 0) {
+      _.forEach(this.getScopes(), scope => {
+        model = model.scope(scope);
+      });
+    }
+    const result = await model.findOne(params);
+    if (!result) {
+      throw new NotFoundException('Resource');
+    }
+    return result;
   }
 
   /**
@@ -121,11 +162,24 @@ export class Repository {
    * @throws Exception
    */
   async deleteById(id) {
-    let item = await this.findById(id);
-    let result = await item.destroy();
+    const item = await this.findById(id);
+    const result = await item.destroy();
     if (result === false) {
-      throw new customsError('can not delete resource', 500);
+      throw new Exception('can not delete resource', 1002);
     }
+    return result;
+  }
+
+  /**
+   * Find by id include deleted
+   *
+   * @param int id
+   *
+   * @return model
+   * @throws Exception
+   */
+  async findByIdIncludeDeleted(id) {
+    const result = await this.Models().find({ where: { id: id }, paranoid: false });
     return result;
   }
 
@@ -136,11 +190,7 @@ export class Repository {
    * @throws Exception
    */
   async delete() {
-    if (!_.isArray(this.getWheres()) || this.getWheres().length === 0) {
-      throw new customsError('can not delete resources without condition', 500);
-    }
-
-    let result = await this.Models().destroy({
+    const result = await this.Models().destroy({
       where: this.getWheres()
     });
 
@@ -154,28 +204,47 @@ export class Repository {
    */
   async get() {
     let params = {
-      offset: this.getOffset(),
-      limit: this.getLimit(),
       where: this.getWheres(),
       include: this.getIncludes(),
-      order: this.getOrders()
+      order: this.getOrders(),
+      group: this.getGroup()
     };
 
     if (!_.isArray(this.getAttributes()) && this.getAttributes().length > 0) {
       params = _.assign(params, { attributes: this.getAttributes() });
     }
-    let result;
     let model = this.Models();
     if (this.getScopes().length > 0) {
       _.forEach(this.getScopes(), scope => {
         model = model.scope(scope);
       });
     }
-    result = await model.findAll(params);
+    const result = await model.findAll(params);
 
     return result;
   }
 
+  /**
+   * Retrieve the "count" result of the query.
+   *
+   * @return int
+   */
+  async count() {
+    const params = {
+      where: this.getWheres(),
+      include: this.getIncludes(),
+      order: this.getOrders(),
+      distinct: true
+    };
+    let model = this.Models();
+    if (this.getScopes().length > 0) {
+      _.forEach(this.getScopes(), scope => {
+        model = model.scope(scope);
+      });
+    }
+    const result = await model.count(params);
+    return result;
+  }
   /**
    * Paginate the given query.
    *
@@ -184,7 +253,25 @@ export class Repository {
    *
    * @return LengthAwarePaginator
    */
-  async paginate(per_page = 10, page = 1) {
+  async paginate(per_page = null, page = null) {
+    if (!_.isNil(per_page)) {
+      per_page = parseInt(per_page);
+    } else {
+      if (Request.has('per_page')) {
+        per_page = parseInt(Request.get('per_page'));
+      } else {
+        per_page = 10;
+      }
+    }
+    if (!_.isNil(page)) {
+      page = parseInt(page);
+    } else {
+      if (Request.has('page')) {
+        page = parseInt(Request.get('page'));
+      } else {
+        page = 1;
+      }
+    }
     let params = {
       offset: (page - 1) * per_page,
       limit: per_page,
@@ -203,22 +290,10 @@ export class Repository {
         model = model.scope(scope);
       });
     }
+    const result = await model.findAndCountAll(params);
 
-    let result = await model.findAndCountAll(params);
-
-    let paginator = new LengthAwarePaginator(result.rows, result.count, per_page, page);
+    const paginator = new LengthAwarePaginator(result.rows, result.count, per_page, page);
     return paginator;
-  }
-
-  async fromPagination(pagination) {
-    let paginationObj = pagination.getData();
-    paginationObj.operation.forEach(
-      function(op) {
-        this[op.type](...op.content);
-      }.bind(this)
-    );
-
-    return pagination.result(this.paginate.bind(this));
   }
 
   /**
@@ -231,10 +306,66 @@ export class Repository {
    * @return this
    */
   where(...args) {
-    this.builder.where.apply(this.builder, [...args]);
+    if (args.length === 1) {
+      let raw = false;
+      if (args[0].constructor) {
+        if (args[0].constructor.name === 'Where') {
+          raw = true;
+        } else if (args[0].constructor.name === 'Literal') {
+          raw = true;
+        }
+      }
+      if (raw) {
+        this.builder.where.apply(this.builder, [...args]);
+      } else {
+        const callable = args[0];
+        const builder = new QueryBuilder();
+        const query = callable(builder);
+        this.builder.scopeQuery.apply(this.builder, [query]);
+      }
+    } else {
+      this.builder.where.apply(this.builder, [...args]);
+    }
     return this;
   }
-
+  /**
+   * make a date search for a column ignoring the time
+   * if date is not array of date, then we search for value between that day from 00:00 on that day until tomorrow 00:00 dawn
+   * if date is array with 1 param, then we search for value between array[0] date (casted to 00:00 that day) until tomorrow 00:00 dawn
+   * if date is array with 2 params, then we search for value between array[0] date (casted to 00:00 that day) until array[1] (casted to 00:00 that next day)
+   * @param  string  column
+   * @param  mixed   date
+   *
+   * @return this
+   */
+  whereBetweenDate(field, date) {
+    const zeroTime = { h: 0, m: 0, s: 0, ms: 0 };
+    if (Array.isArray(date)) {
+      if (date.length > 0) {
+        if (date.length === 2) {
+          if (moment.utc(date[1]).diff(moment.utc(date[0])) < 0) {
+            throw new Exception('whereBetweenDate expect second date more than first date');
+          }
+        }
+        let fromDate = moment.utc(date[0]).set(zeroTime);
+        let toDate = moment
+          .utc(new Date())
+          .set(zeroTime)
+          .add(1, 'days');
+        if (date.length > 1) {
+          toDate = moment
+            .utc(date[1])
+            .set(zeroTime)
+            .add(1, 'days');
+        }
+        this.where(field, 'between', [fromDate.toDate(), toDate.toDate()]);
+      }
+    } else {
+      let momentDate = moment.utc(date).set(zeroTime);
+      this.where(field, 'between', [momentDate.toDate(), momentDate.add(1, 'days').toDate()]);
+    }
+    return this;
+  }
   /**
    * Add an "OR WHERE" clause to the query.
    *
@@ -263,6 +394,19 @@ export class Repository {
   }
 
   /**
+   * Add an "WHERE NOT IN" clause to the query.
+   *
+   * @param  string  column
+   * @param  array   value
+   *
+   * @return this
+   */
+  whereNotIn(column, value) {
+    this.builder.whereNotIn(column, value);
+    return this;
+  }
+
+  /**
    * Add a basic where clause with relation to the query.
    *
    * @param  string  relation
@@ -270,12 +414,12 @@ export class Repository {
    *
    * @return this
    */
-  // whereHas(relation, callable) {
-  //   let builder = new QueryBuilder();
-  //   builder = callable(builder);
-  //   Log.info(builder.buildWhereQuery());
-  //   return this;
-  // }
+  whereHas(relation, callable) {
+    let builder = new QueryBuilder();
+    builder = callable(builder);
+    this.builder.whereHas.apply(this.builder, [relation, builder]);
+    return this;
+  }
 
   /**
    * Alias to set the "offset" value of the query.
@@ -309,9 +453,115 @@ export class Repository {
    *
    * @return this
    */
-  orderBy(field, direction = 'ASC') {
-    this.builder.orderBy(field, direction);
+  orderBy(...args) {
+    let model;
+    let field;
+    let direction = 'ASC';
+    if (args.length === 2) {
+      [field, direction] = args;
+      this.builder.orderBy(field, direction);
+    }
+    if (args.length === 3) {
+      [model, field, direction] = args;
+      this.builder.orderBy(model, field, direction);
+    }
+    if (args.length === 1) {
+      [field] = args;
+      this.builder.orderBy(field);
+    }
     return this;
+  }
+
+  /**
+   * Add an "GROUP BY" clause to the query.
+   *
+   * @param  string  column
+   *
+   * @return this
+   */
+  groupBy(column) {
+    this.builder.groupBy(column);
+    return this;
+  }
+
+  /**
+   * Extract order param from request and apply the rule
+   *
+   * @param Array Supported fields to order
+   *
+   * @return Repository
+   */
+  applyOrderFromRequest(fields = [], functions = {}) {
+    if (Request.has('sort') && Request.get('sort') !== '') {
+      const orderBy = Request.get('sort').split(',');
+      orderBy.forEach(field => {
+        let direction = 'ASC';
+        if (field.charAt(0) === '-') {
+          direction = 'DESC';
+          field = field.slice(1);
+        }
+        if (field.charAt(0) === '+') {
+          field = field.slice(1);
+        }
+        if (fields.length === 0 || (fields.length > 0 && _.includes(fields, field))) {
+          // custom functions to be given aligned with field name
+          if (typeof functions[field] !== 'undefined') {
+            functions[field](direction);
+          } else {
+            this.orderBy(field, direction);
+          }
+        }
+      });
+    }
+    return this;
+  }
+
+  /**
+   * Extract search param from request and apply the rule
+   *
+   * @param Array Supported fields to order
+   *
+   * @return Repository
+   */
+  applySearchFromRequest(fields, match = null) {
+    if (Request.has('search') && Request.get('search') !== '') {
+      if (_.isNull(match)) {
+        match = `%${Request.get('search')}%`;
+      }
+      this.where(function(q) {
+        _.forEach(fields, field => {
+          q.orWhere(field, 'like', match);
+        });
+        return q;
+      });
+    }
+    return this;
+  }
+
+  /**
+   * Extract constraints param from request and apply the rule
+   * @param custom => object consisting key of entity type with custom implementation as the value
+   * when supplied custom, it will check from the custom object for its implementation function instead of default where
+   * @return Repository
+   */
+  applyConstraintsFromRequest(custom = {}) {
+    if (Request.has('constraints') || Request.get('constraints') !== '') {
+      const data = Request.get('constraints', {});
+      let constraints = {};
+      if (typeof data === 'object') {
+        constraints = Request.get('constraints');
+      } else {
+        constraints = JSON.parse(Request.get('constraints'));
+      }
+      for (const key in constraints) {
+        if (typeof custom[key] !== 'undefined') {
+          custom[key](constraints[key]);
+        } else {
+          this.where(key, constraints[key]);
+        }
+      }
+      return this;
+    }
   }
 
   /**
@@ -327,6 +577,17 @@ export class Repository {
   }
 
   /**
+   * Begin querying a model with eager loading. using sequelize given format
+   *
+   * @param  array|string  $relations
+   *
+   * @return this
+   */
+  rawWith(args) {
+    this.builder.rawWith.call(this.builder, args);
+    return this;
+  }
+  /**
    * Add scope to the query
    *
    * @param  string scope
@@ -337,7 +598,6 @@ export class Repository {
     this.builder.withScope(scope);
     return this;
   }
-
   /**
    * Set the columns to be selected.
    *
@@ -345,11 +605,10 @@ export class Repository {
    *
    * @return this
    */
-  select(...args) {
-    this.builder.select.apply(this.builder, args);
+  select(columns) {
+    this.builder.select.apply(this.builder, [columns]);
     return this;
   }
-
   /**
    * Get the sequilize where condition
    *
@@ -358,7 +617,6 @@ export class Repository {
   getWheres() {
     return this.builder.buildWhereQuery();
   }
-
   /**
    * Get the limit value of the builder
    *
@@ -367,7 +625,6 @@ export class Repository {
   getLimit() {
     return this.builder.limit;
   }
-
   /**
    * Get the offset value of the builder
    *
@@ -376,7 +633,6 @@ export class Repository {
   getOffset() {
     return this.builder.offset;
   }
-
   /**
    * Get the orders value of the builder
    *
@@ -385,7 +641,14 @@ export class Repository {
   getOrders() {
     return this.builder.orders;
   }
-
+  /**
+   * Get the group value of the builder
+   *
+   * @return array
+   */
+  getGroup() {
+    return this.builder.group;
+  }
   /**
    * Get the includes value of the builder
    *
@@ -394,7 +657,6 @@ export class Repository {
   getIncludes() {
     return this.builder.includes;
   }
-
   /**
    * Get the scopes value of the builder
    *
@@ -403,7 +665,6 @@ export class Repository {
   getScopes() {
     return this.builder.scopes;
   }
-
   /**
    * Get the attributes value of the builder
    *
@@ -412,42 +673,4 @@ export class Repository {
   getAttributes() {
     return this.builder.attributes;
   }
-
-  /**
-   * Set the with to be selected.
-   *
-   * @param  string
-   *
-   * @return this
-   */
-
-  // with(model) {
-  //     this.builder.with(model);
-  //     return this;
-  // }
-
-  // /**
-  //  * Set the with to be selected.
-  //  *
-  //  * @param  string|"column1:column2:column3"
-  //  *
-  //  * @return this
-  //  */
-
-  // withAlias(model, alias) {
-  //     this.builder.withAlias(model, alias);
-  //     return this;
-  // }
-
-  // /**
-  //  * Set the with to be selected.
-  //  *
-  //  * @param  string|string     *
-  //  * @return this
-  //  */
-
-  // withAttributes(model, attributes) {
-  //     this.builder.withAttributes(model, attributes);
-  //     return this;
-  // }
 }
