@@ -20,7 +20,7 @@ router.delete('/:id', AsyncMiddleware(destroy));
 async function index(req, res) {
   const repository = new FrameworkRepository();
   repository.applyConstraintsFromRequest();
-  repository.applySearchFromRequest(['seller_email']);
+  repository.applySearchFromRequest(['name']);
   repository.applyOrderFromRequest();
   const result = await repository.paginate();
   res.json(ApiResponse.paginate(result, new FrameworkTransformer()));

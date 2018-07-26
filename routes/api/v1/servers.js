@@ -20,7 +20,7 @@ router.delete('/:id', AsyncMiddleware(destroy));
 async function index(req, res) {
   const repository = new ServerRepository();
   repository.applyConstraintsFromRequest();
-  repository.applySearchFromRequest(['seller_email']);
+  repository.applySearchFromRequest(['name', 'address_mysql', 'ip']);
   repository.applyOrderFromRequest();
 
   const result = await repository.paginate();
