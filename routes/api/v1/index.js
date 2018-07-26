@@ -8,6 +8,7 @@ import ProjectRouter from './projects';
 import StatusRouter from './status';
 import FrameworkRouter from './frameworks';
 import ServerRouter from './servers';
+import CategoryRouter from './categories';
 
 var router = express.Router();
 
@@ -20,5 +21,6 @@ router.use('/projects', ProjectRouter);
 router.use('/status', StatusRouter);
 router.use('/frameworks', FrameworkRouter);
 router.use('/servers', ServerRouter);
+router.use('/categories', CategoryRouter);
 
 export default router;

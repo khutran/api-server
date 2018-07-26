@@ -2,7 +2,7 @@ import Transformer from './Transformer';
 import StatusTransformer from './StatusTransformer';
 import FrameworkTransformer from './FrameworkTransformer';
 import CsdlTransformer from './CsdlTransformer';
-import CategoriesTransformer from './CategoriesTransformer';
+import CategoryTransformer from './CategoryTransformer';
 import HostTransformer from './HostTransformer';
 
 export default class ProjectTransformer extends Transformer {
@@ -36,7 +36,7 @@ export default class ProjectTransformer extends Transformer {
   }
 
   includeCategories(model) {
-    return this.item(model.category, new CategoriesTransformer());
+    return this.item(model.category, new CategoryTransformer());
   }
 
   includeFramework(model) {

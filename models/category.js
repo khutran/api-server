@@ -1,14 +1,14 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  var Categories = sequelize.define(
-    'categories',
+  var Category = sequelize.define(
+    'category',
     {
       name: DataTypes.STRING
     },
     {
       underscored: true,
-      freezeTableName: true
+      tableName: 'categories'
     }
   );
 
@@ -16,5 +16,5 @@ module.exports = (sequelize, DataTypes) => {
 
   // };
 
-  return Categories;
+  return Category;
 };

@@ -79,12 +79,12 @@ module.exports = (sequelize, DataTypes) => {
     Project.belongsTo(models.host);
     Project.belongsTo(models.framework);
     Project.belongsTo(models.csdl);
-    Project.belongsTo(models.categories, { foreignKey: 'category_id' });
+    Project.belongsTo(models.category, { as: 'categories', foreignKey: 'category_id' });
 
     Project.addScope(
       'defaultScope',
       {
-        include: [{ model: models.status }, { model: models.host }, { model: models.framework }, { model: models.csdl }, { model: models.categories }]
+        include: [{ model: models.status }, { model: models.host }, { model: models.framework }, { model: models.csdl }, { model: models.category, as: 'categories' }]
       },
       { override: true }
     );

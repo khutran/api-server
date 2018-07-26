@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 import express from 'express';
 import { Exception } from '../../app/Exceptions/Exception';
-import CategoriesRepository from '../../app/Repositories/CategoriesRepository';
+import CategoryRepository from '../../app/Repositories/CategoryRepository';
 import { asyncMiddleware } from '../../midlewares/AsyncMiddleware';
 import { Request } from '../../app/Request';
 import ApiResponse from '../../app/Responses/ApiResponse';
-import CategoriesTransformer from '../../app/Transformers/CategoriesTransformer';
+import CategoryTransformer from '../../app/Transformers/CategoryTransformer';
 import hasPermission from '../../midlewares/PermissionMiddleware';
 import Permission from '../../app/Configs/AvailablePermissions';
 import AuthMiddleware from '../../midlewares/AuthMiddleware';
@@ -27,7 +27,7 @@ async function getAllCategories(req, res) {
 
     let page = _.isUndefined(req.query.page) ? 1 : parseInt(req.query.page);
     let per_page = _.isUndefined(req.query.per_page) ? 10 : parseInt(req.query.per_page);
-    let repository = new CategoriesRepository();
+    let repository = new CategoryRepository();
 
     for (let i in query['sort']) {
       repository.orderBy(i, query['sort'][i]);
@@ -46,7 +46,7 @@ async function getAllCategories(req, res) {
     }
 
     let result = await repository.paginate(per_page, page);
-    res.json(ApiResponse.paginate(result, new CategoriesTransformer()));
+    res.json(ApiResponse.paginate(result, new CategoryTransformer()));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);
@@ -59,14 +59,14 @@ async function getAllCategories(req, res) {
 async function getCategoriesById(req, res) {
   try {
     let id = req.params.id;
-    let repository = new CategoriesRepository();
+    let repository = new CategoryRepository();
     let result = await repository.where('id', id).first();
 
     if (!result) {
       throw new Error('Categories Not Found', 204);
     }
 
-    res.json(ApiResponse.item(result, new CategoriesTransformer()));
+    res.json(ApiResponse.item(result, new CategoryTransformer()));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);
@@ -82,7 +82,7 @@ async function createCategories(req, res) {
       name: req.body.name
     };
 
-    let repository = new CategoriesRepository();
+    let repository = new CategoryRepository();
 
     let result = await repository.where('name', data.name).first();
 
@@ -95,7 +95,7 @@ async function createCategories(req, res) {
       throw new Error('Create Categories false', 500);
     }
 
-    res.json(ApiResponse.item(result, new CategoriesTransformer()));
+    res.json(ApiResponse.item(result, new CategoryTransformer()));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);
@@ -112,7 +112,7 @@ async function updateCategories(req, res) {
       name: req.body.name
     };
 
-    let repository = new CategoriesRepository();
+    let repository = new CategoryRepository();
     let result = await repository.findById(id);
 
     if (!result) {
@@ -133,7 +133,7 @@ async function updateCategories(req, res) {
       }
     }
 
-    res.json(ApiResponse.item(result, new CategoriesTransformer()));
+    res.json(ApiResponse.item(result, new CategoryTransformer()));
   } catch (e) {
     if (!e.error_code) {
       throw new Exception(e.message, 500);
@@ -146,7 +146,7 @@ async function updateCategories(req, res) {
 async function deleteCategories(req, res) {
   try {
     let id = req.params.id;
-    let repository = new CategoriesRepository();
+    let repository = new CategoryRepository();
     let result = await repository.findById(id);
 
     if (!result) {
