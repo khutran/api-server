@@ -6,6 +6,7 @@ import RoleRouter from './roles';
 import PermissionRouter from './permissions';
 import ProjectRouter from './projects';
 import StatusRouter from './status';
+import FrameworkRouter from './frameworks';
 
 var router = express.Router();
 
@@ -16,5 +17,6 @@ router.use('/roles', RoleRouter);
 router.use('/permissions', PermissionRouter);
 router.use('/projects', ProjectRouter);
 router.use('/status', StatusRouter);
+router.use('/frameworks', FrameworkRouter);
 
 export default router;
