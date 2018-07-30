@@ -57,9 +57,19 @@ async function create(req, res) {
 
 async function update(req, res) {
   ProjectValidator.isValid(Request.all(), UPDATE_PROJECT_RULE);
+  const status = await App.make(StatusRepository).findById(Request.get('status_id'));
+  const category = await App.make(CategoryRepository).findById(Request.get('category_id'));
+  const framework = await App.make(FrameworkRepository).findById(Request.get('framework_id'));
+  const sql_manager = await App.make(CsdlRepository).findById(Request.get('csdl_id'));
+  const server = await App.make(ServerRepository).findById(Request.get('server_id'));
   const repository = new ProjectRepository();
-  const result = await repository.update(Request.all(), req.params.id);
-  res.json(ApiResponse.item(result, new ProjectTransformer()));
+  const project = await repository.update(Request.all(), req.params.id);
+  await project.setStatus(status);
+  await project.setCategories(category);
+  await project.setFramework(framework);
+  await project.setCsdl(sql_manager);
+  await project.setHost(server);
+  res.json(ApiResponse.item(project, new ProjectTransformer()));
 }
 
 async function destroy(req, res) {

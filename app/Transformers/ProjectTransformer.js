@@ -10,6 +10,11 @@ export default class ProjectTransformer extends Transformer {
     return {
       id: model.id,
       name: model.name,
+      status_id: model.status_id,
+      category_id: model.category_id,
+      framework_id: model.framework_id,
+      csdl_id: model.csdl_id,
+      host_id: model.host_id,
       database: model.database,
       git_remote: model.git_remote,
       git_branch: model.git_branch,
