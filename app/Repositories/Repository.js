@@ -147,6 +147,8 @@ export class Repository {
       });
     }
     const result = await model.findOne(params);
+    console.log(result);
+
     if (!result) {
       throw new NotFoundException('Resource');
     }

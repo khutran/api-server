@@ -10,7 +10,6 @@ export default class ProjectTransformer extends Transformer {
     return {
       id: model.id,
       name: model.name,
-      status: model.status,
       database: model.database,
       git_remote: model.git_remote,
       git_branch: model.git_branch,

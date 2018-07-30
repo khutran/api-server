@@ -5,25 +5,6 @@ module.exports = (sequelize, DataTypes) => {
     'project',
     {
       name: DataTypes.STRING,
-      category_id: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
-      },
-      framework_id: {
-        type: DataTypes.INTEGER
-      },
-      csdl_id: {
-        type: DataTypes.INTEGER
-      },
-      status_id: {
-        type: DataTypes.INTEGER
-      },
-      host_id: {
-        type: DataTypes.INTEGER,
-        validate: {
-          notEmpty: true
-        }
-      },
       database: {
         type: DataTypes.STRING,
         validate: {
@@ -75,11 +56,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Project.associate = models => {
     Project.belongsTo(models.status);
-    Project.hasOne(models.build);
     Project.belongsTo(models.host);
     Project.belongsTo(models.framework);
     Project.belongsTo(models.csdl);
-    Project.belongsTo(models.category, { as: 'categories', foreignKey: 'category_id' });
+    Project.belongsTo(models.category, { foreignKey: 'category_id' });
 
     Project.addScope(
       'defaultScope',
