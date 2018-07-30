@@ -48,7 +48,7 @@ async function create(req, res) {
   const repository = new ProjectRepository();
   const project = await repository.create(Request.all());
   await project.setStatus(status);
-  await project.setCategory(category);
+  await project.setCategories(category);
   await project.setFramework(framework);
   await project.setCsdl(sql_manager);
   await project.setHost(server);

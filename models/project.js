@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     Project.belongsTo(models.host);
     Project.belongsTo(models.framework);
     Project.belongsTo(models.csdl);
-    Project.belongsTo(models.category, { foreignKey: 'category_id' });
+    Project.belongsTo(models.category, { as: 'categories', foreignKey: 'category_id' });
 
     Project.addScope(
       'defaultScope',

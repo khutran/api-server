@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.all('*', AuthMiddleware);
 router.get('/', AsyncMiddleware(index));
+router.post('/list', AsyncMiddleware(list));
 router.get('/:id', AsyncMiddleware(show));
 router.post('/', AsyncMiddleware(create));
 router.put('/:id', AsyncMiddleware(update));
@@ -26,6 +27,17 @@ async function index(req, res) {
   const result = await repository.paginate();
 
   res.json(ApiResponse.paginate(result, new HostTransformer()));
+}
+
+async function list(req, res) {
+  const repository = new ServerRepository();
+  repository.applyConstraintsFromRequest();
+  repository.applySearchFromRequest(['name', 'address_mysql', 'ip']);
+  repository.applyOrderFromRequest();
+
+  const result = await repository.get();
+
+  res.json(ApiResponse.collection(result, new HostTransformer()));
 }
 
 async function show(req, res) {
