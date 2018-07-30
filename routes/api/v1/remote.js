@@ -22,6 +22,25 @@ router.get('/:id/info', AsyncMiddleware(info));
 router.delete('/:id', AsyncMiddleware(delete_project));
 router.put('/:id/pull', AsyncMiddleware(pull));
 router.delete('/:id/db', AsyncMiddleware(deleteDb));
+router.put('/:id/db', AsyncMiddleware(updateDb));
+
+async function updateDb(req, res) {
+  try {
+    const id = req.params.id;
+    const authorization = req.headers.authorization;
+    const config_request = {
+      headers: {
+        authorization: authorization
+      }
+    };
+    const item = await App.make(ProjectRepository).findById(id);
+    const url = `http://${item.host.name}/${item.framework.name}/database/import`;
+    const result = await axios.put(url, { website: item.name }, config_request);
+    res.json(ApiResponse.getAxios(result));
+  } catch (e) {
+    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+  }
+}
 
 async function deleteDb(req, res) {
   try {
