@@ -10,7 +10,9 @@ import { Exception } from '../../../app/Exceptions/Exception';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
-router.get('/:id/clone', AsyncMiddleware(clone));
+router.get('/:id', AsyncMiddleware(get));
+router.post('/:id', AsyncMiddleware(clone));
+router.put('/:id/pull', AsyncMiddleware(pull));
 router.post('/:id/db', AsyncMiddleware(createDb));
 router.post('/:id/config', AsyncMiddleware(createConfig));
 router.put('/:id/config', AsyncMiddleware(updateConfig));
@@ -20,9 +22,26 @@ router.post('/:id/replace', AsyncMiddleware(replaceDb));
 router.get('/:id/config', AsyncMiddleware(getConfig));
 router.get('/:id/info', AsyncMiddleware(info));
 router.delete('/:id', AsyncMiddleware(delete_project));
-router.put('/:id/pull', AsyncMiddleware(pull));
 router.delete('/:id/db', AsyncMiddleware(deleteDb));
 router.put('/:id/db', AsyncMiddleware(updateDb));
+
+async function get(req, res) {
+  try {
+    const id = req.params.id;
+    const authorization = req.headers.authorization;
+    const config_request = {
+      headers: {
+        authorization: authorization
+      }
+    };
+    const item = await App.make(ProjectRepository).findById(id);
+    const url = `http://${item.host.name}/${item.framework.name}/build`;
+    const result = await axios.get(url, config_request);
+    res.json(ApiResponse.getAxios(result));
+  } catch (e) {
+    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+  }
+}
 
 async function updateDb(req, res) {
   try {
