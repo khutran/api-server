@@ -27,7 +27,20 @@ module.exports = {
                 ]),
                 created_at: new Date(),
                 updated_at: new Date()
-            }
+            },
+            {
+              name: "Customer",
+              slug: "customer",
+              level: 2,
+              permissions: JSON.stringify([
+                  "customer.view",
+                  "customer.create",
+                  "customer.update",
+                  "customer.delete",
+              ]),
+              created_at: new Date(),
+              updated_at: new Date()
+          }
         ]);
     },
 

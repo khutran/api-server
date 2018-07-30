@@ -83,7 +83,9 @@ async function register(req, res) {
     password: new PasswordUtil().encrypt(req.body.password),
     last_password_updated: moment().toISOString(),
     password_type: PasswordUtil.DEFAULT_PASSWORD,
-    status: req.body.status
+    status: req.body.status || 0,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name
   };
 
   const checkUser = await App.make(UserRepository)

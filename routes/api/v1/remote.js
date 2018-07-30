@@ -17,6 +17,25 @@ router.put('/:id/config', AsyncMiddleware(updateConfig));
 router.post('/:id/project-manager', AsyncMiddleware(run));
 router.post('/:id/firts-build', AsyncMiddleware(firtsBuild));
 router.post('/:id/replace', AsyncMiddleware(replaceDb));
+router.get('/:id/config', AsyncMiddleware(getConfig));
+
+async function getConfig(req, res) {
+  try {
+    const id = req.params.id;
+    const authorization = req.headers.authorization;
+    const config_request = {
+      headers: {
+        authorization: authorization
+      }
+    };
+    const item = await App.make(ProjectRepository).findById(id);
+    const url = `http://${item.host.name}/${item.framework.name}/config?website=${item.name}`;
+    const config = await axios.get(url, config_request);
+    res.json(ApiResponse.getAxios(config));
+  } catch (e) {
+    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+  }
+}
 
 async function clone(req, res) {
   try {
@@ -29,7 +48,7 @@ async function clone(req, res) {
     };
     const item = await App.make(ProjectRepository).findById(id);
 
-    const urlAPI_CLONE = `http://${item.host.name}/${item.framework.name}/build/clone`;
+    const url = `http://${item.host.name}/${item.framework.name}/build/clone`;
 
     const data_clone = {
       domain: item.name,
@@ -39,7 +58,7 @@ async function clone(req, res) {
       secret: item.git_application_secret
     };
 
-    const clone = await axios.post(urlAPI_CLONE, data_clone, config_request);
+    const clone = await axios.post(url, data_clone, config_request);
 
     res.json(ApiResponse.getAxios(clone));
   } catch (e) {
@@ -59,9 +78,9 @@ async function createDb(req, res) {
     };
     const item = await App.make(ProjectRepository).findById(id);
 
-    const urlAPI_CREATE_DB = `http://${item.host.name}/${item.framework.name}/database/create`;
+    const url = `http://${item.host.name}/${item.framework.name}/database/create`;
 
-    const db = await axios.post(urlAPI_CREATE_DB, { website: item.name }, config_request);
+    const db = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.getAxios(db));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
@@ -79,8 +98,8 @@ async function createConfig(req, res) {
       }
     };
     const item = await App.make(ProjectRepository).findById(id);
-    const urlAPI_CREATE_CONFIG = `http://${item.host.name}/${item.framework.name}/config`;
-    const config = await axios.post(urlAPI_CREATE_CONFIG, { website: item.name }, config_request);
+    const url = `http://${item.host.name}/${item.framework.name}/config`;
+    const config = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.getAxios(config));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
@@ -98,7 +117,7 @@ async function updateConfig(req, res) {
       }
     };
     const item = await App.make(ProjectRepository).findById(id);
-    const urlAPI_UPDATE_CONFIG = `http://${item.host.name}/${item.framework.name}/config`;
+    const url = `http://${item.host.name}/${item.framework.name}/config`;
 
     const db = {
       website: item.name,
@@ -110,7 +129,7 @@ async function updateConfig(req, res) {
     db.config[item.framework.content_config['user']] = req.body.user_name;
     db.config[item.framework.content_config['password']] = req.body.password;
 
-    const config = await axios.put(urlAPI_UPDATE_CONFIG, db, config_request);
+    const config = await axios.put(url, db, config_request);
     res.json(ApiResponse.getAxios(config));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
@@ -128,8 +147,8 @@ async function run(req, res) {
       }
     };
     const item = await App.make(ProjectRepository).findById(id);
-    const urlAPI_CREATE_COMPOSER = `http://${item.host.name}/${item.framework.name}/composer`;
-    const result = await axios.post(urlAPI_CREATE_COMPOSER, { website: item.name }, config_request);
+    const url = `http://${item.host.name}/${item.framework.name}/composer`;
+    const result = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.getAxios(result));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
@@ -147,8 +166,8 @@ async function firtsBuild(req, res) {
       }
     };
     const item = await App.make(ProjectRepository).findById(id);
-    const urlAPI_RUN_FIRTSBUILD = `http://${item.host.name}/${item.framework.name}/build/buildfirts`;
-    const build = await axios.post(urlAPI_RUN_FIRTSBUILD, { website: item.name }, config_request);
+    const url = `http://${item.host.name}/${item.framework.name}/build/buildfirts`;
+    const build = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.getAxios(build));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
@@ -166,8 +185,8 @@ async function replaceDb(req, res) {
       }
     };
     const item = await App.make(ProjectRepository).findById(id);
-    const urlAPI_RUN_REPLACE = `http://${item.host.name}/${item.framework.name}/database/replace`;
-    const replace = await axios.post(urlAPI_RUN_REPLACE, { website: item.name }, config_request);
+    const url = `http://${item.host.name}/${item.framework.name}/database/replace`;
+    const replace = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.getAxios(replace));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
