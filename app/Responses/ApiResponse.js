@@ -3,6 +3,14 @@ import { Exception } from '../Exceptions/Exception';
 import { LengthAwarePaginator } from '../Utils/LengthAwarePaginator';
 
 export default class ApiResponse {
+  static getAxios(obj) {
+    return obj.data;
+  }
+
+  static errorAxios(obj) {
+    return obj.response.data;
+  }
+
   static item(obj, transformer) {
     return { data: transformer.get(obj) };
   }
