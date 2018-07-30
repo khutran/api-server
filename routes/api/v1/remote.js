@@ -19,6 +19,71 @@ router.post('/:id/firts-build', AsyncMiddleware(firtsBuild));
 router.post('/:id/replace', AsyncMiddleware(replaceDb));
 router.get('/:id/config', AsyncMiddleware(getConfig));
 router.get('/:id/info', AsyncMiddleware(info));
+router.delete('/:id', AsyncMiddleware(delete_project));
+router.put('/:id/pull', AsyncMiddleware(pull));
+router.delete('/:id/db', AsyncMiddleware(deleteDb));
+
+async function deleteDb(req, res) {
+  try {
+    const id = req.params.id;
+    const authorization = req.headers.authorization;
+    const config_request = {
+      headers: {
+        authorization: authorization
+      }
+    };
+    const item = await App.make(ProjectRepository).findById(id);
+    const url = `http://${item.host.name}/${item.framework.name}/database?website=${item.name}&status=${item.status.name}`;
+    const result = await axios.delete(url, config_request);
+    res.json(ApiResponse.getAxios(result));
+  } catch (e) {
+    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+  }
+}
+
+async function pull(req, res) {
+  try {
+    const id = req.params.id;
+    const authorization = req.headers.authorization;
+    const config_request = {
+      headers: {
+        authorization: authorization
+      }
+    };
+
+    const item = await App.make(ProjectRepository).findById(id);
+    const data_clone = {
+      domain: item.name,
+      git: item.git_remote,
+      branch: item.git_branch,
+      key: item.git_application_key,
+      secret: item.git_application_secret
+    };
+    const url = `http://${item.host.name}/${item.framework.name}/build/pull`;
+    const result = await axios.put(url, data_clone, config_request);
+    res.json(ApiResponse.getAxios(result));
+  } catch (e) {
+    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+  }
+}
+
+async function delete_project(req, res) {
+  try {
+    const id = req.params.id;
+    const authorization = req.headers.authorization;
+    const config_request = {
+      headers: {
+        authorization: authorization
+      }
+    };
+    const item = await App.make(ProjectRepository).findById(id);
+    const url = `http://${item.host.name}/${item.framework.name}/build?website=${item.name}&status=${item.status.name}`;
+    const result = await axios.delete(url, config_request);
+    res.json(ApiResponse.getAxios(result));
+  } catch (e) {
+    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+  }
+}
 
 async function info(req, res) {
   try {
