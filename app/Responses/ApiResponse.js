@@ -8,7 +8,11 @@ export default class ApiResponse {
   }
 
   static errorAxios(obj) {
-    return obj.response.data;
+    if (!obj.response) {
+      return obj;
+    } else {
+      return obj.response.data;
+    }
   }
 
   static item(obj, transformer) {
