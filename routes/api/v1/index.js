@@ -9,6 +9,7 @@ import StatusRouter from './status';
 import FrameworkRouter from './frameworks';
 import ServerRouter from './servers';
 import CategoryRouter from './categories';
+import RemoteRouter from './remote';
 
 var router = express.Router();
 
@@ -22,5 +23,6 @@ router.use('/status', StatusRouter);
 router.use('/frameworks', FrameworkRouter);
 router.use('/servers', ServerRouter);
 router.use('/categories', CategoryRouter);
+router.use('/remote/project', RemoteRouter);
 
 export default router;

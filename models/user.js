@@ -32,17 +32,17 @@ module.exports = (sequelize, DataTypes) => {
       { override: true }
     );
 
-    User.addHook('beforeCreate', 'generateHashPassword', user => {
-      user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
-      return user;
-    });
+    // User.addHook('beforeCreate', 'generateHashPassword', user => {
+    //   user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
+    //   return user;
+    // });
 
-    User.addHook('beforeUpdate', 'generateHashPassword', async (user, options) => {
-      if (_.indexOf(options['fields'], 'password') > -1) {
-        user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
-      }
-      return user;
-    });
+    // User.addHook('beforeUpdate', 'generateHashPassword', async (user, options) => {
+    //   if (_.indexOf(options['fields'], 'password') > -1) {
+    //     user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
+    //   }
+    //   return user;
+    // });
   };
 
   User.prototype.resetPasstoken = function(token = '') {
@@ -56,7 +56,6 @@ module.exports = (sequelize, DataTypes) => {
     }
     let hasPermission = false;
     _.forEach(roles, item => {
-      console.log(item);
       if (typeof item.permissions === 'string') {
         hasPermission = item.permissions.indexOf(permission) > -1;
       } else {
