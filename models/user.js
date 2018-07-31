@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import bcrypt from 'bcrypt-nodejs';
 import models from '../models';
 
 module.exports = (sequelize, DataTypes) => {
@@ -31,18 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       { override: true }
     );
-
-    // User.addHook('beforeCreate', 'generateHashPassword', user => {
-    //   user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
-    //   return user;
-    // });
-
-    // User.addHook('beforeUpdate', 'generateHashPassword', async (user, options) => {
-    //   if (_.indexOf(options['fields'], 'password') > -1) {
-    //     user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
-    //   }
-    //   return user;
-    // });
   };
 
   User.prototype.resetPasstoken = function(token = '') {
@@ -68,13 +55,9 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.prototype.isRole = function(slug) {
     return new Promise((resolve, reject) => {
-      models.user
-        .findOne({
-          where: { id: this.id },
-          include: { model: models.role, where: { slug: slug } }
-        })
+      this.getRoles({ where: { slug: slug } })
         .then(result => {
-          if (!_.isNil(result)) {
+          if (!_.isNil(result) && !_.isUndefined(_.find(result, item => item.slug === slug))) {
             resolve(true);
           } else {
             resolve(false);
