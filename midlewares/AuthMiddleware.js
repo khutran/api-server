@@ -23,7 +23,6 @@ const auth = asyncMiddleware(async (req, res, next) => {
     }
 
     const user = await Auth.loginByEmail(decoded.data.email);
-
     if (decoded.data.last_password_updated !== user.last_password_updated) {
       throw new Exception('Token is expired', 4006);
     }

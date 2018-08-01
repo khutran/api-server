@@ -6,6 +6,9 @@ import ApiResponse from '../../../app/Responses/ApiResponse';
 import { App } from '../../../app/Services/App';
 import axios from 'axios';
 import { Exception } from '../../../app/Exceptions/Exception';
+import { Auth } from '../../..//app/Services/Facades/Auth';
+import jwt from 'jsonwebtoken';
+import AxiosTransformer from '../../../app/Transformers/AxiosTransformer';
 
 const router = express.Router();
 
@@ -27,17 +30,30 @@ router.put('/:id/db', AsyncMiddleware(updateDb));
 
 async function get(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/build`;
     const result = await axios.get(url, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -45,17 +61,30 @@ async function get(req, res) {
 
 async function updateDb(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/database/import`;
     const result = await axios.put(url, { website: item.name }, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -63,17 +92,30 @@ async function updateDb(req, res) {
 
 async function deleteDb(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/database?website=${item.name}&status=${item.status.name}`;
     const result = await axios.delete(url, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -81,11 +123,23 @@ async function deleteDb(req, res) {
 
 async function pull(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
 
@@ -99,7 +153,7 @@ async function pull(req, res) {
     };
     const url = `http://${item.host.name}/${item.framework.name}/build/pull`;
     const result = await axios.put(url, data_clone, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -107,17 +161,30 @@ async function pull(req, res) {
 
 async function delete_project(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/build?website=${item.name}&status=${item.status.name}`;
     const result = await axios.delete(url, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -125,17 +192,30 @@ async function delete_project(req, res) {
 
 async function info(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/info?website=${item.name}`;
     const result = await axios.get(url, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -143,17 +223,29 @@ async function info(req, res) {
 
 async function getConfig(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/config?website=${item.name}`;
     const result = await axios.get(url, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -161,15 +253,27 @@ async function getConfig(req, res) {
 
 async function clone(req, res) {
   try {
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
+
     const id = req.params.id;
-    const authorization = req.headers.authorization;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
-    const item = await App.make(ProjectRepository).findById(id);
 
+    const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/build/clone`;
 
     const data_clone = {
@@ -182,7 +286,7 @@ async function clone(req, res) {
 
     const result = await axios.post(url, data_clone, config_request);
 
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -190,20 +294,32 @@ async function clone(req, res) {
 
 async function createDb(req, res) {
   try {
-    const id = req.params.id;
-    const authorization = req.headers.authorization;
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
 
+    const id = req.params.id;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
 
     const url = `http://${item.host.name}/${item.framework.name}/database/create`;
 
     const result = await axios.post(url, { website: item.name }, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -211,18 +327,30 @@ async function createDb(req, res) {
 
 async function createConfig(req, res) {
   try {
-    const id = req.params.id;
-    const authorization = req.headers.authorization;
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
 
+    const id = req.params.id;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/config`;
     const result = await axios.post(url, { website: item.name }, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -230,14 +358,26 @@ async function createConfig(req, res) {
 
 async function updateConfig(req, res) {
   try {
-    const id = req.params.id;
-    const authorization = req.headers.authorization;
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
 
+    const id = req.params.id;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/config`;
 
@@ -252,7 +392,7 @@ async function updateConfig(req, res) {
     db.config[item.framework.content_config['password']] = req.body.password;
 
     const result = await axios.put(url, db, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -260,18 +400,30 @@ async function updateConfig(req, res) {
 
 async function run(req, res) {
   try {
-    const id = req.params.id;
-    const authorization = req.headers.authorization;
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
 
+    const id = req.params.id;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/composer`;
     const result = await axios.post(url, { website: item.name }, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -279,18 +431,30 @@ async function run(req, res) {
 
 async function firtsBuild(req, res) {
   try {
-    const id = req.params.id;
-    const authorization = req.headers.authorization;
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
 
+    const id = req.params.id;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/build/buildfirts`;
     const result = await axios.post(url, { website: item.name }, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }
@@ -298,18 +462,30 @@ async function firtsBuild(req, res) {
 
 async function replaceDb(req, res) {
   try {
-    const id = req.params.id;
-    const authorization = req.headers.authorization;
+    let pass = { invalid: false };
+    let user = Auth.user();
+    if (await user.isRole('superadmin')) {
+      pass['invalid'] = true;
+    }
+    const token = jwt.sign(
+      {
+        data: pass
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 60 }
+    );
 
+    const id = req.params.id;
     const config_request = {
       headers: {
-        authorization: authorization
+        authorization: `Bearer ${token}`
       }
     };
+
     const item = await App.make(ProjectRepository).findById(id);
     const url = `http://${item.host.name}/${item.framework.name}/database/replace`;
     const result = await axios.post(url, { website: item.name }, config_request);
-    res.json(ApiResponse.getAxios(result));
+    res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
     throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
   }

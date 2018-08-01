@@ -60,7 +60,6 @@ async function show(req, res) {
   const userId = req.params.id;
   const repository = new UserRepository();
   const user = await repository.where('id', userId).first();
-
   if (!user) {
     throw new NotFoundException('User');
   }
@@ -232,8 +231,6 @@ async function saveUserRole(req, res) {
 async function dettachRole(req, res) {
   const user_id = req.params.user_id;
   const role_id = req.params.role_id;
-
-  console.log(user_id, role_id);
 
   const repository = new RoleUserRepository();
 
