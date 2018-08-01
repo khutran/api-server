@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  var Hosts = sequelize.define(
+  var Host = sequelize.define(
     'host',
     {
       name: DataTypes.STRING,
@@ -10,13 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       underscored: true
-      // freezeTableName: true
     }
   );
 
-  // Hosts.associate = models => {
+  Host.associate = models => {
+    Host.hasMany(models.project);
+  };
 
-  // };
-
-  return Hosts;
+  return Host;
 };

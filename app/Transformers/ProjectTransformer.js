@@ -1,20 +1,27 @@
 import Transformer from './Transformer';
 import StatusTransformer from './StatusTransformer';
-import BuildTransformer from './BuildTransformer';
 import FrameworkTransformer from './FrameworkTransformer';
 import CsdlTransformer from './CsdlTransformer';
-import CategoriesTransformer from './CategoriesTransformer';
+import CategoryTransformer from './CategoryTransformer';
+import HostTransformer from './HostTransformer';
 
 export default class ProjectTransformer extends Transformer {
   transform(model) {
     return {
       id: model.id,
       name: model.name,
-      categories: model.categories,
-      framework: model.framework,
-      csdl: model.csdl,
-      status: model.status,
-      build: model.build,
+      status_id: model.status_id,
+      category_id: model.category_id,
+      framework_id: model.framework_id,
+      csdl_id: model.csdl_id,
+      host_id: model.host_id,
+      database: model.database,
+      git_remote: model.git_remote,
+      git_branch: model.git_branch,
+      git_application_key: model.git_application_key,
+      git_application_secret: model.git_application_secret,
+      build_automatically: model.build_automatically,
+      backup: model.backup,
       created_at: model.created_at,
       updated_at: model.updated_at
     };
@@ -24,8 +31,8 @@ export default class ProjectTransformer extends Transformer {
     return this.item(model.status, new StatusTransformer());
   }
 
-  includeBuild(model) {
-    return this.item(model.build, new BuildTransformer());
+  includeHost(model) {
+    return this.item(model.host, new HostTransformer());
   }
 
   includeCsdl(model) {
@@ -33,7 +40,7 @@ export default class ProjectTransformer extends Transformer {
   }
 
   includeCategories(model) {
-    return this.item(model.category, new CategoriesTransformer());
+    return this.item(model.category, new CategoryTransformer());
   }
 
   includeFramework(model) {

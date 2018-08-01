@@ -1,6 +1,5 @@
-'use strict';
 import * as _ from 'lodash';
-import bcrypt from 'bcrypt-nodejs';
+import models from '../models';
 
 module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define(
@@ -31,66 +30,49 @@ module.exports = (sequelize, DataTypes) => {
       },
       { override: true }
     );
-
-    User.addHook('beforeCreate', 'generateHashPassword', (user) => {
-      user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
-      return user;
-    });
-
-    User.addHook('beforeUpdate', 'generateHashPassword', async (user, options) => {
-      if (_.indexOf(options['fields'], 'password') > -1) {
-        user['password'] = bcrypt.hashSync(user.get('password'), bcrypt.genSaltSync(8), null);
-      }
-      return user;
-    });
   };
 
   User.prototype.resetPasstoken = function(token = '') {
     this.resetPasswordToken = token;
   };
 
-  // User.prototype.resetEmailtoken = function(token = "") {
-  //     this.resetEmailToken = token;
-  //     return this;
-  // };
-
-  // User.prototype.can = function(permission) {
-  //     return new Promise((resolve, reject) => {
-  //         _.forEach(this.roles, (val) => {
-  //             if (val['id'] === 1) {
-  //                 resolve(true);
-  //             }
-  //         });
-
-  //         _.forEach(this.roles, (item) => {
-  //             if (item.permissions.indexOf(permission) > -1) {
-  //                 resolve(true);
-  //             }
-  //         });
-  //         reject({ message: "Permission denied", error_code: 500 });
-  //     })
-  // };
-
-  // User.prototype.isRole = function(id) {
-  //     return new Promise((resolve, reject) => {
-  //         models.role_user.findOne({
-  //                 where: { user_id: this.id, role_id: id }
-  //             })
-  //             .then(results => {
-  //                 if (!results) {
-  //                     reject(false);
-  //                 } else {
-  //                     resolve(true);
-  //                 }
-  //             });
-  //     });
-  // };
-
-  // User.prototype.notify = function(notification) {
-  //     let _this = this;
-  //     notification.setNotifiable(_this);
-  //     notification.execute();
-  // };
+  User.prototype.can = async function(permission) {
+    const roles = this.roles;
+    if (!_.isUndefined(_.find(roles, item => item.isSuperAdmin()))) {
+      return true;
+    }
+    let hasPermission = false;
+    _.forEach(roles, item => {
+      if (typeof item.permissions === 'string') {
+        hasPermission = item.permissions.indexOf(permission) > -1;
+      } else {
+        if (_.includes(item.permissions, permission)) {
+          hasPermission = true;
+        }
+      }
+    });
+    return hasPermission;
+  };
+  User.prototype.isRole = function(slug) {
+    return new Promise((resolve, reject) => {
+      this.getRoles({ where: { slug: slug } })
+        .then(result => {
+          if (!_.isNil(result) && !_.isUndefined(_.find(result, item => item.slug === slug))) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  };
+  User.prototype.notify = function(notification) {
+    const _this = this;
+    notification.setNotifiable(_this);
+    notification.execute();
+  };
 
   return User;
 };
