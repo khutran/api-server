@@ -8,6 +8,7 @@
     "start": "MULTI_THREAD=true PORT=3050 ENV=production node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1",
     "devstart": "./node_modules/.bin/nodemon ./node_modules/.bin/babel-node ./bin/www",
+    "devstartwindows": "nodemon --exec babel-node -- bin/www",
     "dockerstart": "PORT=4401 nodemon ./node_modules/.bin/babel-node ./bin/www",
     "build": "rimraf dist/ && mv command command.js && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log,error_code.md,README.md,app.test.js --copy-files && mv ./dist/command.js ./dist/command && mv command.js command",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
