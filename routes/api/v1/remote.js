@@ -55,7 +55,7 @@ async function get(req, res) {
     const result = await axios.get(url, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -86,7 +86,7 @@ async function updateDb(req, res) {
     const result = await axios.put(url, { website: item.name }, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -117,7 +117,7 @@ async function deleteDb(req, res) {
     const result = await axios.delete(url, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -155,7 +155,7 @@ async function pull(req, res) {
     const result = await axios.put(url, data_clone, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -186,7 +186,7 @@ async function delete_project(req, res) {
     const result = await axios.delete(url, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -217,7 +217,7 @@ async function info(req, res) {
     const result = await axios.get(url, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -247,7 +247,7 @@ async function getConfig(req, res) {
     const result = await axios.get(url, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -288,7 +288,7 @@ async function clone(req, res) {
 
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -321,7 +321,7 @@ async function createDb(req, res) {
     const result = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -352,7 +352,7 @@ async function createConfig(req, res) {
     const result = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -394,7 +394,7 @@ async function updateConfig(req, res) {
     const result = await axios.put(url, db, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -425,7 +425,7 @@ async function run(req, res) {
     const result = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -456,7 +456,7 @@ async function firtsBuild(req, res) {
     const result = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
@@ -487,7 +487,7 @@ async function replaceDb(req, res) {
     const result = await axios.post(url, { website: item.name }, config_request);
     res.json(ApiResponse.item(result, new AxiosTransformer()));
   } catch (e) {
-    throw new Exception(ApiResponse.errorAxios(e).message, ApiResponse.errorAxios(e).error_code);
+    throw new Exception(e.response.data.message, e.response.data.error_code);
   }
 }
 
