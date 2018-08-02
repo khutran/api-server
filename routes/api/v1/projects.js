@@ -21,6 +21,14 @@ router.get('/:id', AsyncMiddleware(show));
 router.post('/', AsyncMiddleware(create));
 router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
+router.get('/:id/user', AsyncMiddleware(litUser));
+
+async function litUser(req, res) {
+  const id = req.params.id;
+  const repository = new ProjectRepository();
+  const result = await repository.withScope('listUser-Scope').findById(id);
+  res.json(ApiResponse.item(result, new ProjectTransformer(['users'])));
+}
 
 async function index(req, res) {
   const repository = new ProjectRepository();

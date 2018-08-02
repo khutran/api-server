@@ -4,6 +4,7 @@ import FrameworkTransformer from './FrameworkTransformer';
 import CsdlTransformer from './CsdlTransformer';
 import CategoryTransformer from './CategoryTransformer';
 import HostTransformer from './HostTransformer';
+import UserTransformer from './UserTransformer';
 
 export default class ProjectTransformer extends Transformer {
   transform(model) {
@@ -22,6 +23,7 @@ export default class ProjectTransformer extends Transformer {
       git_application_secret: model.git_application_secret,
       build_automatically: model.build_automatically,
       backup: model.backup,
+      build_time: model.build_time,
       created_at: model.created_at,
       updated_at: model.updated_at
     };
@@ -45,5 +47,9 @@ export default class ProjectTransformer extends Transformer {
 
   includeFramework(model) {
     return this.item(model.framework, new FrameworkTransformer());
+  }
+
+  includeUsers(model) {
+    return this.collection(model.users, new UserTransformer());
   }
 }
