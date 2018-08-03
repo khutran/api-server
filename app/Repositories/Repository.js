@@ -4,7 +4,7 @@ import { LengthAwarePaginator } from '../Utils/LengthAwarePaginator';
 import { QueryBuilder } from '../Utils/QueryBuilder';
 import { Request } from '../Services/Facades/Request';
 import { NotFoundException } from '../Exceptions/NotFoundException';
-import moment from 'moment/moment';
+import moment from 'moment';
 export class Repository {
   constructor() {
     this.builder = new QueryBuilder();

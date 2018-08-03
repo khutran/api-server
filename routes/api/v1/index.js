@@ -10,6 +10,7 @@ import FrameworkRouter from './frameworks';
 import ServerRouter from './servers';
 import CategoryRouter from './categories';
 import RemoteRouter from './remote';
+import CloudflareRouter from './cloudflare';
 
 var router = express.Router();
 
@@ -24,5 +25,6 @@ router.use('/frameworks', FrameworkRouter);
 router.use('/servers', ServerRouter);
 router.use('/categories', CategoryRouter);
 router.use('/remote/project', RemoteRouter);
+router.use('/cloudflare', CloudflareRouter);
 
 export default router;

@@ -146,7 +146,10 @@ async function store(req, res) {
   const role = await App.make(RoleRepository).findById(Request.get('role_id'));
 
   const repository = new UserRepository();
-
+  const item = await repository.where('email', req.body.email).first();
+  if (item) {
+    throw new Exception('User exitsts', 4008);
+  }
   const data = {
     email: Request.get('email'),
     password: new PasswordUtil().encrypt(req.body.password),

@@ -12,6 +12,7 @@ import CategoryRepository from '../../../app/Repositories/CategoryRepository';
 import FrameworkRepository from '../../../app/Repositories/FrameWorkRepository';
 import CsdlRepository from '../../../app/Repositories/CsdlRepository';
 import ServerRepository from '../../../app/Repositories/ServerRepository';
+import { Exception } from '../../../app/Exceptions/Exception';
 
 const router = express.Router();
 
@@ -54,6 +55,10 @@ async function create(req, res) {
   const sql_manager = await App.make(CsdlRepository).findById(Request.get('csdl_id'));
   const server = await App.make(ServerRepository).findById(Request.get('server_id'));
   const repository = new ProjectRepository();
+  const item = await repository.where('name', req.body.name).first();
+  if (item) {
+    throw new Exception('Project exitst', 4008);
+  }
   const project = await repository.create(Request.all());
   await project.setStatus(status);
   await project.setCategories(category);

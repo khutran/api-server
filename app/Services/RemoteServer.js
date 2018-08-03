@@ -19,7 +19,7 @@ export class RemoteServer {
     const project = await App.make(ProjectRepository).findById(project_id);
     const host = await project.getHost();
     const framework = await project.getFramework();
-    const url = `http://${host.name}/${framework.name}/build`;
+    const url = `http://${host.name}/${framework.name}/build?website=${project.name}`;
     const result = await this.axios.get(url);
     return result;
   }
@@ -143,10 +143,9 @@ export class RemoteServer {
         db.config[framework.content_config['password']] = this.data.password;
         delete this.data[i];
       }
-      // db.config[i] = this.data[i];
+      db.config[i] = this.data[i];
       db.config[framework.content_config['host']] = host.address_mysql;
     }
-    console.log(db);
     const url = `http://${host.name}/${framework.name}/config`;
     const result = await this.axios.put(url, db);
     return result;
