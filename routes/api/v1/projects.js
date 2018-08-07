@@ -12,6 +12,7 @@ import CategoryRepository from '../../../app/Repositories/CategoryRepository';
 import FrameworkRepository from '../../../app/Repositories/FrameWorkRepository';
 import CsdlRepository from '../../../app/Repositories/CsdlRepository';
 import ServerRepository from '../../../app/Repositories/ServerRepository';
+import { Exception } from '../../../app/Exceptions/Exception';
 
 const router = express.Router();
 
@@ -21,6 +22,14 @@ router.get('/:id', AsyncMiddleware(show));
 router.post('/', AsyncMiddleware(create));
 router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
+router.get('/:id/user', AsyncMiddleware(litUser));
+
+async function litUser(req, res) {
+  const id = req.params.id;
+  const repository = new ProjectRepository();
+  const result = await repository.withScope('listUser-Scope').findById(id);
+  res.json(ApiResponse.item(result, new ProjectTransformer(['users'])));
+}
 
 async function index(req, res) {
   const repository = new ProjectRepository();
@@ -46,6 +55,10 @@ async function create(req, res) {
   const sql_manager = await App.make(CsdlRepository).findById(Request.get('csdl_id'));
   const server = await App.make(ServerRepository).findById(Request.get('server_id'));
   const repository = new ProjectRepository();
+  const item = await repository.where('name', req.body.name).first();
+  if (item) {
+    throw new Exception('Project exitst', 4008);
+  }
   const project = await repository.create(Request.all());
   await project.setStatus(status);
   await project.setCategories(category);

@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: true
         }
+      },
+      build_time: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
       }
     },
     {
@@ -60,6 +64,15 @@ module.exports = (sequelize, DataTypes) => {
     Project.belongsTo(models.framework);
     Project.belongsTo(models.csdl);
     Project.belongsTo(models.category, { as: 'categories', foreignKey: 'category_id' });
+    Project.belongsToMany(models.user, { through: 'user_project' });
+
+    Project.addScope(
+      'listUser-Scope',
+      {
+        include: [{ model: models.user, through: 'user_project' }]
+      },
+      { override: true }
+    );
 
     Project.addScope(
       'defaultScope',

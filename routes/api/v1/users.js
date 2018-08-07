@@ -17,6 +17,7 @@ import { Exception } from '../../../app/Exceptions/Exception';
 import { UserValidator, CREATE_USER_RULE } from '../../../app/Validators/UserValidator';
 import PasswordUtil from '../../../app/Utils/PasswordUtil';
 import { BadRequestHttpException } from '../../../app/Exceptions/BadRequestHttpException';
+import ProjectRepository from '../../../app/Repositories/ProjectRepository';
 
 const router = express.Router();
 
@@ -33,6 +34,74 @@ router.put('/:user_id/roles', AsyncMiddleware(saveUserRole));
 router.delete('/:user_id/role/:role_id', AsyncMiddleware(dettachRole));
 router.get('/:user_id/permissions', AsyncMiddleware(getPermissions));
 router.get('/:user_id/roles', AsyncMiddleware(getRoles));
+router.post('/list', AsyncMiddleware(list));
+router.post('/:user_id/projects', AsyncMiddleware(addProject));
+router.delete('/:user_id/projects', AsyncMiddleware(deleteProject));
+
+async function deleteProject(req, res) {
+  const userId = req.params.user_id;
+  const projectId = req.query.project_id;
+  const repository = new UserRepository();
+  const user = await repository
+    .where('id', userId)
+    .with('project')
+    .first();
+  if (!user) {
+    throw new NotFoundException('User');
+  }
+  let check = false;
+  const listProject = await user.getProjects();
+  _.forEach(listProject, item => {
+    if (parseInt(item.id) === parseInt(projectId)) {
+      check = true;
+    }
+  });
+  if (!check) {
+    throw new Exception('Project not exists', 1000);
+  }
+  const project = await App.make(ProjectRepository).findById(projectId);
+  if (!project) {
+    throw new NotFoundException('Project');
+  }
+  await user.removeProject(project);
+  await user.reload();
+  res.json(ApiResponse.item(user, new UserTransformer(['projects'])));
+}
+
+async function addProject(req, res) {
+  const userId = req.params.user_id;
+  const projectId = req.body.project_id;
+  const repository = new UserRepository();
+  const user = await repository
+    .where('id', userId)
+    .with('project')
+    .first();
+  if (!user) {
+    throw new NotFoundException('User');
+  }
+  const listProject = await user.getProjects();
+  _.forEach(listProject, item => {
+    if (item.id === projectId) {
+      throw new Exception('user exists project', 1000);
+    }
+  });
+  const project = await App.make(ProjectRepository).findById(projectId);
+  if (!project) {
+    throw new NotFoundException('Project');
+  }
+  await user.addProject(project);
+  await user.reload();
+  res.json(ApiResponse.item(user, new UserTransformer(['projects'])));
+}
+
+async function list(req, res) {
+  const repository = new UserRepository();
+  repository.applyConstraintsFromRequest();
+  repository.applySearchFromRequest(['name']);
+  repository.applyOrderFromRequest();
+  const result = await repository.get();
+  res.json(ApiResponse.collection(result, new UserTransformer()));
+}
 
 async function index(req, res) {
   const repository = new UserRepository();
@@ -60,7 +129,6 @@ async function show(req, res) {
   const userId = req.params.id;
   const repository = new UserRepository();
   const user = await repository.where('id', userId).first();
-
   if (!user) {
     throw new NotFoundException('User');
   }
@@ -78,7 +146,10 @@ async function store(req, res) {
   const role = await App.make(RoleRepository).findById(Request.get('role_id'));
 
   const repository = new UserRepository();
-
+  const item = await repository.where('email', req.body.email).first();
+  if (item) {
+    throw new Exception('User exitsts', 4008);
+  }
   const data = {
     email: Request.get('email'),
     password: new PasswordUtil().encrypt(req.body.password),
@@ -232,8 +303,6 @@ async function saveUserRole(req, res) {
 async function dettachRole(req, res) {
   const user_id = req.params.user_id;
   const role_id = req.params.role_id;
-
-  console.log(user_id, role_id);
 
   const repository = new RoleUserRepository();
 
