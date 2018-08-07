@@ -86,7 +86,8 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  App.make(ProjectRepository).deleteById(req.params.id);
+  const id = req.params.id;
+  App.make(ProjectRepository).deleteById(id);
   res.json(ApiResponse.success());
 }
 
