@@ -16,6 +16,26 @@ export class RemoteServer {
     return this;
   }
 
+  async runCommand(project_id, command) {
+    try {
+      const project = await App.make(ProjectRepository).findById(project_id);
+      const host = await project.getHost();
+      const framework = await project.getFramework();
+      const data = {
+        website: project.name,
+        command: command
+      };
+      const url = `http://${host.name}/${framework.name}/command`;
+      const result = await this.axios.post(url, data);
+      return result;
+    } catch (e) {
+      if (e.response) {
+        throw new Exception(e.response.data.message, e.response.data.error_code);
+      }
+      throw new Exception(e.message, e.error_code);
+    }
+  }
+
   async downloadCode(project_id, res) {
     try {
       const project = await App.make(ProjectRepository).findById(project_id);

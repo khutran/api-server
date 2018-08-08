@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.get('/:id/download/database', AsyncMiddleware(downloadDb));
 router.get('/:id/download/source', AsyncMiddleware(downloadCode));
+router.post('/:id/command', AsyncMiddleware(runCommand));
 
 router.all('*', AuthMiddleware);
 
@@ -31,6 +32,14 @@ router.delete('/:id', AsyncMiddleware(deleteProject));
 router.delete('/:id/db', AsyncMiddleware(deleteDb));
 router.put('/:id/db', AsyncMiddleware(updateDb));
 router.get('/:id/config', AsyncMiddleware(getConfig));
+
+async function runCommand(req, res) {
+  const id = req.params.id;
+  const command = req.body.command;
+  const result = await App.make(RemoteServer).runCommand(id, command);
+
+  res.json(ApiResponse.item(result, new AxiosRemoteServerTransformer()));
+}
 
 async function downloadCode(req, res) {
   let id = req.params.id;
