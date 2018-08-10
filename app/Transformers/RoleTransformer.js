@@ -15,7 +15,7 @@ export default class StatusTransformer extends Transformer {
     };
   }
 
-  includePermissions(model) {
+  includePermission(model) {
     return this.item(model.permissions, new PermissionsTranformer());
   }
 }

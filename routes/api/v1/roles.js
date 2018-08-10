@@ -74,7 +74,7 @@ async function getRoleById(req, res) {
     throw new Exception('Role not found', 1000);
   }
 
-  res.json(ApiResponse.item(role, new RoleTransformer(['permissions'])));
+  res.json(ApiResponse.item(role, new RoleTransformer(['permission'])));
 }
 
 async function store(req, res) {

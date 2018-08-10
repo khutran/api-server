@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       slug: DataTypes.STRING,
       level: DataTypes.INTEGER,
-      permissions: DataTypes.JSON,
       description: DataTypes.TEXT
     },
     {
@@ -16,7 +15,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  // Role.associate = models => {};
+  Role.associate = models => {
+    Role.belongsToMany(models.permissions, { through: 'permission_role' });
+
+    Role.addScope(
+      'defaultScope',
+      {
+        include: [{ model: models.permissions, through: 'permission_role' }]
+      },
+      { override: true }
+    );
+  };
 
   return Role;
 };
