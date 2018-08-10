@@ -16,6 +16,38 @@ export class RemoteServer {
     return this;
   }
 
+  async importDb(project_id) {
+    try {
+      const project = await App.make(ProjectRepository).findById(project_id);
+      const host = await project.getHost();
+      const framework = await project.getFramework();
+      const url = `http://${host.name}/${framework.name}/database/import`;
+      const result = await this.axios.put(url, { website: project.name });
+      return result;
+    } catch (e) {
+      if (e.response) {
+        throw new Exception(e.response.data.message, e.response.data.error_code);
+      }
+      throw new Exception(e.message, e.error_code);
+    }
+  }
+
+  async runBuild(project_id) {
+    try {
+      const project = await App.make(ProjectRepository).findById(project_id);
+      const host = await project.getHost();
+      const framework = await project.getFramework();
+      const url = `http://${host.name}/${framework.name}/build/runbuild`;
+      const result = await this.axios.post(url, { website: project.name });
+      return result;
+    } catch (e) {
+      if (e.response) {
+        throw new Exception(e.response.data.message, e.response.data.error_code);
+      }
+      throw new Exception(e.message, e.error_code);
+    }
+  }
+
   async runCommand(project_id, command) {
     try {
       const project = await App.make(ProjectRepository).findById(project_id);
@@ -133,7 +165,6 @@ export class RemoteServer {
 
   async pull(project_id) {
     try {
-      console.log(project_id);
       const project = await App.make(ProjectRepository).findById(project_id);
       const host = await project.getHost();
       const framework = await project.getFramework();

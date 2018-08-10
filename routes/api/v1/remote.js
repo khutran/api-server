@@ -31,7 +31,20 @@ router.get('/:id/info', AsyncMiddleware(info));
 router.delete('/:id', AsyncMiddleware(deleteProject));
 router.delete('/:id/db', AsyncMiddleware(deleteDb));
 router.put('/:id/db', AsyncMiddleware(updateDb));
-router.get('/:id/config', AsyncMiddleware(getConfig));
+router.post('/:id/run-build', AsyncMiddleware(runBuild));
+router.put('/:id/import', AsyncMiddleware(importDb));
+
+async function importDb(req, res) {
+  const id = req.params.id;
+  const result = await App.make(RemoteServer).importDb(id);
+  res.json(ApiResponse.item(result, new AxiosRemoteServerTransformer()));
+}
+
+async function runBuild(req, res) {
+  const id = req.params.id;
+  const result = await App.make(RemoteServer).runBuild(id);
+  res.json(ApiResponse.item(result, new AxiosRemoteServerTransformer()));
+}
 
 async function runCommand(req, res) {
   const id = req.params.id;

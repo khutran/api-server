@@ -13,6 +13,7 @@ import FrameworkRepository from '../../../app/Repositories/FrameWorkRepository';
 import CsdlRepository from '../../../app/Repositories/CsdlRepository';
 import ServerRepository from '../../../app/Repositories/ServerRepository';
 import { Exception } from '../../../app/Exceptions/Exception';
+import { Auth } from '../../../app/Services/Facades/Auth';
 
 const router = express.Router();
 
@@ -36,6 +37,15 @@ async function index(req, res) {
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'database', 'git_remote', 'git_branch', 'git_application_key', 'git_application_secret']);
   repository.applyOrderFromRequest();
+  const user = Auth.user();
+
+  if (!(await user.isAdmin())) {
+    repository.whereHas('user', function(q) {
+      q.where('id', Auth.id());
+      return q;
+    });
+  }
+
   const result = await repository.paginate();
   res.json(ApiResponse.paginate(result, new ProjectTransformer(['status', 'host', 'framework', 'csdl', 'categories'])));
 }
