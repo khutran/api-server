@@ -5,7 +5,9 @@ export default class PermissionsTranformer extends Transformer {
     return {
       id: model.id,
       name: model.name,
-      slug: model.slug
+      slug: model.slug,
+      level: model.level,
+      description: model.description
     };
   }
 }
