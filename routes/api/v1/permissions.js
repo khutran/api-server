@@ -13,19 +13,7 @@ let router = express.Router();
 router.all('*', AuthMiddleware);
 
 router.all('*', AuthMiddleware);
-router.get('/', AsyncMiddleware(index));
 router.post('/list', AsyncMiddleware(list));
-
-async function index(req, res) {
-  const repository = new PermissionRepository();
-  repository.applyConstraintsFromRequest();
-  repository.applySearchFromRequest(['name', 'slug']);
-  repository.applyOrderFromRequest();
-
-  const result = await repository.paginate();
-
-  res.json(ApiResponse.paginate(result, new PermissionsTranformer()));
-}
 
 async function list(req, res) {
   const repository = new PermissionRepository();
