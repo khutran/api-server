@@ -12,9 +12,14 @@ export class RemoteClouflare {
     let arrDomain = _.split(subDomain, '.');
     let domain = '';
     let dem = 0;
+    let length = arrDomain.length;
     const list = ['com', 'vn', 'info', 'net', 'org'];
     for (let i in arrDomain) {
-      if (_.indexOf(list, arrDomain[i]) > -1) {
+      if (_.indexOf(list, arrDomain[parseInt(i)]) > -1 && _.indexOf(list, arrDomain[parseInt(i) + 1]) > -1) {
+        domain = `${domain}.${arrDomain[i]}`;
+        dem++;
+      }
+      if (parseInt(i) === length - 1 && _.indexOf(list, arrDomain[parseInt(i)]) > -1) {
         domain = `${domain}.${arrDomain[i]}`;
         dem++;
       }
@@ -48,10 +53,11 @@ export class RemoteClouflare {
     };
     const zonesName = this.getDomain(website);
     const zones = await axios.get(`https://api.cloudflare.com/client/v4/zones?name=${zonesName}`, config);
-    let result = await axios.get(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records?name=${website}`, config);
-    if (_.isEmpty(result.data.result)) {
+    let detail = await axios.get(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records?name=${website}`, config);
+    if (_.isEmpty(detail.data.result)) {
       throw new Exception(`${website} detail not found`, 204);
     }
+    let result = await axios.delete(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records/${detail.data.result[0].id}`, config);
     return result;
   }
 
@@ -75,7 +81,7 @@ export class RemoteClouflare {
     }
     const zonesName = this.getDomain(website);
     const zones = await axios.get(`https://api.cloudflare.com/client/v4/zones?name=${zonesName}`, config);
-    let detail = await axios.get(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records?name=${website}`, config);
+    let detail = await axios.put(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records?name=${website}`, config);
 
     if (_.isEmpty(detail.data.result)) {
       throw new Error('detail not found', 204);
@@ -115,13 +121,12 @@ export class RemoteClouflare {
       priority: 10,
       proxied: false
     };
-
     const zonesName = this.getDomain(website);
     const zones = await axios.get(`https://api.cloudflare.com/client/v4/zones?name=${zonesName}`, config);
     const detail = await axios.get(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records?name=${website}`, config);
 
     if (!_.isEmpty(detail.data.result)) {
-      throw new Error('detail is exits', 500);
+      throw new Error('detail is exits', 204);
     }
 
     let result = await axios.post(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records`, data, config);

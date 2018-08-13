@@ -67,15 +67,14 @@ async function list(req, res) {
 
 async function getRoleById(req, res) {
   const id = req.params.id;
-
   const repository = new RoleRepository();
-  const role = await repository.where('id', id).first();
+  const role = await repository.findById(id);
 
   if (!role) {
     throw new Exception('Role not found', 1000);
   }
 
-  res.json(ApiResponse.item(role, new RoleTransformer(['permissions'])));
+  res.json(ApiResponse.item(role, new RoleTransformer(['permission'])));
 }
 
 async function store(req, res) {

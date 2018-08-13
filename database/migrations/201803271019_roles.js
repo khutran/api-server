@@ -29,9 +29,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      permissions: {
-        type: Sequelize.JSON
-      },
       description: {
         type: Sequelize.TEXT
       },
