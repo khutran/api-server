@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       slug: DataTypes.STRING
     },
     {
-      underscored: true,
-      freezeTableName: true
+      underscored: true
+      // freezeTableName: true
     }
   );
 
