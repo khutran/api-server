@@ -27,6 +27,37 @@ router.put('/:role_id/permissions', AsyncMiddleware(setPermissionsToRole));
 router.delete('/:role_id/permissions', AsyncMiddleware(dettachPermissonFromRole));
 router.delete('/:id', AsyncMiddleware(destroy));
 router.get('/:id/list-users', AsyncMiddleware(listUsers));
+router.put('/:id/permission/attach', AsyncMiddleware(attach));
+router.put('/:id/permission/detach', AsyncMiddleware(detach));
+
+async function detach(req, res) {
+  const role_id = req.params.id;
+  const permission_id = req.body.permission_id;
+  const permission = await App.make(PermissionRepository).findById(permission_id);
+  const repository = new RoleRepository();
+  const role = await repository.findById(role_id);
+  const result = _.find(role.permissions, { slug: permission.slug, name: permission.name });
+  if (!result) {
+    throw new Exception('Role not attach permission', 204);
+  }
+
+  await role.removePermission(permission);
+  res.json(ApiResponse.success());
+}
+
+async function attach(req, res) {
+  const role_id = req.params.id;
+  const permission_id = req.body.permission_id;
+  const permission = await App.make(PermissionRepository).findById(permission_id);
+  const repository = new RoleRepository();
+  const role = await repository.findById(role_id);
+  const result = _.find(role.permissions, { slug: permission.slug, name: permission.name });
+  if (result) {
+    throw new Exception('Role has attach permission', 204);
+  }
+  await role.addPermission(permission);
+  res.json(ApiResponse.success());
+}
 
 async function index(req, res) {
   const repository = new RoleRepository();
