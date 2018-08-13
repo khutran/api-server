@@ -1,6 +1,6 @@
 import Transformer from './Transformer';
 
-export default class PermissionsTranformer extends Transformer {
+export default class PermissionTransformer extends Transformer {
   transform(model) {
     return {
       id: model.id,

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     Role.addScope(
       'defaultScope',
       {
-        include: [{ model: models.permission, through: 'permission_role' }]
+        include: [{ model: models.permission, as: 'permissions', through: 'permission_role' }]
       },
       { override: true }
     );

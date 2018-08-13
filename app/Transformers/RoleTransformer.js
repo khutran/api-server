@@ -1,5 +1,5 @@
 import Transformer from './Transformer';
-import PermissionsTranformer from './PermissionsTransformer';
+import PermissionTransformer from './PermissionTransformer';
 
 export default class StatusTransformer extends Transformer {
   transform(model) {
@@ -15,7 +15,7 @@ export default class StatusTransformer extends Transformer {
     };
   }
 
-  includePermission(model) {
-    return this.item(model.permissions, new PermissionsTranformer());
+  includePermissions(model) {
+    return this.collection(model.permissions, new PermissionTransformer());
   }
 }
