@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
   var User_role = sequelize.define(
-    'user_role',
+    'role_user',
     {
       user_id: DataTypes.INTEGER,
       role_id: DataTypes.INTEGER
