@@ -14,6 +14,7 @@ import CsdlRepository from '../../../app/Repositories/CsdlRepository';
 import ServerRepository from '../../../app/Repositories/ServerRepository';
 import { Exception } from '../../../app/Exceptions/Exception';
 import { Auth } from '../../../app/Services/Facades/Auth';
+import * as _ from 'lodash';
 
 const router = express.Router();
 
@@ -80,17 +81,22 @@ async function create(req, res) {
 
 async function update(req, res) {
   ProjectValidator.isValid(Request.all(), UPDATE_PROJECT_RULE);
+  console.log(req.body);
   const status = await App.make(StatusRepository).findById(Request.get('status_id'));
   const category = await App.make(CategoryRepository).findById(Request.get('category_id'));
   const framework = await App.make(FrameworkRepository).findById(Request.get('framework_id'));
-  const sql_manager = await App.make(CsdlRepository).findById(Request.get('csdl_id'));
   const server = await App.make(ServerRepository).findById(Request.get('server_id'));
+
   const repository = new ProjectRepository();
   const project = await repository.update(Request.all(), req.params.id);
+  if (!_.isNil(Request.get('csdl_id'))) {
+    const sql_manager = await App.make(CsdlRepository).findById(Request.get('csdl_id'));
+    await project.setCsdl(sql_manager);
+  }
   await project.setStatus(status);
   await project.setCategories(category);
   await project.setFramework(framework);
-  await project.setCsdl(sql_manager);
+
   await project.setHost(server);
   res.json(ApiResponse.item(project, new ProjectTransformer()));
 }

@@ -24,6 +24,7 @@ export default class ProjectTransformer extends Transformer {
       build_automatically: model.build_automatically,
       backup: model.backup,
       build_time: model.build_time,
+      cloudflare: model.cloudflare,
       created_at: model.created_at,
       updated_at: model.updated_at
     };

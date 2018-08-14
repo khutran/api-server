@@ -28,7 +28,7 @@ async function list(req, res) {
 
 async function group(req, res) {
   let result = await App.make(PermissionGroupRepository)
-    .with('permission')
+    .with('permissions')
     .get();
   res.json(ApiResponse.collection(result, new PermissionGroupTransformer(['permissions'])));
 }

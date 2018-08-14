@@ -75,14 +75,12 @@ export class RemoteClouflare {
         'Content-Type': 'application/json'
       }
     };
-
     if (_.isNil(data['name']) || _.isNil(data['content'])) {
       throw new Error('name or content not empty', 1000);
     }
     const zonesName = this.getDomain(website);
     const zones = await axios.get(`https://api.cloudflare.com/client/v4/zones?name=${zonesName}`, config);
-    let detail = await axios.put(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records?name=${website}`, config);
-
+    let detail = await axios.get(`https://api.cloudflare.com/client/v4/zones/${zones.data.result[0].id}/dns_records?name=${website}`, config);
     if (_.isEmpty(detail.data.result)) {
       throw new Error('detail not found', 204);
     }

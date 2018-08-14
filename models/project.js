@@ -54,6 +54,12 @@ module.exports = (sequelize, DataTypes) => {
       build_time: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+      },
+      cloudflare: {
+        type: DataTypes.BOOLEAN,
+        validate: {
+          notEmpty: true
+        }
       }
     },
     {
