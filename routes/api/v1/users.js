@@ -126,14 +126,20 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  const userId = req.params.id;
   const repository = new UserRepository();
-  const user = await repository.where('id', userId).first();
-  if (!user) {
-    throw new NotFoundException('User');
-  }
+  let query = repository.where('id', req.params.id);
+  const transformer = new UserTransformer();
 
-  res.json(ApiResponse.item(user, new UserTransformer()));
+  if (Request.has('includes')) {
+    const includes = _.trim(Request.get('includes')).split(',');
+    if (_.includes(includes, 'roles')) {
+      query = repository.with('role');
+      transformer.with('roles');
+    }
+  }
+  const user = await query.firstOrFail();
+
+  res.json(ApiResponse.item(user, transformer));
 }
 
 async function store(req, res) {
