@@ -17,20 +17,12 @@ export default class UpdatePermissionGroupCommand extends Command {
   async handle() {
     const groups = [
       {
-        name: 'Inventory Management',
-        slug: 'inventory_management'
-      },
-      {
-        name: 'Product Management',
-        slug: 'product_management'
+        name: 'Project Management',
+        slug: 'project_management'
       },
       {
         name: 'Account Management',
         slug: 'account_management'
-      },
-      {
-        name: 'Order Management',
-        slug: 'order_management'
       },
       {
         name: 'Other',
@@ -53,270 +45,84 @@ export default class UpdatePermissionGroupCommand extends Command {
 
     const permissions = [
       {
-        name: 'Admin View',
-        slug: 'admin.view',
+        name: 'View User',
+        slug: 'view.user',
         group_slug: 'account_management'
       },
       {
-        name: 'Admin Create',
-        slug: 'admin.create',
+        name: 'Create User',
+        slug: 'create.user',
         group_slug: 'account_management'
       },
       {
-        name: 'Admin Update',
-        slug: 'admin.update',
+        name: 'Update User',
+        slug: 'create.user',
         group_slug: 'account_management'
       },
       {
-        name: 'Admin Delete',
-        slug: 'admin.delete',
+        name: 'Delete User',
+        slug: 'delete.user',
         group_slug: 'account_management'
       },
       {
-        name: 'User View',
-        slug: 'user.view',
+        name: 'Create Role',
+        slug: 'create.role',
         group_slug: 'account_management'
       },
       {
-        name: 'User Create',
-        slug: 'user.create',
+        name: 'Update Role',
+        slug: 'update.role',
         group_slug: 'account_management'
       },
       {
-        name: 'User Update',
-        slug: 'user.update',
+        name: 'View Role',
+        slug: 'view.role',
         group_slug: 'account_management'
       },
       {
-        name: 'User Delete',
-        slug: 'user.delete',
+        name: 'Delete Role',
+        slug: 'delete.role',
         group_slug: 'account_management'
       },
       {
-        name: 'Role View',
-        slug: 'role.view',
-        group_slug: 'account_management'
+        name: 'Create Service',
+        slug: 'create.service',
+        group_slug: 'project_management'
       },
       {
-        name: 'Role Create',
-        slug: 'role.create',
-        group_slug: 'account_management'
+        name: 'Update Service',
+        slug: 'update.service',
+        group_slug: 'project_management'
       },
       {
-        name: 'Role Update',
-        slug: 'role.update',
-        group_slug: 'account_management'
-      },
-
-      {
-        name: 'Role Delete',
-        slug: 'role.delete',
-        group_slug: 'account_management'
+        name: 'View Service',
+        slug: 'view.service',
+        group_slug: 'project_management'
       },
       {
-        name: 'Product View',
-        slug: 'product.view',
-        group_slug: 'product_management'
+        name: 'Delete Service',
+        slug: 'delete.service',
+        group_slug: 'project_management'
       },
       {
-        name: 'Product Create',
-        slug: 'product.create',
-        group_slug: 'product_management'
+        name: 'Create Application',
+        slug: 'create.application',
+        group_slug: 'project_management'
       },
       {
-        name: 'Product Update',
-        slug: 'product.update',
-        group_slug: 'product_management'
+        name: 'Update Application',
+        slug: 'update.application',
+        group_slug: 'project_management'
       },
       {
-        name: 'Product Delete',
-        slug: 'product.delete',
-        group_slug: 'product_management'
+        name: 'View Application',
+        slug: 'view.application',
+        group_slug: 'project_management'
       },
       {
-        name: 'Customer View',
-        slug: 'customer.view',
-        group_slug: 'account_management'
-      },
-      {
-        name: 'Customer Create',
-        slug: 'customer.create',
-        group_slug: 'account_management'
-      },
-      {
-        name: 'Customer Update',
-        slug: 'customer.update',
-        group_slug: 'account_management'
-      },
-      {
-        name: 'Customer Delete',
-        slug: 'customer.delete',
-        group_slug: 'account_management'
-      },
-      {
-        name: 'Category View',
-        slug: 'category.view',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Category Update',
-        slug: 'category.update',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Category Create',
-        slug: 'category.create',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Category Delete',
-        slug: 'category.delete',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Condition View',
-        slug: 'condition.view',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Condition Create',
-        slug: 'condition.create',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Condition Update',
-        slug: 'condition.update',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Condition Delete',
-        slug: 'condition.delete',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Designer View',
-        slug: 'designer.view',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Designer Create',
-        slug: 'designer.create',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Designer Update',
-        slug: 'designer.update',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Designer Delete',
-        slug: 'designer.delete',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Order View',
-        slug: 'order.view',
-        group_slug: 'order_management'
-      },
-      {
-        name: 'Order Create',
-        slug: 'order.create',
-        group_slug: 'order_management'
-      },
-      {
-        name: 'Order Update',
-        slug: 'order.update',
-        group_slug: 'order_management'
-      },
-      {
-        name: 'Order Delete',
-        slug: 'order.delete',
-        group_slug: 'order_management'
-      },
-      {
-        name: 'Size View',
-        slug: 'size.view',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Size Create',
-        slug: 'size.create',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Size Update',
-        slug: 'size.update',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Size Delete',
-        slug: 'size.delete',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Styles View',
-        slug: 'styles.view',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Styles Create',
-        slug: 'styles.create',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Styles Update',
-        slug: 'styles.update',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Styles Delete',
-        slug: 'styles.delete',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Status View',
-        slug: 'status.view',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Status Create',
-        slug: 'status.create',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Status Update',
-        slug: 'status.update',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'Status Delete',
-        slug: 'status.delete',
-        group_slug: 'product_management'
-      },
-      {
-        name: 'View Flaunt Emails',
-        slug: 'flaunt.view.emails',
-        group_slug: 'other'
-      },
-      {
-        name: 'Inventory View',
-        slug: 'inventory.view',
-        group_slug: 'inventory_management'
-      },
-      {
-        name: 'Inventory Create',
-        slug: 'inventory.create',
-        group_slug: 'inventory_management'
-      },
-      {
-        name: 'Inventory Update',
-        slug: 'inventory.update',
-        group_slug: 'inventory_management'
-      },
-      {
-        name: 'Inventory Delete',
-        slug: 'inventory.delete',
-        group_slug: 'inventory_management'
+        name: 'Delete Application',
+        slug: 'delete.application',
+        group_slug: 'project_management'
       }
     ];
 
