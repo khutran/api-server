@@ -16,12 +16,12 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Role.associate = models => {
-    Role.belongsToMany(models.permission, { through: 'permission_role' });
+    Role.belongsToMany(models.permissions, { through: 'permission_role' });
 
     Role.addScope(
       'defaultScope',
       {
-        include: [{ model: models.permission, through: 'permission_role' }]
+        include: [{ model: models.permissions, through: 'permission_role' }]
       },
       { override: true }
     );

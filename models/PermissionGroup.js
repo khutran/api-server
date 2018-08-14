@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   PermissionGroup.associate = models => {
-    PermissionGroup.hasMany(models.permission, { foreignKey: 'group_id' });
+    PermissionGroup.hasMany(models.permissions, { foreignKey: 'group_id' });
   };
 
   return PermissionGroup;

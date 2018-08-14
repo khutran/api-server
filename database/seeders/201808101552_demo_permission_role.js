@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('permission_role', [
@@ -15,7 +16,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        role_id: 1,
+        'role_id': 1,
         permission_id: 3,
         created_at: new Date(),
         updated_at: new Date()
