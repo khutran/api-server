@@ -19,7 +19,7 @@ router.all('*', AuthMiddleware);
 
 router.get('/', AsyncMiddleware(index));
 router.post('/list', AsyncMiddleware(list));
-router.get('/:id', AsyncMiddleware(getRoleById));
+router.get('/:id', AsyncMiddleware(show));
 router.post('/', AsyncMiddleware(store));
 router.put('/:id', AsyncMiddleware(update));
 router.post('/:role_id/permissions', AsyncMiddleware(attachPermissionsToRole));
@@ -27,6 +27,47 @@ router.put('/:role_id/permissions', AsyncMiddleware(setPermissionsToRole));
 router.delete('/:role_id/permissions', AsyncMiddleware(dettachPermissonFromRole));
 router.delete('/:id', AsyncMiddleware(destroy));
 router.get('/:id/list-users', AsyncMiddleware(listUsers));
+router.put('/:id/permission/attach', AsyncMiddleware(attach));
+router.put('/:id/permission/detach', AsyncMiddleware(detach));
+router.put('/:id/permission/sync', AsyncMiddleware(sync));
+
+async function sync(req, res) {
+  const role_id = req.params.id;
+  const permission_ids = req.body.permission_ids;
+
+  const repository = new RoleRepository();
+  const role = await repository.findById(role_id);
+  _.forEach(permission_ids, async id => {
+    await role.addPermission(await App.make(PermissionRepository).findById(id));
+  });
+  res.json(ApiResponse.success());
+}
+
+async function detach(req, res) {
+  const role_id = req.params.id;
+  const permission_id = req.body.permission_id;
+  const permission = await App.make(PermissionRepository).findById(permission_id);
+  const repository = new RoleRepository();
+  const role = await repository.findById(role_id);
+  if (!_.find(role.permissions, { slug: permission.slug, name: permission.name })) {
+    throw new Exception('Role not attach permission', 204);
+  }
+  await role.removePermission(permission);
+  res.json(ApiResponse.success());
+}
+
+async function attach(req, res) {
+  const role_id = req.params.id;
+  const permission_id = req.body.permission_id;
+  const permission = await App.make(PermissionRepository).findById(permission_id);
+  const repository = new RoleRepository();
+  const role = await repository.findById(role_id);
+  if (_.find(role.permissions, { slug: permission.slug, name: permission.name })) {
+    throw new Exception('Role has attach permission', 204);
+  }
+  await role.addPermission(permission);
+  res.json(ApiResponse.success());
+}
 
 async function index(req, res) {
   const repository = new RoleRepository();
@@ -65,16 +106,10 @@ async function list(req, res) {
   res.json(ApiResponse.collection(result, transformer));
 }
 
-async function getRoleById(req, res) {
+async function show(req, res) {
   const id = req.params.id;
-
   const repository = new RoleRepository();
-  const role = await repository.where('id', id).first();
-
-  if (!role) {
-    throw new Exception('Role not found', 1000);
-  }
-
+  const role = await repository.findById(id);
   res.json(ApiResponse.item(role, new RoleTransformer(['permissions'])));
 }
 
@@ -101,17 +136,19 @@ async function setPermissionsToRole(req, res) {
   RoleValidator.isValid(Request.all(), 'setPermissionsToRole');
   const role_id = req.params.role_id;
 
-  const permissions = await App.make(PermissionRepository).get();
-  const available_permissions = _.map(permissions, item => item.slug);
-  _.forEach(Request.get('permissions'), item => {
-    if (!_.includes(available_permissions, item)) {
-      throw new Exception(`${item} is not a valid permission`, 1000);
-    }
-  });
+  const permissions = await App.make(PermissionRepository)
+    .whereIn('slug', Request.get('permissions'))
+    .get();
+  // const available_permissions = _.map(permissions, item => item.slug);
+  // _.forEach(Request.get('permissions'), item => {
+  //   if (!_.includes(available_permissions, item)) {
+  //     throw new Exception(`${item} is not a valid permission`, 1000);
+  //   }
+  // });
 
   const role = await App.make(RoleRepository).findById(role_id);
 
-  const result = await role.update({ permissions: Request.get('permissions') });
+  const result = await role.setPermissions(permissions);
 
   res.json(ApiResponse.item(result, new RoleTransformer(['permissions'])));
 }

@@ -1,4 +1,5 @@
 import Transformer from './Transformer';
+import PermissionTransformer from './PermissionTransformer';
 
 export default class StatusTransformer extends Transformer {
   transform(model) {
@@ -12,5 +13,9 @@ export default class StatusTransformer extends Transformer {
       created_at: model.created_at,
       updated_at: model.updated_at
     };
+  }
+
+  includePermissions(model) {
+    return this.collection(model.permissions, new PermissionTransformer());
   }
 }

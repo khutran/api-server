@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import models from '../models';
+// import models from '../models';
 
 module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define(
@@ -68,6 +68,23 @@ module.exports = (sequelize, DataTypes) => {
         });
     });
   };
+
+  User.prototype.isAdmin = function() {
+    return new Promise((resolve, reject) => {
+      this.getRoles({ where: { slug: 'superadmin' } })
+        .then(result => {
+          if (!_.isNil(result) && !_.isUndefined(_.find(result, item => item.slug === 'superadmin'))) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  };
+
   User.prototype.notify = function(notification) {
     const _this = this;
     notification.setNotifiable(_this);

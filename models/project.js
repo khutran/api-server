@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true
         }
       },
+      category_id: DataTypes.INTEGER,
+      framework_id: DataTypes.INTEGER,
+      csdl_id: DataTypes.INTEGER,
+      status_id: DataTypes.INTEGER,
       git_remote: {
         type: DataTypes.STRING,
         validate: {
@@ -63,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
     Project.belongsTo(models.host);
     Project.belongsTo(models.framework);
     Project.belongsTo(models.csdl);
+    Project.hasOne(models.build);
     Project.belongsTo(models.category, { as: 'categories', foreignKey: 'category_id' });
     Project.belongsToMany(models.user, { through: 'user_project' });
 
