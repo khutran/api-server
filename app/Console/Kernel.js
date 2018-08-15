@@ -8,6 +8,7 @@ import MakeTransformerCommand from './Commands/MakeTransformerCommand';
 import CreateRouterCommand from './Commands/CreateRouterCommand';
 import UpdateProjectTableDataCommand from './Commands/UpdateProjectTableDataCommand';
 import UpdatePermissionGroupCommand from './Commands/UpdatePermissionGroupCommnand';
+import UpdateProjectTableBuildtimeAndCloudflareCommand from './Commands/UpdateProjectTableBuildtimeAndCloudflareCommand';
 
 export class Kernel {
   commands() {
@@ -21,7 +22,8 @@ export class Kernel {
       MakeTransformerCommand,
       CreateRouterCommand,
       UpdateProjectTableDataCommand,
-      UpdatePermissionGroupCommand
+      UpdatePermissionGroupCommand,
+      UpdateProjectTableBuildtimeAndCloudflareCommand
     ];
   }
 }
