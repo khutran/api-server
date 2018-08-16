@@ -60,7 +60,7 @@ export default class UpdatePermissionGroupCommand extends Command {
       },
       {
         name: 'Update User',
-        slug: 'create.user',
+        slug: 'update.user',
         group_slug: 'account_management'
       },
       {

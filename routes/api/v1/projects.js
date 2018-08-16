@@ -20,12 +20,18 @@ import ProjectPermission from '../../../app/Permission/ProjectPermission';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
+router.get('/view', AsyncMiddleware(view));
 router.get('/', AsyncMiddleware(index));
 router.get('/:id', AsyncMiddleware(show));
 router.post('/', AsyncMiddleware(create));
 router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 router.get('/:id/user', AsyncMiddleware(litUser));
+
+async function view(req, res) {
+  const result = await new ProjectPermission().view();
+  res.json({ data: { success: result } });
+}
 
 async function litUser(req, res) {
   await new ProjectPermission().get();

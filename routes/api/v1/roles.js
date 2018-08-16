@@ -17,7 +17,7 @@ import RolePermission from '../../../app/Permission/RolePermission';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
-
+router.get('/view', AsyncMiddleware(view));
 router.get('/', AsyncMiddleware(index));
 router.post('/list', AsyncMiddleware(list));
 router.get('/:id', AsyncMiddleware(show));
@@ -31,6 +31,11 @@ router.get('/:id/list-users', AsyncMiddleware(listUsers));
 router.put('/:id/permission/attach', AsyncMiddleware(attach));
 router.put('/:id/permission/detach', AsyncMiddleware(detach));
 router.put('/:id/permission/sync', AsyncMiddleware(sync));
+
+async function view(req, res) {
+  const result = await new RolePermission().view();
+  res.json({ data: { success: result } });
+}
 
 async function sync(req, res) {
   await new RolePermission().update();

@@ -25,4 +25,10 @@ export default class FrameworkPermission extends Permission {
     await this.checkPermisson(permission);
     return this;
   }
+
+  async view() {
+    const permission = [AvailablePermissions.VIEW_FRAMEWORK];
+    const result = await this.checkView(permission);
+    return result;
+  }
 }

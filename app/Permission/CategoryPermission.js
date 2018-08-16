@@ -25,4 +25,10 @@ export default class CategoryPermission extends Permission {
     await this.checkPermisson(permission);
     return this;
   }
+
+  async view() {
+    const permission = [AvailablePermissions.VIEW_CATEGORY];
+    const result = await this.checkView(permission);
+    return result;
+  }
 }

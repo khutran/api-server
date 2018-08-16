@@ -33,4 +33,18 @@ export default class Permission {
       throw new Exception('Forbidden', 403);
     }
   }
+
+  async checkView(permission) {
+    let arr = [];
+    _.forEach(await this.PermissionUser(), item => {
+      if (!_.isUndefined(_.find(permission, i => i === item.slug))) {
+        arr.push(_.find(permission, i => i === item.slug));
+      }
+    });
+    if (_.isEmpty(arr)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

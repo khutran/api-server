@@ -14,8 +14,14 @@ let router = express.Router();
 router.all('*', AuthMiddleware);
 
 router.all('*', AuthMiddleware);
+router.get('/view', AsyncMiddleware(view));
 router.get('/group', AsyncMiddleware(group));
 router.post('/list', AsyncMiddleware(list));
+
+async function view(req, res) {
+  const result = await new PermissionPermission().view();
+  res.json({ data: { success: result } });
+}
 
 async function list(req, res) {
   await new PermissionPermission().get();

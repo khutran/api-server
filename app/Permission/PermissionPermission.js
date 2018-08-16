@@ -25,4 +25,10 @@ export default class PermissionPermission extends Permission {
     await this.checkPermisson(permission);
     return this;
   }
+
+  async view() {
+    const permission = [AvailablePermissions.VIEW_PERMISSION];
+    const result = await this.checkView(permission);
+    return result;
+  }
 }

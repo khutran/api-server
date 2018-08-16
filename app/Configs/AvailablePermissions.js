@@ -19,12 +19,10 @@ const AvailablePermissions = {
   UPDATE_SERVICE: 'update.service',
   DELETE_SERVICE: 'delete.service',
 
-  VIEW_CLOUDFLARE: 'view.cloudflare',
   CREATE_CLOUDFLARE: 'create.cloudflare',
   UPDATE_CLOUDFLARE: 'update.cloudflare',
   DELETE_CLOUDFLARE: 'delete.cloudflare',
 
-  VIEW_REMOTE: 'view.remote',
   CREATE_REMOTE: 'create.remote',
   UPDATE_REMOTE: 'update.remote',
   DELETE_REMOTE: 'delete.remote',
@@ -43,6 +41,11 @@ const AvailablePermissions = {
   GET_PROJECT: 'get.project',
   GET_SERVICE: 'get.category',
   GET_REMOTE: 'get.romote',
-  GET_CLOUDFLARE: 'get.cloudflare'
+  GET_CLOUDFLARE: 'get.cloudflare',
+
+  VIEW_CATEGORY: 'view.category',
+  VIEW_FRAMEWORK: 'view.framework',
+  VIEW_STATUS: 'view.status',
+  VIEW_SERVER: 'view.server'
 };
 export default AvailablePermissions;

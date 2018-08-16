@@ -12,12 +12,18 @@ import ServerPermission from '../../../app/Permission/ServerPermission';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
+router.get('/view', AsyncMiddleware(view));
 router.get('/', AsyncMiddleware(index));
 router.post('/list', AsyncMiddleware(list));
 router.get('/:id', AsyncMiddleware(show));
 router.post('/', AsyncMiddleware(create));
 router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
+
+async function view(req, res) {
+  const result = await new ServerPermission().view();
+  res.json({ data: { success: result } });
+}
 
 async function index(req, res) {
   await new ServerPermission().get();

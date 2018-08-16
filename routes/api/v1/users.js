@@ -23,7 +23,7 @@ import UserPermission from '../../../app/Permission/UserPermission';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
-
+router.get('/view', AsyncMiddleware(view));
 router.get('/', AsyncMiddleware(index));
 router.get('/:id', AsyncMiddleware(show));
 router.post('/', AsyncMiddleware(store));
@@ -38,6 +38,11 @@ router.get('/:user_id/roles', AsyncMiddleware(getRoles));
 router.post('/list', AsyncMiddleware(list));
 router.post('/:user_id/projects', AsyncMiddleware(addProject));
 router.delete('/:user_id/projects', AsyncMiddleware(deleteProject));
+
+async function view(req, res) {
+  const result = await new UserPermission().view();
+  res.json({ data: { success: result } });
+}
 
 async function deleteProject(req, res) {
   await new UserPermission().delete();
