@@ -19,7 +19,7 @@ import PasswordUtil from '../../../app/Utils/PasswordUtil';
 import { BadRequestHttpException } from '../../../app/Exceptions/BadRequestHttpException';
 import ProjectRepository from '../../../app/Repositories/ProjectRepository';
 import UserPermission from '../../../app/Permission/UserPermission';
-
+import ViewPermissionTransformer from '../../../app/Transformers/ViewPermissionTransformer';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -40,12 +40,19 @@ router.post('/:user_id/projects', AsyncMiddleware(addProject));
 router.delete('/:user_id/projects', AsyncMiddleware(deleteProject));
 
 async function view(req, res) {
-  const result = await new UserPermission().view();
-  res.json({ data: { success: result } });
+  const data = {
+    view: await new UserPermission().view().checkView(),
+    create: await new UserPermission().create().checkView(),
+    get: await new UserPermission().get().checkView(),
+    update: await new UserPermission().update().checkView(),
+    delete: await new UserPermission().delete().checkView()
+  };
+
+  res.json(ApiResponse.item(data, new ViewPermissionTransformer()));
 }
 
 async function deleteProject(req, res) {
-  await new UserPermission().delete();
+  await new UserPermission().delete().checkPermisson();
   const userId = req.params.user_id;
   const projectId = req.query.project_id;
   const repository = new UserRepository();
@@ -76,7 +83,7 @@ async function deleteProject(req, res) {
 }
 
 async function addProject(req, res) {
-  await new UserPermission().create();
+  await new UserPermission().create().checkPermisson();
   const userId = req.params.user_id;
   const projectId = req.body.project_id;
   const repository = new UserRepository();
@@ -103,7 +110,7 @@ async function addProject(req, res) {
 }
 
 async function list(req, res) {
-  await new UserPermission().get();
+  await new UserPermission().get().checkPermisson();
   const repository = new UserRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -113,7 +120,7 @@ async function list(req, res) {
 }
 
 async function index(req, res) {
-  await new UserPermission().get();
+  await new UserPermission().get().checkPermisson();
   const repository = new UserRepository();
 
   repository.applySearchFromRequest(['email']);
@@ -136,7 +143,7 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  await new UserPermission().get();
+  await new UserPermission().get().checkPermisson();
   const repository = new UserRepository();
   let query = repository.where('id', req.params.id);
   const transformer = new UserTransformer();
@@ -154,7 +161,7 @@ async function show(req, res) {
 }
 
 async function store(req, res) {
-  await new UserPermission().create();
+  await new UserPermission().create().checkPermisson();
   if (Request.get('password') !== Request.get('re_password')) {
     throw new Error('Password does not match', 1000);
   }
@@ -182,7 +189,7 @@ async function store(req, res) {
 }
 
 async function update(req, res) {
-  await new UserPermission().update();
+  await new UserPermission().update().checkPermisson();
   const user_id = req.params.id;
   const repository = new UserRepository();
   const user = await repository.findById(user_id);
@@ -205,7 +212,7 @@ async function update(req, res) {
 }
 
 async function updateMyProfile(req, res) {
-  await new UserPermission().update();
+  await new UserPermission().update().checkPermisson();
   const id = Auth.user().id;
   const changes = { updated_at: new Date() };
 
@@ -217,7 +224,7 @@ async function updateMyProfile(req, res) {
 }
 
 async function updateUserFn(id, data) {
-  await new UserPermission().update();
+  await new UserPermission().update().checkPermisson();
   let user = null;
   if (!data.email) {
     user = await App.make(UserRepository).updateOrCreate(data, { id });
@@ -256,7 +263,7 @@ async function updateUserFn(id, data) {
 }
 
 async function destroy(req, res) {
-  await new UserPermission().delete();
+  await new UserPermission().delete().checkPermisson();
   const id = req.params.id;
   const repository = new UserRepository();
   const user = await repository.findById(id);
@@ -268,6 +275,7 @@ async function destroy(req, res) {
 }
 
 async function attachRole(req, res) {
+  await new UserPermission().update().checkPermisson();
   const user_id = req.params.user_id;
   const role_id = req.body.role_id;
 
@@ -297,6 +305,7 @@ async function attachRole(req, res) {
  * @return ApiResponse
  */
 async function saveUserRole(req, res) {
+  await new UserPermission().update().checkPermisson();
   const userId = req.body.user_id;
   const roleIds = req.body.role_ids;
   const roles = await App.make(RoleRepository)
@@ -323,6 +332,7 @@ async function saveUserRole(req, res) {
  */
 
 async function dettachRole(req, res) {
+  await new UserPermission().delete().checkPermisson();
   const user_id = req.params.user_id;
   const role_id = req.params.role_id;
 
@@ -355,6 +365,7 @@ async function dettachRole(req, res) {
 }
 
 async function getPermissions(req, res) {
+  await new UserPermission().get().checkPermisson();
   const user_id = req.params.user_id;
   const repository = new UserRepository();
   let permissions = [];
@@ -378,6 +389,7 @@ async function getPermissions(req, res) {
  * @return ApiResponse.array
  */
 async function getRoles(req, res) {
+  await new UserPermission().get().checkPermisson();
   const user_id = req.params.user_id;
   const roles_users = await App.make(RoleUserRepository)
     .orderBy('id', 'DESC')

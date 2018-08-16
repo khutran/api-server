@@ -8,7 +8,7 @@ import PermissionGroupRepository from '../../../app/Repositories/PermissionGroup
 import PermissionGroupTransformer from '../../../app/Transformers/PermissionGroupTransformer';
 import { App } from '../../../app/Services/App';
 import PermissionPermission from '../../../app/Permission/PermissionPermission';
-
+import ViewPermissionTransformer from '../../../app/Transformers/ViewPermissionTransformer';
 let router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -19,12 +19,19 @@ router.get('/group', AsyncMiddleware(group));
 router.post('/list', AsyncMiddleware(list));
 
 async function view(req, res) {
-  const result = await new PermissionPermission().view();
-  res.json({ data: { success: result } });
+  const data = {
+    view: await new PermissionPermission().view().checkView(),
+    create: await new PermissionPermission().create().checkView(),
+    get: await new PermissionPermission().get().checkView(),
+    update: await new PermissionPermission().update().checkView(),
+    delete: await new PermissionPermission().delete().checkView()
+  };
+
+  res.json(ApiResponse.item(data, new ViewPermissionTransformer()));
 }
 
 async function list(req, res) {
-  await new PermissionPermission().get();
+  await new PermissionPermission().get().checkPermisson();
   const repository = new PermissionRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'slug']);
@@ -36,7 +43,7 @@ async function list(req, res) {
 }
 
 async function group(req, res) {
-  await new PermissionPermission().get();
+  await new PermissionPermission().get().checkPermisson();
   let result = await App.make(PermissionGroupRepository)
     .with('permissions')
     .get();

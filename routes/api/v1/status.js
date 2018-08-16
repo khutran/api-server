@@ -8,7 +8,7 @@ import { StatusValidator, UPDATE_STATUS_RULE, CREATE_STATUS_RULE } from '../../.
 import { Request } from '../../../app/Services/Facades/Request';
 import { App } from '../../../app/Services/App';
 import StatusPermission from '../../../app/Permission/StatusPermission';
-
+import ViewPermissionTransformer from '../../../app/Transformers/ViewPermissionTransformer';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -21,12 +21,19 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function view(req, res) {
-  const result = await new StatusPermission().view();
-  res.json({ data: { success: result } });
+  const data = {
+    view: await new StatusPermission().view().checkView(),
+    create: await new StatusPermission().create().checkView(),
+    get: await new StatusPermission().get().checkView(),
+    update: await new StatusPermission().update().checkView(),
+    delete: await new StatusPermission().delete().checkView()
+  };
+
+  res.json(ApiResponse.item(data, new ViewPermissionTransformer()));
 }
 
 async function index(req, res) {
-  await new StatusPermission().get();
+  await new StatusPermission().get().checkPermisson();
   const repository = new StatusRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -36,7 +43,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new StatusPermission().get();
+  await new StatusPermission().get().checkPermisson();
   const repository = new StatusRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -46,7 +53,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new StatusPermission().get();
+  await new StatusPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new StatusRepository();
   const result = await repository.findById(id);
@@ -54,7 +61,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new StatusPermission().create();
+  await new StatusPermission().create().checkPermisson();
   StatusValidator.isValid(Request.all(), CREATE_STATUS_RULE);
   const repository = new StatusRepository();
   const result = await repository.create(Request.all());
@@ -62,7 +69,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new StatusPermission().update();
+  await new StatusPermission().update().checkPermisson();
   StatusValidator.isValid(Request.all(), UPDATE_STATUS_RULE);
   const repository = new StatusRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -70,7 +77,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new StatusPermission().delete();
+  await new StatusPermission().delete().checkPermisson();
   App.make(StatusRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }

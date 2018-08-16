@@ -16,7 +16,7 @@ import { Exception } from '../../../app/Exceptions/Exception';
 import { Auth } from '../../../app/Services/Facades/Auth';
 import * as _ from 'lodash';
 import ProjectPermission from '../../../app/Permission/ProjectPermission';
-
+import ViewPermissionTransformer from '../../../app/Transformers/ViewPermissionTransformer';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -29,12 +29,19 @@ router.delete('/:id', AsyncMiddleware(destroy));
 router.get('/:id/user', AsyncMiddleware(litUser));
 
 async function view(req, res) {
-  const result = await new ProjectPermission().view();
-  res.json({ data: { success: result } });
+  const data = {
+    view: await new ProjectPermission().view().checkView(),
+    create: await new ProjectPermission().create().checkView(),
+    get: await new ProjectPermission().get().checkView(),
+    update: await new ProjectPermission().update().checkView(),
+    delete: await new ProjectPermission().delete().checkView()
+  };
+
+  res.json(ApiResponse.item(data, new ViewPermissionTransformer()));
 }
 
 async function litUser(req, res) {
-  await new ProjectPermission().get();
+  await new ProjectPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new ProjectRepository();
   const result = await repository.withScope('listUser-Scope').findById(id);
@@ -42,7 +49,7 @@ async function litUser(req, res) {
 }
 
 async function index(req, res) {
-  await new ProjectPermission().get();
+  await new ProjectPermission().get().checkPermisson();
   const repository = new ProjectRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'database', 'git_remote', 'git_branch', 'git_application_key', 'git_application_secret']);
@@ -61,7 +68,7 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  await new ProjectPermission().get();
+  await new ProjectPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new ProjectRepository();
   const result = await repository.findById(id);
@@ -69,7 +76,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new ProjectPermission().create();
+  await new ProjectPermission().create().checkPermisson();
   ProjectValidator.isValid(Request.all(), CREATE_PROJECT_RULE);
   const status = await App.make(StatusRepository).findById(Request.get('status_id'));
   const category = await App.make(CategoryRepository).findById(Request.get('category_id'));
@@ -91,7 +98,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new ProjectPermission().update();
+  await new ProjectPermission().update().checkPermisson();
   ProjectValidator.isValid(Request.all(), UPDATE_PROJECT_RULE);
   console.log(req.body);
   const status = await App.make(StatusRepository).findById(Request.get('status_id'));
@@ -114,7 +121,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new ProjectPermission().delete();
+  await new ProjectPermission().delete().checkPermisson();
   const id = req.params.id;
   App.make(ProjectRepository).deleteById(id);
   res.json(ApiResponse.success());

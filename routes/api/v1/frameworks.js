@@ -8,6 +8,7 @@ import { FrameworkValidator, CREATE_FRAMEWORK_RULE, UPDATE_FRAMEWORK_RULE } from
 import { Request } from '../../../app/Services/Facades/Request';
 import { App } from '../../../app/Services/App';
 import FrameworkPermission from '../../../app/Permission/FrameworkPermission';
+import ViewPermissionTransformer from '../../../app/Transformers/ViewPermissionTransformer';
 
 const router = express.Router();
 
@@ -21,12 +22,19 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function view(req, res) {
-  const result = await new FrameworkPermission().view();
-  res.json({ data: { success: result } });
+  const data = {
+    view: await new FrameworkPermission().view().checkView(),
+    create: await new FrameworkPermission().create().checkView(),
+    get: await new FrameworkPermission().get().checkView(),
+    update: await new FrameworkPermission().update().checkView(),
+    delete: await new FrameworkPermission().delete().checkView()
+  };
+
+  res.json(ApiResponse.item(data, new ViewPermissionTransformer()));
 }
 
 async function index(req, res) {
-  await new FrameworkPermission().get();
+  await new FrameworkPermission().get().checkPermisson();
   const repository = new FrameworkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -36,7 +44,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new FrameworkPermission().get();
+  await new FrameworkPermission().get().checkPermisson();
   const repository = new FrameworkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -46,6 +54,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
+  await new FrameworkPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new FrameworkRepository();
   const result = await repository.findById(id);
@@ -53,7 +62,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new FrameworkPermission().create();
+  await new FrameworkPermission().create().checkPermisson();
   FrameworkValidator.isValid(Request.all(), CREATE_FRAMEWORK_RULE);
   const repository = new FrameworkRepository();
   const result = await repository.create(Request.all());
@@ -61,7 +70,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new FrameworkPermission().update();
+  await new FrameworkPermission().update().checkPermisson();
   FrameworkValidator.isValid(Request.all(), UPDATE_FRAMEWORK_RULE);
   const repository = new FrameworkRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -69,7 +78,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new FrameworkPermission().delete();
+  await new FrameworkPermission().delete().checkPermisson();
   App.make(FrameworkRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }

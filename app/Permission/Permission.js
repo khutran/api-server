@@ -5,6 +5,7 @@ import { Exception } from '../Exceptions/Exception';
 export default class Permission {
   constructor() {
     this.pass = false;
+    this.permission = [];
   }
 
   async PermissionUser() {
@@ -18,15 +19,15 @@ export default class Permission {
     });
   }
 
-  async checkPermisson(permission) {
+  async checkPermisson() {
     let arr = [];
     _.forEach(await this.PermissionUser(), item => {
-      if (!_.isUndefined(_.find(permission, i => i === item.slug))) {
-        arr.push(_.find(permission, i => i === item.slug));
+      if (!_.isUndefined(_.find(this.permission, i => i === item.slug))) {
+        arr.push(_.find(this.permission, i => i === item.slug));
       }
     });
 
-    if (_.isEqual(permission.sort(), arr.sort())) {
+    if (_.isEqual(this.permission.sort(), arr.sort())) {
       this.pass = true;
     }
     if (this.pass === false) {
@@ -34,11 +35,11 @@ export default class Permission {
     }
   }
 
-  async checkView(permission) {
+  async checkView() {
     let arr = [];
     _.forEach(await this.PermissionUser(), item => {
-      if (!_.isUndefined(_.find(permission, i => i === item.slug))) {
-        arr.push(_.find(permission, i => i === item.slug));
+      if (!_.isUndefined(_.find(this.permission, i => i === item.slug))) {
+        arr.push(_.find(this.permission, i => i === item.slug));
       }
     });
     if (_.isEmpty(arr)) {

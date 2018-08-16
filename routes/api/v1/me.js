@@ -22,7 +22,7 @@ router.get('/', AsyncMiddleware(profile));
  * @return ApiResponse.item
  */
 async function profile(req, res) {
-  await new UserPermission().get();
+  await new UserPermission().get().checkPermisson();
   const user = await Auth.user();
   const repository = new UserRepository();
   const transformer = new UserTransformer();

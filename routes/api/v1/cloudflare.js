@@ -18,7 +18,7 @@ router.delete('/dns', AsyncMiddleware(deleteDetails));
 
 async function getDetailsOfDns(req, res) {
   try {
-    await new CloudflarePermission().get();
+    await new CloudflarePermission().get().checkPermisson();
     const name = req.query.name;
     const result = await App.make(RemoteClouflare).getDetailsOfDns(name);
 
@@ -34,7 +34,7 @@ async function getDetailsOfDns(req, res) {
 
 async function deleteDetails(req, res) {
   try {
-    await new CloudflarePermission().delete();
+    await new CloudflarePermission().delete().checkPermisson();
     const name = req.query.name;
 
     const result = await App.make(RemoteClouflare).deleteDetails(name);
@@ -51,7 +51,7 @@ async function deleteDetails(req, res) {
 
 async function updateDns(req, res) {
   try {
-    await new CloudflarePermission().update();
+    await new CloudflarePermission().update().checkPermisson();
     const ip = req.body.ip;
     const name = req.query.name;
 
@@ -69,7 +69,7 @@ async function updateDns(req, res) {
 
 async function getZoneByname(req, res) {
   try {
-    await new CloudflarePermission().get();
+    await new CloudflarePermission().get().checkPermisson();
     const name = req.query.name;
     const result = await App.make(RemoteClouflare).getZoneByname(name);
 
@@ -85,7 +85,7 @@ async function getZoneByname(req, res) {
 
 async function createDns(req, res) {
   try {
-    await new CloudflarePermission().create();
+    await new CloudflarePermission().create().checkPermisson();
     const name = req.body.name;
     const ip = req.body.ip;
     const result = await App.make(RemoteClouflare).createDns(name, ip);

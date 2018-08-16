@@ -2,27 +2,23 @@ import AvailablePermissions from '../Configs/AvailablePermissions';
 import Permission from './Permission';
 
 export default class RemotePermission extends Permission {
-  async create() {
-    const permission = [AvailablePermissions.CREATE_REMOTE];
-    await this.checkPermisson(permission);
+  create() {
+    this.permission.push(AvailablePermissions.CREATE_REMOTE);
     return this;
   }
 
-  async update() {
-    const permission = [AvailablePermissions.UPDATE_REMOTE];
-    await this.checkPermisson(permission);
+  update() {
+    this.permission.push(AvailablePermissions.UPDATE_REMOTE);
     return this;
   }
 
-  async get() {
-    const permission = [AvailablePermissions.GET_REMOTE];
-    await this.checkPermisson(permission);
+  get() {
+    this.permission.push(AvailablePermissions.GET_REMOTE);
     return this;
   }
 
-  async delete() {
-    const permission = [AvailablePermissions.DELETE_REMOTE];
-    await this.checkPermisson(permission);
+  delete() {
+    this.permission.push(AvailablePermissions.DELETE_REMOTE);
     return this;
   }
 }

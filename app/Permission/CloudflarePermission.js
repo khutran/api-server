@@ -2,27 +2,23 @@ import AvailablePermissions from '../Configs/AvailablePermissions';
 import Permission from './Permission';
 
 export default class CloudflarePermission extends Permission {
-  async create() {
-    const permission = [AvailablePermissions.CREATE_CLOUDFLARE];
-    await this.checkPermisson(permission);
+  create() {
+    this.permission.push(AvailablePermissions.CREATE_CLOUDFLARE);
     return this;
   }
 
-  async update() {
-    const permission = [AvailablePermissions.UPDATE_CLOUDFLARE];
-    await this.checkPermisson(permission);
+  update() {
+    this.permission.push(AvailablePermissions.UPDATE_CLOUDFLARE);
     return this;
   }
 
-  async get() {
-    const permission = [AvailablePermissions.GET_CLOUDFLARE];
-    await this.checkPermisson(permission);
+  get() {
+    this.permission.push(AvailablePermissions.GET_CLOUDFLARE);
     return this;
   }
 
-  async delete() {
-    const permission = [AvailablePermissions.DELETE_CLOUDFLARE];
-    await this.checkPermisson(permission);
+  delete() {
+    this.permission.push(AvailablePermissions.DELETE_CLOUDFLARE);
     return this;
   }
 }
