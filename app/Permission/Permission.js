@@ -10,7 +10,7 @@ export default class Permission {
 
   async PermissionUser() {
     return new Promise(async resolve => {
-      const role = await Auth.user().getRoles();
+      const role = await Auth.user().roles;
       let permission = [];
       _.forEach(role, item => {
         permission = _.concat(permission, item.permissions);
