@@ -123,6 +123,86 @@ export default class UpdatePermissionGroupCommand extends Command {
         name: 'Delete Application',
         slug: 'delete.application',
         group_slug: 'project_management'
+      },
+      {
+        name: 'View Project',
+        slug: 'view.project',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Create Project',
+        slug: 'create.project',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Update Project',
+        slug: 'update.project',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Delete Project',
+        slug: 'delete.project',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'View Cloudflare',
+        slug: 'view.cloudflare',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Create Cloudflare',
+        slug: 'create.cloudflare',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Update Cloudflare',
+        slug: 'update.cloudflare',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Delete Cloudflare',
+        slug: 'delete.cloudflare',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'View Remote',
+        slug: 'view.remote',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Create Remote',
+        slug: 'create.remote',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Update Remote',
+        slug: 'update.remote',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Delete Remote',
+        slug: 'delete.remote',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'View Permission',
+        slug: 'view.permission',
+        group_slug: 'account_management'
+      },
+      {
+        name: 'Create Permission',
+        slug: 'create.permission',
+        group_slug: 'account_management'
+      },
+      {
+        name: 'Update Permission',
+        slug: 'update.permission',
+        group_slug: 'account_management'
+      },
+      {
+        name: 'Delete Permission',
+        slug: 'delete.permission',
+        group_slug: 'account_management'
       }
     ];
 
@@ -134,11 +214,6 @@ export default class UpdatePermissionGroupCommand extends Command {
         .where('slug', item.slug)
         .first();
 
-      await App.make(PermissionRepository)
-        .whereNotIn('id', [permission.id])
-        .where('slug', permission.slug)
-        .delete();
-
       const group = await App.make(PermissionGroupRepository)
         .where('slug', item.group_slug)
         .first();
@@ -148,6 +223,10 @@ export default class UpdatePermissionGroupCommand extends Command {
       if (!permission) {
         await App.make(PermissionRepository).create({ name: item.name, slug: item.slug, group_id: group.id });
       } else {
+        await App.make(PermissionRepository)
+          .whereNotIn('id', [permission.id])
+          .where('slug', permission.slug)
+          .delete();
         await permission.update({ name: item.name, group_id: group.id });
       }
     }

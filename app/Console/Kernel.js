@@ -9,7 +9,7 @@ import CreateRouterCommand from './Commands/CreateRouterCommand';
 import UpdateProjectTableDataCommand from './Commands/UpdateProjectTableDataCommand';
 import UpdatePermissionGroupCommand from './Commands/UpdatePermissionGroupCommnand';
 import UpdateProjectTableBuildtimeAndCloudflareCommand from './Commands/UpdateProjectTableBuildtimeAndCloudflareCommand';
-
+import UpdatePermissionToAdmin from './Commands/UpdatePermissionToAdmin';
 export class Kernel {
   commands() {
     return [
@@ -23,7 +23,8 @@ export class Kernel {
       CreateRouterCommand,
       UpdateProjectTableDataCommand,
       UpdatePermissionGroupCommand,
-      UpdateProjectTableBuildtimeAndCloudflareCommand
+      UpdateProjectTableBuildtimeAndCloudflareCommand,
+      UpdatePermissionToAdmin
     ];
   }
 }

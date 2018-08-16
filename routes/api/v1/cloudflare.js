@@ -6,7 +6,7 @@ import { App } from '../../../app/Services/App';
 import { Exception } from '../../../app/Exceptions/Exception';
 import { RemoteClouflare } from '../../../app/Services/RemoteClouflare';
 import AxiosRemoteCloudflareTransformer from '../../../app/Transformers/AxiosRemoteClouflareTransformer';
-
+import CloudflarePermission from '../../../app/Permission/CloudflarePermission';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -18,6 +18,7 @@ router.delete('/dns', AsyncMiddleware(deleteDetails));
 
 async function getDetailsOfDns(req, res) {
   try {
+    await new CloudflarePermission().view();
     const name = req.query.name;
     const result = await App.make(RemoteClouflare).getDetailsOfDns(name);
 
@@ -33,6 +34,7 @@ async function getDetailsOfDns(req, res) {
 
 async function deleteDetails(req, res) {
   try {
+    await new CloudflarePermission().delete();
     const name = req.query.name;
 
     const result = await App.make(RemoteClouflare).deleteDetails(name);
@@ -49,6 +51,7 @@ async function deleteDetails(req, res) {
 
 async function updateDns(req, res) {
   try {
+    await new CloudflarePermission().update();
     const ip = req.body.ip;
     const name = req.query.name;
 
@@ -66,8 +69,8 @@ async function updateDns(req, res) {
 
 async function getZoneByname(req, res) {
   try {
+    await new CloudflarePermission().view();
     const name = req.query.name;
-
     const result = await App.make(RemoteClouflare).getZoneByname(name);
 
     res.json(ApiResponse.item(result, new AxiosRemoteCloudflareTransformer()));
@@ -82,6 +85,7 @@ async function getZoneByname(req, res) {
 
 async function createDns(req, res) {
   try {
+    await new CloudflarePermission().create();
     const name = req.body.name;
     const ip = req.body.ip;
     const result = await App.make(RemoteClouflare).createDns(name, ip);

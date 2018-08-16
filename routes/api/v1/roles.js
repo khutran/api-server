@@ -12,6 +12,7 @@ import { Request } from '../../../app/Services/Facades/Request';
 import { RoleValidator, RULE_CREATE_ROLE } from '../../../app/Validators/RoleValidator';
 import { App } from '../../../app/Services/App';
 import PermissionRepository from '../../../app/Repositories/PermissionRepository';
+import RolePermission from '../../../app/Permission/RolePermission';
 
 const router = express.Router();
 
@@ -32,6 +33,7 @@ router.put('/:id/permission/detach', AsyncMiddleware(detach));
 router.put('/:id/permission/sync', AsyncMiddleware(sync));
 
 async function sync(req, res) {
+  await new RolePermission().update();
   const role_id = req.params.id;
   const permission_ids = req.body.permission_ids;
 
@@ -44,6 +46,7 @@ async function sync(req, res) {
 }
 
 async function detach(req, res) {
+  await new RolePermission().update();
   const role_id = req.params.id;
   const permission_id = req.body.permission_id;
   const permission = await App.make(PermissionRepository).findById(permission_id);
@@ -57,6 +60,7 @@ async function detach(req, res) {
 }
 
 async function attach(req, res) {
+  await new RolePermission().update();
   const role_id = req.params.id;
   const permission_id = req.body.permission_id;
   const permission = await App.make(PermissionRepository).findById(permission_id);
@@ -70,12 +74,10 @@ async function attach(req, res) {
 }
 
 async function index(req, res) {
+  await new RolePermission().view();
   const repository = new RoleRepository();
-
   repository.applySearchFromRequest(['name']);
-
   repository.applyConstraintsFromRequest();
-
   repository.applyOrderFromRequest(['id', 'name']);
 
   const result = await repository.paginate();
@@ -84,12 +86,10 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
+  await new RolePermission().view();
   const repository = new RoleRepository();
-
   repository.applySearchFromRequest();
-
   repository.applyConstraintsFromRequest();
-
   repository.applyOrderFromRequest();
 
   const transformer = new RoleTransformer();
@@ -107,6 +107,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
+  await new RolePermission().view();
   const id = req.params.id;
   const repository = new RoleRepository();
   const role = await repository.findById(id);
@@ -114,6 +115,7 @@ async function show(req, res) {
 }
 
 async function store(req, res) {
+  await new RolePermission().create();
   RoleValidator.isValid(Request.all(), RULE_CREATE_ROLE);
   const data = {
     name: Request.get('name')
@@ -133,6 +135,7 @@ async function store(req, res) {
 }
 
 async function setPermissionsToRole(req, res) {
+  await new RolePermission().update();
   RoleValidator.isValid(Request.all(), 'setPermissionsToRole');
   const role_id = req.params.role_id;
 
@@ -154,6 +157,7 @@ async function setPermissionsToRole(req, res) {
 }
 
 async function update(req, res) {
+  await new RolePermission().update();
   const id = req.params.id;
   const data = {
     name: req.body.name,
@@ -176,6 +180,7 @@ async function update(req, res) {
 }
 
 async function attachPermissionsToRole(req, res) {
+  await new RolePermission().create();
   const role_id = req.params.role_id;
   const permission = req.body.permission;
 
@@ -220,6 +225,7 @@ async function attachPermissionsToRole(req, res) {
 }
 
 async function dettachPermissonFromRole(req, res) {
+  await new RolePermission().update();
   const role_id = req.params.role_id;
   const permission = req.body.permission;
 
@@ -263,6 +269,7 @@ async function dettachPermissonFromRole(req, res) {
 }
 
 async function destroy(req, res) {
+  await new RolePermission().delete();
   const id = req.params.id;
 
   const repository = new RoleRepository();
@@ -282,6 +289,7 @@ async function destroy(req, res) {
 }
 
 async function listUsers(req, res) {
+  await new RolePermission().view();
   const role_id = req.params.id;
 
   const repository = new RoleRepository();

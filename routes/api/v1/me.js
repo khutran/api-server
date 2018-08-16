@@ -8,6 +8,7 @@ import UserRepository from '../../../app/Repositories/UserRepository';
 import { Request } from '../../../app/Services/Facades/Request';
 import _ from 'lodash';
 import { NotFoundException } from '../../../app/Exceptions/NotFoundException';
+import UserPermission from '../../../app/Permission/UserPermission';
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.get('/', AsyncMiddleware(profile));
  * @return ApiResponse.item
  */
 async function profile(req, res) {
+  await new UserPermission().view();
   const user = await Auth.user();
   const repository = new UserRepository();
   const transformer = new UserTransformer();

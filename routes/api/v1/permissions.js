@@ -7,6 +7,8 @@ import PermissionsTranformer from '../../../app/Transformers/PermissionTransform
 import PermissionGroupRepository from '../../../app/Repositories/PermissionGroupRepository';
 import PermissionGroupTransformer from '../../../app/Transformers/PermissionGroupTransformer';
 import { App } from '../../../app/Services/App';
+import PermissionPermission from '../../../app/Permission/PermissionPermission';
+
 let router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -16,6 +18,7 @@ router.get('/group', AsyncMiddleware(group));
 router.post('/list', AsyncMiddleware(list));
 
 async function list(req, res) {
+  await new PermissionPermission().view();
   const repository = new PermissionRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'slug']);
@@ -27,6 +30,7 @@ async function list(req, res) {
 }
 
 async function group(req, res) {
+  await new PermissionPermission().view();
   let result = await App.make(PermissionGroupRepository)
     .with('permissions')
     .get();

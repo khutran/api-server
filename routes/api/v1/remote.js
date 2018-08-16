@@ -8,6 +8,7 @@ import { App } from '../../../app/Services/App';
 // import jwt from 'jsonwebtoken';
 import AxiosRemoteServerTransformer from '../../../app/Transformers/AxiosRemoteServerTransformer';
 import { RemoteServer } from '../../../app/Services/RemoteServer';
+import RemotePermission from '../../../app/Permission/RemotePermission';
 
 const router = express.Router();
 
@@ -35,18 +36,21 @@ router.post('/:id/run-build', AsyncMiddleware(runBuild));
 router.put('/:id/import', AsyncMiddleware(importDb));
 
 async function importDb(req, res) {
+  await new RemotePermission().update();
   const id = req.params.id;
   const result = await App.make(RemoteServer).importDb(id);
   res.json(ApiResponse.item(result, new AxiosRemoteServerTransformer()));
 }
 
 async function runBuild(req, res) {
+  await new RemotePermission().create();
   const id = req.params.id;
   const result = await App.make(RemoteServer).runBuild(id);
   res.json(ApiResponse.item(result, new AxiosRemoteServerTransformer()));
 }
 
 async function runCommand(req, res) {
+  await new RemotePermission().create();
   const id = req.params.id;
   const command = req.body.command;
   const result = await App.make(RemoteServer).runCommand(id, command);
@@ -55,11 +59,13 @@ async function runCommand(req, res) {
 }
 
 async function downloadCode(req, res) {
+  await new RemotePermission().view();
   let id = req.params.id;
   await App.make(RemoteServer).downloadCode(id, res);
 }
 
 async function downloadDb(req, res) {
+  await new RemotePermission().view();
   let id = req.params.id;
   await App.make(RemoteServer).downloadDb(id, res);
 }
@@ -77,7 +83,7 @@ async function get(req, res) {
   //   process.env.JWT_SECRET,
   //   { expiresIn: 60 }
   // );
-
+  await new RemotePermission().view();
   const id = req.params.id;
   const result = await App.make(RemoteServer).checkDomain(id);
 
@@ -85,6 +91,7 @@ async function get(req, res) {
 }
 
 async function updateDb(req, res) {
+  await new RemotePermission().update();
   const id = req.params.id;
   const result = await App.make(RemoteServer).updateDb(id);
 
@@ -92,6 +99,7 @@ async function updateDb(req, res) {
 }
 
 async function deleteDb(req, res) {
+  await new RemotePermission().delete();
   const id = req.params.id;
   const result = await App.make(RemoteServer).deleteDb(id);
 
@@ -99,6 +107,7 @@ async function deleteDb(req, res) {
 }
 
 async function pull(req, res) {
+  await new RemotePermission().update();
   const id = req.params.id;
   const result = await App.make(RemoteServer).pull(id);
 
@@ -106,6 +115,7 @@ async function pull(req, res) {
 }
 
 async function deleteProject(req, res) {
+  await new RemotePermission().delete();
   const id = req.params.id;
   const result = await App.make(RemoteServer).deleteProject(id);
 
@@ -113,6 +123,7 @@ async function deleteProject(req, res) {
 }
 
 async function info(req, res) {
+  await new RemotePermission().view();
   const id = req.params.id;
   const result = await App.make(RemoteServer).info(id);
 
@@ -120,6 +131,7 @@ async function info(req, res) {
 }
 
 async function getConfig(req, res) {
+  await new RemotePermission().view();
   const id = req.params.id;
   const result = await App.make(RemoteServer).getConfig(id);
 
@@ -127,6 +139,7 @@ async function getConfig(req, res) {
 }
 
 async function clone(req, res) {
+  await new RemotePermission().create();
   const id = req.params.id;
   const result = await App.make(RemoteServer).clone(id);
 
@@ -134,6 +147,7 @@ async function clone(req, res) {
 }
 
 async function createDb(req, res) {
+  await new RemotePermission().create();
   const id = req.params.id;
   const result = await App.make(RemoteServer).createDb(id);
 
@@ -141,6 +155,7 @@ async function createDb(req, res) {
 }
 
 async function createConfig(req, res) {
+  await new RemotePermission().create();
   const id = req.params.id;
   const result = await App.make(RemoteServer).createConfig(id);
 
@@ -148,6 +163,7 @@ async function createConfig(req, res) {
 }
 
 async function updateConfig(req, res) {
+  await new RemotePermission().update();
   const data = req.body;
   const id = req.params.id;
   const result = await App.make(RemoteServer)
@@ -158,6 +174,7 @@ async function updateConfig(req, res) {
 }
 
 async function runManager(req, res) {
+  await new RemotePermission().post();
   const id = req.params.id;
   const result = await App.make(RemoteServer).runManager(id);
 
@@ -165,6 +182,7 @@ async function runManager(req, res) {
 }
 
 async function firtsBuild(req, res) {
+  await new RemotePermission().create();
   const id = req.params.id;
   const result = await App.make(RemoteServer).firtsBuild(id);
 
@@ -172,6 +190,7 @@ async function firtsBuild(req, res) {
 }
 
 async function replaceDb(req, res) {
+  await new RemotePermission().create();
   const id = req.params.id;
   const result = await App.make(RemoteServer).replaceDb(id);
 

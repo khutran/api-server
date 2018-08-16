@@ -1,27 +1,37 @@
 const AvailablePermissions = {
-  ADMIN_VIEW: 'admin.view',
-  ADMIN_CREATE: 'admin.create',
-  ADMIN_UPDATE: 'admin.update',
-  ADMIN_DELETE: 'admin.delete',
+  CREATE_USER: 'create.user',
+  UPDATE_USER: 'update.user',
+  VIEW_USER: 'view.user',
+  DELETE_USER: 'delete.user',
 
-  USER_CREATE: 'user.create',
-  USER_UPDATE: 'user.update',
-  USER_VIEW: 'user.view',
-  USER_DELETE: 'user.delete',
+  CREATE_ROLE: 'create.role',
+  UPDATE_ROLE: 'update.role',
+  VIEW_ROLE: 'view.role',
+  DELETE_ROLE: 'delete.role',
 
-  ROLE_CREATE: 'role.create',
-  ROLE_UPDATE: 'role.update',
-  ROLE_VIEW: 'role.view',
-  ROLE_DELETE: 'role.delete',
+  CREATE_PROJECT: 'create.project',
+  UPDATE_PROJECT: 'update.project',
+  VIEW_PROJECT: 'view.project',
+  DELETE_PROJECT: 'delete.project',
 
-  PROJECT_CREATE: 'role.create',
-  PROJECT_UPDATE: 'role.update',
-  PROJECT_VIEW: 'role.view',
-  PROJECT_DELETE: 'role.delete',
+  VIEW_SERVICE: 'view.service',
+  CREATE_SERVICE: 'create.service',
+  UPDATE_SERVICE: 'update.service',
+  DELETE_SERVICE: 'delete.service',
 
-  STATUS_VIEW: 'status.view',
-  STATUS_CREATE: 'status.create',
-  STATUS_UPDATE: 'status.update',
-  STATUS_DELETE: 'status.delete'
+  VIEW_CLOUDFLARE: 'view.cloudflare',
+  CREATE_CLOUDFLARE: 'create.cloudflare',
+  UPDATE_CLOUDFLARE: 'update.cloudflare',
+  DELETE_CLOUDFLARE: 'delete.cloudflare',
+
+  VIEW_REMOTE: 'view.remote',
+  CREATE_REMOTE: 'create.remote',
+  UPDATE_REMOTE: 'update.remote',
+  DELETE_REMOTE: 'delete.remote',
+
+  VIEW_PERMISSION: 'view.permission',
+  CREATE_PERMISSION: 'create.permission',
+  UPDATE_PERMISSION: 'update.permission',
+  DELETE_PERMISSION: 'delete.permission'
 };
 export default AvailablePermissions;

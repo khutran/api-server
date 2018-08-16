@@ -7,6 +7,7 @@ import FrameworkTransformer from '../../../app/Transformers/FrameworkTransformer
 import { FrameworkValidator, CREATE_FRAMEWORK_RULE, UPDATE_FRAMEWORK_RULE } from '../../../app/Validators/FrameworkValidator';
 import { Request } from '../../../app/Services/Facades/Request';
 import { App } from '../../../app/Services/App';
+import FrameworkPermission from '../../../app/Permission/FrameworkPermission';
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function index(req, res) {
+  await new FrameworkPermission().view();
   const repository = new FrameworkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -28,6 +30,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
+  await new FrameworkPermission().view();
   const repository = new FrameworkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -44,6 +47,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
+  await new FrameworkPermission().create();
   FrameworkValidator.isValid(Request.all(), CREATE_FRAMEWORK_RULE);
   const repository = new FrameworkRepository();
   const result = await repository.create(Request.all());
@@ -51,6 +55,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
+  await new FrameworkPermission().update();
   FrameworkValidator.isValid(Request.all(), UPDATE_FRAMEWORK_RULE);
   const repository = new FrameworkRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -58,6 +63,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
+  await new FrameworkPermission().delete();
   App.make(FrameworkRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }

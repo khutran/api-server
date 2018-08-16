@@ -7,7 +7,7 @@ import CategoryTransformer from '../../../app/Transformers/CategoryTransformer';
 import { CategoryValidator, CREATE_CATEGORY_RULE, UPDATE_CATEGORY_RULE } from '../../../app/Validators/CategoryValidator';
 import { Request } from '../../../app/Services/Facades/Request';
 import { App } from '../../../app/Services/App';
-
+import CategoryPermission from '../../../app/Permission/CategoryPermission';
 const router = express.Router();
 
 router.all('*', AuthMiddleware);
@@ -19,6 +19,7 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function index(req, res) {
+  await new CategoryPermission().view();
   const repository = new CategoryRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -30,6 +31,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
+  await new CategoryPermission().view();
   const repository = new CategoryRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -41,6 +43,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
+  await new CategoryPermission().view();
   const id = req.params.id;
   const repository = new CategoryRepository();
   const result = await repository.findById(id);
@@ -48,6 +51,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
+  await new CategoryPermission().create();
   CategoryValidator.isValid(Request.all(), CREATE_CATEGORY_RULE);
   const repository = new CategoryRepository();
   const result = await repository.create(Request.all());
@@ -55,6 +59,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
+  await new CategoryPermission().update();
   CategoryValidator.isValid(Request.all(), UPDATE_CATEGORY_RULE);
   const repository = new CategoryRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -62,6 +67,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
+  await new CategoryPermission().delete();
   App.make(CategoryRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }

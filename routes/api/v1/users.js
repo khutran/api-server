@@ -18,6 +18,7 @@ import { UserValidator, CREATE_USER_RULE } from '../../../app/Validators/UserVal
 import PasswordUtil from '../../../app/Utils/PasswordUtil';
 import { BadRequestHttpException } from '../../../app/Exceptions/BadRequestHttpException';
 import ProjectRepository from '../../../app/Repositories/ProjectRepository';
+import UserPermission from '../../../app/Permission/UserPermission';
 
 const router = express.Router();
 
@@ -39,6 +40,7 @@ router.post('/:user_id/projects', AsyncMiddleware(addProject));
 router.delete('/:user_id/projects', AsyncMiddleware(deleteProject));
 
 async function deleteProject(req, res) {
+  await new UserPermission().delete();
   const userId = req.params.user_id;
   const projectId = req.query.project_id;
   const repository = new UserRepository();
@@ -69,6 +71,7 @@ async function deleteProject(req, res) {
 }
 
 async function addProject(req, res) {
+  await new UserPermission().create();
   const userId = req.params.user_id;
   const projectId = req.body.project_id;
   const repository = new UserRepository();
@@ -95,6 +98,7 @@ async function addProject(req, res) {
 }
 
 async function list(req, res) {
+  await new UserPermission().view();
   const repository = new UserRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -104,6 +108,7 @@ async function list(req, res) {
 }
 
 async function index(req, res) {
+  await new UserPermission().view();
   const repository = new UserRepository();
 
   repository.applySearchFromRequest(['email']);
@@ -126,6 +131,7 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
+  await new UserPermission().view();
   const repository = new UserRepository();
   let query = repository.where('id', req.params.id);
   const transformer = new UserTransformer();
@@ -143,6 +149,7 @@ async function show(req, res) {
 }
 
 async function store(req, res) {
+  await new UserPermission().create();
   if (Request.get('password') !== Request.get('re_password')) {
     throw new Error('Password does not match', 1000);
   }
@@ -170,6 +177,7 @@ async function store(req, res) {
 }
 
 async function update(req, res) {
+  await new UserPermission().update();
   const user_id = req.params.id;
   const repository = new UserRepository();
   const user = await repository.findById(user_id);
@@ -192,6 +200,7 @@ async function update(req, res) {
 }
 
 async function updateMyProfile(req, res) {
+  await new UserPermission().update();
   const id = Auth.user().id;
   const changes = { updated_at: new Date() };
 
@@ -203,6 +212,7 @@ async function updateMyProfile(req, res) {
 }
 
 async function updateUserFn(id, data) {
+  await new UserPermission().update();
   let user = null;
   if (!data.email) {
     user = await App.make(UserRepository).updateOrCreate(data, { id });
@@ -241,6 +251,7 @@ async function updateUserFn(id, data) {
 }
 
 async function destroy(req, res) {
+  await new UserPermission().delete();
   const id = req.params.id;
   const repository = new UserRepository();
   const user = await repository.findById(id);
