@@ -14,8 +14,8 @@ export default class ProjectPermission extends Permission {
     return this;
   }
 
-  async view() {
-    const permission = [AvailablePermissions.VIEW_PROJECT];
+  async get() {
+    const permission = [AvailablePermissions.GET_PROJECT];
     await this.checkPermisson(permission);
     return this;
   }

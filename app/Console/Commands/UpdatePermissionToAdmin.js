@@ -4,7 +4,7 @@ import _ from 'lodash';
 import PermissionRepository from '../../Repositories/PermissionRepository';
 import RoleRepository from '../../Repositories/RoleRepository';
 
-export default class UpdateProjectTableBuildtimeAndCloudflareCommand extends Command {
+export default class UpdatePermissionToAdmin extends Command {
   signature() {
     return 'update_permission_admin';
   }
@@ -21,12 +21,13 @@ export default class UpdateProjectTableBuildtimeAndCloudflareCommand extends Com
     const permission = await App.make(PermissionRepository).get();
     const role = await App.make(RoleRepository).findById(1);
     const P = await role.getPermissions();
-    _.forEach(permission, async item => {
+
+    for (const item of permission) {
       let i = _.find(P, y => y.slug === item.slug);
       if (_.isUndefined(i)) {
         await role.addPermission(item);
       }
-    });
+    }
 
     process.exit();
   }

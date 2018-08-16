@@ -14,8 +14,8 @@ export default class RemotePermission extends Permission {
     return this;
   }
 
-  async view() {
-    const permission = [AvailablePermissions.VIEW_REMOTE];
+  async get() {
+    const permission = [AvailablePermissions.GET_REMOTE];
     await this.checkPermisson(permission);
     return this;
   }

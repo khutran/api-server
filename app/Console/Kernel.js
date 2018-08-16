@@ -10,6 +10,7 @@ import UpdateProjectTableDataCommand from './Commands/UpdateProjectTableDataComm
 import UpdatePermissionGroupCommand from './Commands/UpdatePermissionGroupCommnand';
 import UpdateProjectTableBuildtimeAndCloudflareCommand from './Commands/UpdateProjectTableBuildtimeAndCloudflareCommand';
 import UpdatePermissionToAdmin from './Commands/UpdatePermissionToAdmin';
+import UpdateGroupPermissionView from './Commands/UpdateGroupPermissionView';
 export class Kernel {
   commands() {
     return [
@@ -24,7 +25,8 @@ export class Kernel {
       UpdateProjectTableDataCommand,
       UpdatePermissionGroupCommand,
       UpdateProjectTableBuildtimeAndCloudflareCommand,
-      UpdatePermissionToAdmin
+      UpdatePermissionToAdmin,
+      UpdateGroupPermissionView
     ];
   }
 }

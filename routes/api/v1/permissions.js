@@ -18,7 +18,7 @@ router.get('/group', AsyncMiddleware(group));
 router.post('/list', AsyncMiddleware(list));
 
 async function list(req, res) {
-  await new PermissionPermission().view();
+  await new PermissionPermission().get();
   const repository = new PermissionRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'slug']);
@@ -30,7 +30,7 @@ async function list(req, res) {
 }
 
 async function group(req, res) {
-  await new PermissionPermission().view();
+  await new PermissionPermission().get();
   let result = await App.make(PermissionGroupRepository)
     .with('permissions')
     .get();

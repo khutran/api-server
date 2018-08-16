@@ -27,6 +27,10 @@ export default class UpdatePermissionGroupCommand extends Command {
       {
         name: 'Other',
         slug: 'other'
+      },
+      {
+        name: 'View',
+        slug: 'view'
       }
     ];
     await App.make(PermissionGroupRepository)
@@ -115,11 +119,6 @@ export default class UpdatePermissionGroupCommand extends Command {
         group_slug: 'project_management'
       },
       {
-        name: 'View Application',
-        slug: 'view.application',
-        group_slug: 'project_management'
-      },
-      {
         name: 'Delete Application',
         slug: 'delete.application',
         group_slug: 'project_management'
@@ -145,11 +144,6 @@ export default class UpdatePermissionGroupCommand extends Command {
         group_slug: 'project_management'
       },
       {
-        name: 'View Cloudflare',
-        slug: 'view.cloudflare',
-        group_slug: 'project_management'
-      },
-      {
         name: 'Create Cloudflare',
         slug: 'create.cloudflare',
         group_slug: 'project_management'
@@ -162,11 +156,6 @@ export default class UpdatePermissionGroupCommand extends Command {
       {
         name: 'Delete Cloudflare',
         slug: 'delete.cloudflare',
-        group_slug: 'project_management'
-      },
-      {
-        name: 'View Remote',
-        slug: 'view.remote',
         group_slug: 'project_management'
       },
       {

@@ -20,7 +20,7 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function index(req, res) {
-  await new FrameworkPermission().view();
+  await new FrameworkPermission().get();
   const repository = new FrameworkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -30,7 +30,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new FrameworkPermission().view();
+  await new FrameworkPermission().get();
   const repository = new FrameworkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);

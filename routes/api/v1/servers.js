@@ -20,7 +20,7 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function index(req, res) {
-  await new ServerPermission().view();
+  await new ServerPermission().get();
   const repository = new ServerRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'address_mysql', 'ip']);
@@ -32,7 +32,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new ServerPermission().view();
+  await new ServerPermission().get();
   const repository = new ServerRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'address_mysql', 'ip']);
@@ -44,7 +44,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new ServerPermission().view();
+  await new ServerPermission().get();
   const id = req.params.id;
   const repository = new ServerRepository();
   const result = await repository.findById(id);

@@ -14,8 +14,8 @@ export default class RolePermission extends Permission {
     return this;
   }
 
-  async view() {
-    const permission = [AvailablePermissions.VIEW_ROLE];
+  async get() {
+    const permission = [AvailablePermissions.GET_ROLE];
     await this.checkPermisson(permission);
     return this;
   }

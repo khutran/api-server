@@ -14,8 +14,8 @@ export default class CloudflarePermission extends Permission {
     return this;
   }
 
-  async view() {
-    const permission = [AvailablePermissions.VIEW_CLOUDFLARE];
+  async get() {
+    const permission = [AvailablePermissions.GET_CLOUDFLARE];
     await this.checkPermisson(permission);
     return this;
   }

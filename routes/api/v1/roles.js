@@ -74,7 +74,7 @@ async function attach(req, res) {
 }
 
 async function index(req, res) {
-  await new RolePermission().view();
+  await new RolePermission().get();
   const repository = new RoleRepository();
   repository.applySearchFromRequest(['name']);
   repository.applyConstraintsFromRequest();
@@ -86,7 +86,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new RolePermission().view();
+  await new RolePermission().get();
   const repository = new RoleRepository();
   repository.applySearchFromRequest();
   repository.applyConstraintsFromRequest();
@@ -107,7 +107,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new RolePermission().view();
+  await new RolePermission().get();
   const id = req.params.id;
   const repository = new RoleRepository();
   const role = await repository.findById(id);
@@ -289,7 +289,7 @@ async function destroy(req, res) {
 }
 
 async function listUsers(req, res) {
-  await new RolePermission().view();
+  await new RolePermission().get();
   const role_id = req.params.id;
 
   const repository = new RoleRepository();

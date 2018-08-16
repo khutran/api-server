@@ -28,7 +28,7 @@ router.delete('/:id', AsyncMiddleware(destroy));
 router.get('/:id/user', AsyncMiddleware(litUser));
 
 async function litUser(req, res) {
-  await new ProjectPermission().view();
+  await new ProjectPermission().get();
   const id = req.params.id;
   const repository = new ProjectRepository();
   const result = await repository.withScope('listUser-Scope').findById(id);
@@ -36,7 +36,7 @@ async function litUser(req, res) {
 }
 
 async function index(req, res) {
-  await new ProjectPermission().view();
+  await new ProjectPermission().get();
   const repository = new ProjectRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'database', 'git_remote', 'git_branch', 'git_application_key', 'git_application_secret']);
@@ -55,7 +55,7 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  await new ProjectPermission().view();
+  await new ProjectPermission().get();
   const id = req.params.id;
   const repository = new ProjectRepository();
   const result = await repository.findById(id);

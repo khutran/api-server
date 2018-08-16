@@ -98,7 +98,7 @@ async function addProject(req, res) {
 }
 
 async function list(req, res) {
-  await new UserPermission().view();
+  await new UserPermission().get();
   const repository = new UserRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -108,7 +108,7 @@ async function list(req, res) {
 }
 
 async function index(req, res) {
-  await new UserPermission().view();
+  await new UserPermission().get();
   const repository = new UserRepository();
 
   repository.applySearchFromRequest(['email']);
@@ -131,7 +131,7 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  await new UserPermission().view();
+  await new UserPermission().get();
   const repository = new UserRepository();
   let query = repository.where('id', req.params.id);
   const transformer = new UserTransformer();

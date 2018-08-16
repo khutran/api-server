@@ -20,7 +20,7 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function index(req, res) {
-  await new StatusPermission().view();
+  await new StatusPermission().get();
   const repository = new StatusRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -30,7 +30,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new StatusPermission().view();
+  await new StatusPermission().get();
   const repository = new StatusRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -40,7 +40,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new StatusPermission().view();
+  await new StatusPermission().get();
   const id = req.params.id;
   const repository = new StatusRepository();
   const result = await repository.findById(id);

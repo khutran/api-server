@@ -59,13 +59,13 @@ async function runCommand(req, res) {
 }
 
 async function downloadCode(req, res) {
-  await new RemotePermission().view();
+  // await new RemotePermission().get();
   let id = req.params.id;
   await App.make(RemoteServer).downloadCode(id, res);
 }
 
 async function downloadDb(req, res) {
-  await new RemotePermission().view();
+  // await new RemotePermission().get();
   let id = req.params.id;
   await App.make(RemoteServer).downloadDb(id, res);
 }
@@ -83,7 +83,7 @@ async function get(req, res) {
   //   process.env.JWT_SECRET,
   //   { expiresIn: 60 }
   // );
-  await new RemotePermission().view();
+  await new RemotePermission().get();
   const id = req.params.id;
   const result = await App.make(RemoteServer).checkDomain(id);
 
@@ -123,7 +123,7 @@ async function deleteProject(req, res) {
 }
 
 async function info(req, res) {
-  await new RemotePermission().view();
+  await new RemotePermission().get();
   const id = req.params.id;
   const result = await App.make(RemoteServer).info(id);
 
@@ -131,7 +131,7 @@ async function info(req, res) {
 }
 
 async function getConfig(req, res) {
-  await new RemotePermission().view();
+  await new RemotePermission().get();
   const id = req.params.id;
   const result = await App.make(RemoteServer).getConfig(id);
 

@@ -18,7 +18,7 @@ router.delete('/dns', AsyncMiddleware(deleteDetails));
 
 async function getDetailsOfDns(req, res) {
   try {
-    await new CloudflarePermission().view();
+    await new CloudflarePermission().get();
     const name = req.query.name;
     const result = await App.make(RemoteClouflare).getDetailsOfDns(name);
 
@@ -69,7 +69,7 @@ async function updateDns(req, res) {
 
 async function getZoneByname(req, res) {
   try {
-    await new CloudflarePermission().view();
+    await new CloudflarePermission().get();
     const name = req.query.name;
     const result = await App.make(RemoteClouflare).getZoneByname(name);
 

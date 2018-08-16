@@ -19,7 +19,7 @@ router.put('/:id', AsyncMiddleware(update));
 router.delete('/:id', AsyncMiddleware(destroy));
 
 async function index(req, res) {
-  await new CategoryPermission().view();
+  await new CategoryPermission().get();
   const repository = new CategoryRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -31,7 +31,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new CategoryPermission().view();
+  await new CategoryPermission().get();
   const repository = new CategoryRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -43,7 +43,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new CategoryPermission().view();
+  await new CategoryPermission().get();
   const id = req.params.id;
   const repository = new CategoryRepository();
   const result = await repository.findById(id);

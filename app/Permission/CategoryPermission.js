@@ -14,8 +14,8 @@ export default class CategoryPermission extends Permission {
     return this;
   }
 
-  async view() {
-    const permission = [AvailablePermissions.VIEW_SERVICE];
+  async get() {
+    const permission = [AvailablePermissions.GET_SERVICE];
     await this.checkPermisson(permission);
     return this;
   }

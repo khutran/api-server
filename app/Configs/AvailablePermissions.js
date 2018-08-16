@@ -32,6 +32,17 @@ const AvailablePermissions = {
   VIEW_PERMISSION: 'view.permission',
   CREATE_PERMISSION: 'create.permission',
   UPDATE_PERMISSION: 'update.permission',
-  DELETE_PERMISSION: 'delete.permission'
+  DELETE_PERMISSION: 'delete.permission',
+
+  GET_USER: 'get.user',
+  GET_PERMISSION: 'get.permission',
+  GET_SERVER: 'get.server',
+  GET_ROLE: 'get.role',
+  GET_STATUS: 'get.status',
+  GET_FRAMEWORK: 'get.framework',
+  GET_PROJECT: 'get.project',
+  GET_SERVICE: 'get.category',
+  GET_REMOTE: 'get.romote',
+  GET_CLOUDFLARE: 'get.cloudflare'
 };
 export default AvailablePermissions;

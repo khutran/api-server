@@ -25,6 +25,7 @@ export default class Permission {
         arr.push(_.find(permission, i => i === item.slug));
       }
     });
+
     if (_.isEqual(permission.sort(), arr.sort())) {
       this.pass = true;
     }
