@@ -105,6 +105,86 @@ export default class UpdatePermissionGroupCommand extends Command {
         group_slug: 'project_management'
       },
       {
+        name: 'Create Framework',
+        slug: 'create.framework',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Update Framework',
+        slug: 'update.framework',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'View Framework',
+        slug: 'view.framework',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Delete Framework',
+        slug: 'delete.framework',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Create Status',
+        slug: 'create.status',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Update Status',
+        slug: 'update.status',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'View Status',
+        slug: 'view.status',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Delete Status',
+        slug: 'delete.status',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Create Category',
+        slug: 'create.category',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Update Category',
+        slug: 'update.category',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'View Category',
+        slug: 'view.category',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Delete Category',
+        slug: 'delete.category',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Create Server',
+        slug: 'create.server',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Update Server',
+        slug: 'update.server',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'View Server',
+        slug: 'view.server',
+        group_slug: 'project_management'
+      },
+      {
+        name: 'Delete Server',
+        slug: 'delete.server',
+        group_slug: 'project_management'
+      },
+      {
         name: 'Create Application',
         slug: 'create.application',
         group_slug: 'project_management'
