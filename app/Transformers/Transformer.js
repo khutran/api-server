@@ -3,7 +3,20 @@ import { Exception } from '../Exceptions/Exception';
 
 export default class Transformer {
   constructor(includes = []) {
-    this.includes = includes;
+    if (includes.length > 0) {
+      this.includes = includes;
+    } else if (_.isFunction(this.defaultIncludes)) {
+      const default_permissions = this.defaultIncludes();
+      console.log(default_permissions);
+
+      if (_.isArray(default_permissions) && default_permissions.length > 0) {
+        this.includes = default_permissions;
+      } else {
+        this.includes = [];
+      }
+    } else {
+      this.includes = [];
+    }
   }
 
   item(obj, transformer) {

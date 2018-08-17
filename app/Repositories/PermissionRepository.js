@@ -3,6 +3,6 @@ import { Repository } from './Repository';
 
 export default class PermissionRepository extends Repository {
   Models() {
-    return models.permissions;
+    return models.permission;
   }
 }

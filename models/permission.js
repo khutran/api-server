@@ -2,18 +2,15 @@
 
 module.exports = (sequelize, DataTypes) => {
   var Permission = sequelize.define(
-    'permissions',
+    'permission',
     {
       name: DataTypes.STRING,
       slug: DataTypes.STRING
     },
     {
-      underscored: true,
-      freezeTableName: true
+      underscored: true
     }
   );
-
-  // Permission.associate = models => {};
 
   return Permission;
 };

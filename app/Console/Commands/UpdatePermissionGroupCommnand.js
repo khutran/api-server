@@ -89,23 +89,23 @@ export default class UpdatePermissionGroupCommand extends Command {
         group_slug: 'account_management'
       },
       {
-        name: 'Create Service',
-        slug: 'create.service',
+        name: 'Create Project',
+        slug: 'create.project',
         group_slug: 'project_management'
       },
       {
-        name: 'Update Service',
-        slug: 'update.service',
+        name: 'Update Project',
+        slug: 'update.project',
         group_slug: 'project_management'
       },
       {
-        name: 'View Service',
-        slug: 'view.service',
+        name: 'View Project',
+        slug: 'view.project',
         group_slug: 'project_management'
       },
       {
-        name: 'Delete Service',
-        slug: 'delete.service',
+        name: 'Delete Project',
+        slug: 'delete.project',
         group_slug: 'project_management'
       },
       {
@@ -202,6 +202,12 @@ export default class UpdatePermissionGroupCommand extends Command {
       const permission = await App.make(PermissionRepository)
         .where('slug', item.slug)
         .first();
+      if (permission) {
+        await App.make(PermissionRepository)
+          .whereNotIn('id', [permission.id])
+          .where('slug', permission.slug)
+          .delete();
+      }
 
       const group = await App.make(PermissionGroupRepository)
         .where('slug', item.group_slug)
