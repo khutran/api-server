@@ -3,8 +3,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return [
-      queryInterface.removeColumn('projects', 'framework'),
-      queryInterface.removeColumn('projects', 'categories'),
       queryInterface.addColumn('projects', 'framework_id', {
         type: Sequelize.INTEGER
       }),
