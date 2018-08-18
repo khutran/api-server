@@ -4,7 +4,7 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import ApiRouter from './routes';
-import { ExceptionHandler } from './app/Exceptions/exceptionHandler';
+import { ExceptionHandler } from './app/Exceptions/ExceptionHandler';
 import { App } from './app/Services/App';
 import { Exception } from './app/Exceptions/Exception';
 import { Request } from './app/Services/Facades/Request';
