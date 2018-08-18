@@ -48,7 +48,7 @@ async function customerExist(req, res) {
 async function login(req, res) {
   const email = req.body.email;
   const password = req.body.password;
-
+  console.log(email);
   const repository = new UserRepository();
   const user = await repository.where('email', email).first();
 

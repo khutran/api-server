@@ -43,9 +43,9 @@ async function list(req, res) {
 }
 
 async function group(req, res) {
-  await new PermissionPermission().get().checkPermisson();
+  // await new PermissionPermission().get().checkPermisson();
   let result = await App.make(PermissionGroupRepository)
-    .with('permissions')
+    .with('permission')
     .get();
   res.json(ApiResponse.collection(result, new PermissionGroupTransformer(['permissions'])));
 }
