@@ -50,7 +50,7 @@ async function runBuild(req, res) {
 }
 
 async function runCommand(req, res) {
-  await new RemotePermission().create().checkPermisson();
+  // await new RemotePermission().create().checkPermisson();
   const id = req.params.id;
   const command = req.body.command;
   const result = await App.make(RemoteServer).runCommand(id, command);
