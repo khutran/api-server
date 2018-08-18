@@ -174,7 +174,7 @@ async function updateConfig(req, res) {
 }
 
 async function runManager(req, res) {
-  await new RemotePermission().post().checkPermisson();
+  await new RemotePermission().create().checkPermisson();
   const id = req.params.id;
   const result = await App.make(RemoteServer).runManager(id);
 
