@@ -3,7 +3,6 @@ import path from 'path';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import AppRouter from './api';
 import ApiRouter from './routes';
 import { ExceptionHandler } from './app/Exceptions/exceptionHandler';
 import { App } from './app/Services/App';
@@ -44,7 +43,6 @@ app.use(function(req, res, next) {
   reqd.run(next);
 });
 
-app.use(AppRouter);
 app.use(ApiRouter);
 
 app.use(ExceptionHandler);
