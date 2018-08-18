@@ -1,7 +1,7 @@
 import express from 'express';
 import { AsyncMiddleware } from '../../../app/Middlewares/AsyncMiddleware';
 import { AuthMiddleware } from '../../../app/Middlewares/AuthMiddleware';
-import FrameworkRepository from '../../../app/Repositories/FrameworkRepository';
+import FrameWorkRepository from '../../../app/Repositories/FrameWorkRepository';
 import ApiResponse from '../../../app/Responses/ApiResponse';
 import FrameworkTransformer from '../../../app/Transformers/FrameworkTransformer';
 import { FrameworkValidator, CREATE_FRAMEWORK_RULE, UPDATE_FRAMEWORK_RULE } from '../../../app/Validators/FrameworkValidator';
@@ -35,7 +35,7 @@ async function view(req, res) {
 
 async function index(req, res) {
   await new FrameworkPermission().get().checkPermisson();
-  const repository = new FrameworkRepository();
+  const repository = new FrameWorkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
   repository.applyOrderFromRequest();
@@ -45,7 +45,7 @@ async function index(req, res) {
 
 async function list(req, res) {
   await new FrameworkPermission().get().checkPermisson();
-  const repository = new FrameworkRepository();
+  const repository = new FrameWorkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
   repository.applyOrderFromRequest();
@@ -56,7 +56,7 @@ async function list(req, res) {
 async function show(req, res) {
   await new FrameworkPermission().get().checkPermisson();
   const id = req.params.id;
-  const repository = new FrameworkRepository();
+  const repository = new FrameWorkRepository();
   const result = await repository.findById(id);
   res.json(ApiResponse.item(result, new FrameworkTransformer()));
 }
@@ -64,7 +64,7 @@ async function show(req, res) {
 async function create(req, res) {
   await new FrameworkPermission().create().checkPermisson();
   FrameworkValidator.isValid(Request.all(), CREATE_FRAMEWORK_RULE);
-  const repository = new FrameworkRepository();
+  const repository = new FrameWorkRepository();
   const result = await repository.create(Request.all());
   res.json(ApiResponse.item(result, new FrameworkTransformer()));
 }
@@ -72,14 +72,14 @@ async function create(req, res) {
 async function update(req, res) {
   await new FrameworkPermission().update().checkPermisson();
   FrameworkValidator.isValid(Request.all(), UPDATE_FRAMEWORK_RULE);
-  const repository = new FrameworkRepository();
+  const repository = new FrameWorkRepository();
   const result = await repository.update(Request.all(), req.params.id);
   res.json(ApiResponse.item(result, new FrameworkTransformer()));
 }
 
 async function destroy(req, res) {
   await new FrameworkPermission().delete().checkPermisson();
-  App.make(FrameworkRepository).deleteById(req.params.id);
+  App.make(FrameWorkRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }
 
