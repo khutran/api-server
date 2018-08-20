@@ -120,7 +120,7 @@ async function list(req, res) {
 }
 
 async function index(req, res) {
-  await new UserPermission().get().checkPermisson();
+  await new UserPermission().create().checkPermisson();
   const repository = new UserRepository();
 
   repository.applySearchFromRequest(['email']);
