@@ -15,6 +15,7 @@ export default class Permission {
       _.forEach(role, item => {
         permission = _.concat(permission, item.permissions);
       });
+
       resolve(permission);
     });
   }
@@ -26,7 +27,6 @@ export default class Permission {
         arr.push(_.find(this.permission, i => i === item.slug));
       }
     });
-
     if (_.isEqual(this.permission.sort(), arr.sort())) {
       this.pass = true;
     }

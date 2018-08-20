@@ -40,7 +40,7 @@ const AvailablePermissions = {
   GET_FRAMEWORK: 'get.framework',
   GET_PROJECT: 'get.project',
   GET_SERVICE: 'get.category',
-  GET_REMOTE: 'get.romote',
+  GET_REMOTE: 'get.remote',
   GET_CLOUDFLARE: 'get.cloudflare',
 
   VIEW_CATEGORY: 'view.category',

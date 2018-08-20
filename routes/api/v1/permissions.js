@@ -11,7 +11,7 @@ import PermissionPermission from '../../../app/Permission/PermissionPermission';
 import ViewPermissionTransformer from '../../../app/Transformers/ViewPermissionTransformer';
 let router = express.Router();
 
-router.all('*', AuthMiddleware);
+// router.all('*', AuthMiddleware);
 
 router.all('*', AuthMiddleware);
 router.get('/view', AsyncMiddleware(view));
@@ -43,7 +43,7 @@ async function list(req, res) {
 }
 
 async function group(req, res) {
-  // await new PermissionPermission().get().checkPermisson();
+  await new PermissionPermission().get().checkPermisson();
   let result = await App.make(PermissionGroupRepository)
     .with('permission')
     .get();
