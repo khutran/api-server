@@ -1,7 +1,7 @@
 import Transformer from './Transformer';
 import PermissionTransformer from './PermissionTransformer';
 
-export default class StatusTransformer extends Transformer {
+export default class RoleTransformer extends Transformer {
   transform(model) {
     return {
       id: model.id,
