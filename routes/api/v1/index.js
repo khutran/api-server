@@ -11,6 +11,7 @@ import ServerRouter from './servers';
 import CategoryRouter from './categories';
 import RemoteRouter from './remote';
 import CloudflareRouter from './cloudflare';
+import ViwebsiteRouter from './viwebsite';
 
 var router = express.Router();
 
@@ -26,5 +27,6 @@ router.use('/servers', ServerRouter);
 router.use('/categories', CategoryRouter);
 router.use('/remote/project', RemoteRouter);
 router.use('/cloudflare', CloudflareRouter);
+router.use('/viwebsite', ViwebsiteRouter);
 
 export default router;
