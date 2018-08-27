@@ -75,7 +75,7 @@ async function login(req, res) {
 }
 
 async function register(req, res) {
-  AuthValidator.isValid(Request.all(), REGISTER_RULE);
+  // AuthValidator.isValid(Request.all(), REGISTER_RULE);
 
   const new_user = {
     email: req.body.email,
