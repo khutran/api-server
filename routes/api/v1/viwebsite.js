@@ -21,7 +21,7 @@ import randomstring from 'randomstring';
 const router = express.Router();
 
 router.post('/login', AsyncMiddleware(login));
-router.post('/register', AsyncMiddleware(register));
+router.post('/checkemail', AsyncMiddleware(checkemail));
 router.post('/forgot-password', AsyncMiddleware(forgotpassword));
 router.post('/reset-password', AsyncMiddleware(resetpassword));
 router.get('/exists/:email', AsyncMiddleware(customerExist));
@@ -74,7 +74,7 @@ async function login(req, res) {
   res.json({ access_token: access_token });
 }
 
-async function register(req, res) {
+async function checkemail(req, res) {
   // AuthValidator.isValid(Request.all(), REGISTER_RULE);
 
   const new_user = {
@@ -87,31 +87,41 @@ async function register(req, res) {
     last_name: 'default'
   };
 
+  let access_token;
+
   const checkUser = await App.make(UserRepository)
     .where('email', new_user.email)
     .first();
 
-  if (checkUser) {
-    throw new Exception('User already exists', 4004);
+  if (!checkUser) {
+    const user = await App.make(UserRepository).create(new_user);
+
+    const customerRole = await App.make(RoleRepository)
+      .where('slug', 'customer')
+      .first();
+    await user.addRole(customerRole);
+    // const sendMail = new SendWelcomeEmailNotification();
+
+    // user.notify(sendMail);
+    const profile = _.pick(user, ['email', 'status', 'last_password_updated']);
+
+    access_token = jwt.sign(
+      {
+        data: profile
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 20160000 }
+    );
+  } else {
+    const profile = _.pick(checkUser, ['email', 'status', 'last_password_updated']);
+    access_token = jwt.sign(
+      {
+        data: profile
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: 20160000 }
+    );
   }
-  const user = await App.make(UserRepository).create(new_user);
-
-  const customerRole = await App.make(RoleRepository)
-    .where('slug', 'customer')
-    .first();
-  await user.addRole(customerRole);
-  const sendMail = new SendWelcomeEmailNotification();
-
-  user.notify(sendMail);
-  const profile = _.pick(user, ['email', 'status', 'last_password_updated']);
-
-  const access_token = jwt.sign(
-    {
-      data: profile
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: 20160000 }
-  );
 
   res.json({ access_token: access_token });
 }
