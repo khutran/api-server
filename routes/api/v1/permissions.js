@@ -31,7 +31,7 @@ async function view(req, res) {
 }
 
 async function list(req, res) {
-  await new PermissionPermission().get().checkPermisson();
+  // await new PermissionPermission().get().checkPermisson();
   const repository = new PermissionRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'slug']);
@@ -43,7 +43,7 @@ async function list(req, res) {
 }
 
 async function group(req, res) {
-  await new PermissionPermission().get().checkPermisson();
+  // await new PermissionPermission().get().checkPermisson();
   let result = await App.make(PermissionGroupRepository)
     .with('permission')
     .get();

@@ -33,7 +33,7 @@ async function view(req, res) {
 }
 
 async function index(req, res) {
-  await new CategoryPermission().get().checkPermisson();
+  // await new CategoryPermission().get().checkPermisson();
   const repository = new CategoryRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -45,7 +45,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new CategoryPermission().get().checkPermisson();
+  // await new CategoryPermission().get().checkPermisson();
   const repository = new CategoryRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -57,7 +57,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new CategoryPermission().get().checkPermisson();
+  // await new CategoryPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new CategoryRepository();
   const result = await repository.findById(id);
@@ -65,7 +65,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new CategoryPermission().create().checkPermisson();
+  // await new CategoryPermission().create().checkPermisson();
   CategoryValidator.isValid(Request.all(), CREATE_CATEGORY_RULE);
   const repository = new CategoryRepository();
   const result = await repository.create(Request.all());
@@ -73,7 +73,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new CategoryPermission().update().checkPermisson();
+  // await new CategoryPermission().update().checkPermisson();
   CategoryValidator.isValid(Request.all(), UPDATE_CATEGORY_RULE);
   const repository = new CategoryRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -81,7 +81,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new CategoryPermission().delete().checkPermisson();
+  // await new CategoryPermission().delete().checkPermisson();
   App.make(CategoryRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }

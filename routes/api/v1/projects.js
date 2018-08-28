@@ -41,7 +41,7 @@ async function view(req, res) {
 }
 
 async function litUser(req, res) {
-  await new ProjectPermission().get().checkPermisson();
+  // await new ProjectPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new ProjectRepository();
   const result = await repository.withScope('listUser-Scope').findById(id);
@@ -49,7 +49,7 @@ async function litUser(req, res) {
 }
 
 async function index(req, res) {
-  await new ProjectPermission().get().checkPermisson();
+  // await new ProjectPermission().get().checkPermisson();
   const repository = new ProjectRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'database', 'git_remote', 'git_branch', 'git_application_key', 'git_application_secret']);
@@ -68,7 +68,7 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  await new ProjectPermission().get().checkPermisson();
+  // await new ProjectPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new ProjectRepository();
   const result = await repository.findById(id);
@@ -76,7 +76,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new ProjectPermission().create().checkPermisson();
+  // await new ProjectPermission().create().checkPermisson();
   ProjectValidator.isValid(Request.all(), CREATE_PROJECT_RULE);
   const status = await App.make(StatusRepository).findById(Request.get('status_id'));
   const category = await App.make(CategoryRepository).findById(Request.get('category_id'));
@@ -98,7 +98,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new ProjectPermission().update().checkPermisson();
+  // await new ProjectPermission().update().checkPermisson();
   ProjectValidator.isValid(Request.all(), UPDATE_PROJECT_RULE);
   console.log(req.body);
   const status = await App.make(StatusRepository).findById(Request.get('status_id'));
@@ -121,7 +121,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new ProjectPermission().delete().checkPermisson();
+  // await new ProjectPermission().delete().checkPermisson();
   const id = req.params.id;
   App.make(ProjectRepository).deleteById(id);
   res.json(ApiResponse.success());

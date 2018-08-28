@@ -34,7 +34,7 @@ async function view(req, res) {
 }
 
 async function index(req, res) {
-  await new FrameworkPermission().get().checkPermisson();
+  // await new FrameworkPermission().get().checkPermisson();
   const repository = new FrameWorkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -44,7 +44,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new FrameworkPermission().get().checkPermisson();
+  // await new FrameworkPermission().get().checkPermisson();
   const repository = new FrameWorkRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -54,7 +54,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new FrameworkPermission().get().checkPermisson();
+  // await new FrameworkPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new FrameWorkRepository();
   const result = await repository.findById(id);
@@ -62,7 +62,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new FrameworkPermission().create().checkPermisson();
+  // await new FrameworkPermission().create().checkPermisson();
   FrameworkValidator.isValid(Request.all(), CREATE_FRAMEWORK_RULE);
   const repository = new FrameWorkRepository();
   const result = await repository.create(Request.all());
@@ -70,7 +70,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new FrameworkPermission().update().checkPermisson();
+  // await new FrameworkPermission().update().checkPermisson();
   FrameworkValidator.isValid(Request.all(), UPDATE_FRAMEWORK_RULE);
   const repository = new FrameWorkRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -78,7 +78,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new FrameworkPermission().delete().checkPermisson();
+  // await new FrameworkPermission().delete().checkPermisson();
   App.make(FrameWorkRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }

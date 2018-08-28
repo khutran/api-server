@@ -33,7 +33,7 @@ async function view(req, res) {
 }
 
 async function index(req, res) {
-  await new ServerPermission().get().checkPermisson();
+  // await new ServerPermission().get().checkPermisson();
   const repository = new ServerRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'address_mysql', 'ip']);
@@ -45,7 +45,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new ServerPermission().get().checkPermisson();
+  // await new ServerPermission().get().checkPermisson();
   const repository = new ServerRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name', 'address_mysql', 'ip']);
@@ -57,7 +57,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new ServerPermission().get().checkPermisson();
+  // await new ServerPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new ServerRepository();
   const result = await repository.findById(id);
@@ -65,7 +65,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new ServerPermission().create().checkPermisson();
+  // await new ServerPermission().create().checkPermisson();
   ServerValidator.isValid(Request.all(), CREATE_SERVER_RULE);
   const repository = new ServerRepository();
   const result = await repository.create(Request.all());
@@ -73,7 +73,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new ServerPermission().update().checkPermisson();
+  // await new ServerPermission().update().checkPermisson();
   ServerValidator.isValid(Request.all(), UPDATE_SERVER_RULE);
   const repository = new ServerRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -81,7 +81,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new ServerPermission().delete().checkPermisson();
+  // await new ServerPermission().delete().checkPermisson();
   App.make(ServerRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }

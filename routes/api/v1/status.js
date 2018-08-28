@@ -33,7 +33,7 @@ async function view(req, res) {
 }
 
 async function index(req, res) {
-  await new StatusPermission().get().checkPermisson();
+  // await new StatusPermission().get().checkPermisson();
   const repository = new StatusRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -43,7 +43,7 @@ async function index(req, res) {
 }
 
 async function list(req, res) {
-  await new StatusPermission().get().checkPermisson();
+  // await new StatusPermission().get().checkPermisson();
   const repository = new StatusRepository();
   repository.applyConstraintsFromRequest();
   repository.applySearchFromRequest(['name']);
@@ -53,7 +53,7 @@ async function list(req, res) {
 }
 
 async function show(req, res) {
-  await new StatusPermission().get().checkPermisson();
+  // await new StatusPermission().get().checkPermisson();
   const id = req.params.id;
   const repository = new StatusRepository();
   const result = await repository.findById(id);
@@ -61,7 +61,7 @@ async function show(req, res) {
 }
 
 async function create(req, res) {
-  await new StatusPermission().create().checkPermisson();
+  // await new StatusPermission().create().checkPermisson();
   StatusValidator.isValid(Request.all(), CREATE_STATUS_RULE);
   const repository = new StatusRepository();
   const result = await repository.create(Request.all());
@@ -69,7 +69,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  await new StatusPermission().update().checkPermisson();
+  // await new StatusPermission().update().checkPermisson();
   StatusValidator.isValid(Request.all(), UPDATE_STATUS_RULE);
   const repository = new StatusRepository();
   const result = await repository.update(Request.all(), req.params.id);
@@ -77,7 +77,7 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-  await new StatusPermission().delete().checkPermisson();
+  // await new StatusPermission().delete().checkPermisson();
   App.make(StatusRepository).deleteById(req.params.id);
   res.json(ApiResponse.success());
 }
